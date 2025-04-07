@@ -1,11 +1,28 @@
-package gui.controllers;
+package gui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-public interface GameFieldController {
+/**
+ * Steuerung des Spielfeldes.
+ *
+ * @author Maurice Singh Multani
+ */
+public class GameFieldController {
 
+    /**
+     * Das entsprechende GridPane, das für die Darstellung verwendet wird.
+     */
+    private final GridPane gridPane;
+
+    /**
+     * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
+     * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
+     */
+    public GameFieldController(GridPane gridPane){
+        this.gridPane = gridPane;
+    }
 
     /**
      * String, dass Bilder speichert. Sind für die Grenzen des GameFields gemacht.
@@ -13,8 +30,8 @@ public interface GameFieldController {
      */
     String[] imagePaths = {
             "",
-            "tiles/YYYY_ohne_Rand.png",
-            "tiles/RRRR_ohne_Rand.png",
+            "tiles/YYYY_ohne_Linien.png",
+            "tiles/RRRR_ohne_Linien.png",
             "",
             "tiles/RRRR.png",
             "tiles/RYGR.png",
@@ -29,9 +46,8 @@ public interface GameFieldController {
 
     /**
      * Anpassen der Größe des Spielfeldes mit der Anpassung, dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
-     * @param gridPane
      */
-    default void adjustRowsAndColumnsGameField(GridPane gridPane){
+    public void adjustRowsAndColumnsGameField(){
         int cols = gridPane.getColumnCount();
         int rows = gridPane.getRowCount();
         double middleRowHeightPercentage = 100 / (rows - 1d);
@@ -57,11 +73,10 @@ public interface GameFieldController {
     /**
      * Anpassen der mittleren Zellen des Spielfeldes
      * Sollen quadratisch bleiben
-     * @param gridPane  Das Spielfeld, dessen Größe angepasst werden soll
      * @param width     Die Breite der Pane
      * @param height    Die Höhe der Pane
      */
-    default void adjustGameField(GridPane gridPane, double width, double height) {
+    public void adjustGameField(double width, double height) {
 
         final int middleRows = gridPane.getRowCount() - 2;
         final int middleColumns = gridPane.getColumnCount() - 2;
@@ -77,10 +92,8 @@ public interface GameFieldController {
 
     /**
      * Initialisierung der Bilder an das GridPane
-     * @param gridPane das GridPane, auf das die Bilder angezeigt werden sollen.
-     * @return imageViews das zweidimensionale Array mit der Anpassung der Größe
      */
-    default ImageView[][] initImagesGameField(GridPane gridPane){
+    public void initImagesGameField(){
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -101,15 +114,12 @@ public interface GameFieldController {
                         divide(rowsCount - 1).subtract(gridPane.getVgap()));
             }
         }
-        return imageViews;
     }
 
     /**
      * Intitialisierung der Bilder an den Grenzen des Spielfeldes
-     * @param gridPane das Feld, an dem die Bilder an den Rändern angepasst werden soll.
-     * @return imageViews, die Bilder im korrekten Schnitt
      */
-    default ImageView[][] initImagesOnBorderGameField(GridPane gridPane){
+    public void initImagesOnBorderGameField(){
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -118,62 +128,88 @@ public interface GameFieldController {
         for (int row = 0; row < rowsCount; row++){
             for (int column = 0; column < columnsCount; column++){
 
-                imageViews[0][column] = new ImageView();
-
+                // Initialisierung der oberen Grenze
                 Image image = new Image(getClass().getResourceAsStream(imagePaths[column]));
                 ImageView imageView = new ImageView(image);
 
-
                 imageViews[0][column] = imageView;
                 gridPane.add(imageView, column, 0);
+                // else-Bedingung von fitImageViewToBorder
+                fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, false);
 
-                imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                        divide(columnsCount - 1).subtract(gridPane.getHgap()));
-                imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                        divide(rowsCount * rowsCount - 1).subtract(gridPane.getVgap()));
 
-                imageViews[2][column] = new ImageView();
-
+                // Initialisierung der unteren Grenze
                 Image image2 = new Image(getClass().getResourceAsStream(imagePaths[column]));
-                ImageView imageView1 = new ImageView(image2);
+                ImageView imageView2 = new ImageView(image2);
 
+                imageViews[2][column] = imageView2;
+                gridPane.add(imageView2, column, 2);
+                // else-Bedingung von fitImageViewToBorder
+                fitImageViewToBorder(gridPane, imageView2, columnsCount, rowsCount, false);
+            }
+        }
+        initImagesLeftRightBorderGameField();
+    }
 
-                imageViews[2][column] = imageView1;
-                gridPane.add(imageView1, column, 2);
+    /**
+     * Initialisierung der Bilder an der linken und rechten Grenze.
+     * Wird in initImagesOnBorderGameField verwendet.
+     *
+     */
+    private void initImagesLeftRightBorderGameField(){
+        final int columnsCount = gridPane.getColumnCount();
+        final int rowsCount = gridPane.getRowCount();
 
-                imageView1.fitWidthProperty().bind(gridPane.widthProperty().
-                        divide(columnsCount - 1).subtract(gridPane.getHgap()));
-                imageView1.fitHeightProperty().bind(gridPane.heightProperty().
-                        divide(rowsCount * rowsCount - 1).subtract(gridPane.getVgap()));
+        ImageView[][] imageViews = new ImageView[rowsCount][columnsCount];
 
                 imageViews[1][0] = new ImageView();
 
-                Image image3 = new Image(getClass().getResourceAsStream("tiles/GGGG_ohne_Rand.png"));
-                ImageView imageView2 = new ImageView(image3);
+                Image img = new Image(getClass().getResourceAsStream("tiles/GGGG_ohne_Linien.png"));
+                ImageView imageView = new ImageView(img);
 
-                imageViews[1][0] = imageView2;
-                gridPane.add(imageView2, 0, 1);
+                imageViews[1][0] = imageView;
+                gridPane.add(imageView, 0, 1);
 
-                imageView2.fitWidthProperty().bind(gridPane.widthProperty().
-                        divide(columnsCount * columnsCount - 4).subtract(gridPane.getHgap()));
-                imageView2.fitHeightProperty().bind(gridPane.heightProperty().
-                        divide(rowsCount - 1).subtract(gridPane.getHgap()));
+                fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, true);
 
                 imageViews[1][3] = new ImageView();
 
-                Image image4 = new Image(getClass().getResourceAsStream("tiles/YYYY_ohne_Rand.png"));
-                ImageView imageView3 = new ImageView(image4);
+                Image image = new Image(getClass().getResourceAsStream("tiles/YYYY_ohne_Linien.png"));
+                ImageView imageView1 = new ImageView(image);
 
-                imageViews[1][3] = imageView3;
-                gridPane.add(imageView3, 3, 1);
+                imageViews[1][3] = imageView1;
+                gridPane.add(imageView1, 3, 1);
 
-                imageView3.fitWidthProperty().bind(gridPane.widthProperty().
-                        divide(columnsCount * columnsCount - 4).subtract(gridPane.getHgap()));
-                imageView3.fitHeightProperty().bind(gridPane.heightProperty().
-                        divide(rowsCount - 1).subtract(gridPane.getHgap()));
-            }
+                fitImageViewToBorder(gridPane, imageView1, columnsCount, rowsCount, true);
+    }
+
+    /**
+     * Hilfsmethode um die Bilder automatisch an der Breite und Höhe des GridPanes anzupassen.
+     * Die Hilfsmethode soll redundanten Code in den Methoden reduzieren.
+     *
+     * Die if-Bedingung gilt für die Grenzen links und rechts vom Spielfeld.
+     * die else-Bedingung gilt für die Grenzen oben und unten vom Spielfeld.
+     *
+     * Wird in initImagesLeftRightBorderGameField und initImagesOnBorderGameField verwendet.
+     *
+     * @param gridPane das GridPane, in dem sich die Bilder befinden
+     * @param imageView das ImageView, dessen Größe angepasst werden soll
+     * @param columnsCount die Anzahl der Spalten im GridPane.
+     * @param rowsCount die Anzahl der Reihen im GridPane.
+     */
+    private void fitImageViewToBorder(GridPane gridPane, ImageView imageView, int columnsCount, int rowsCount, boolean isLeftRightBorder) {
+
+        if (isLeftRightBorder) {
+            imageView.fitWidthProperty().bind(gridPane.widthProperty().
+                    divide(columnsCount * columnsCount - 4).subtract(gridPane.getHgap()));
+            imageView.fitHeightProperty().bind(gridPane.heightProperty().
+                    divide(rowsCount - 1).subtract(gridPane.getHgap()));
+        } else {
+            imageView.fitWidthProperty().bind(gridPane.widthProperty().
+                    divide(columnsCount - 1).subtract(gridPane.getHgap()));
+            imageView.fitHeightProperty().bind(gridPane.heightProperty().
+                    divide(rowsCount * rowsCount - 1).subtract(gridPane.getVgap()));
+
         }
-
-    return imageViews;
     }
 }

@@ -22,19 +22,21 @@
                   <items>
                     <MenuItem fx:id="menuEditorActivate" mnemonicParsing="false" text="Activate Editor" />
                         <MenuItem fx:id="menuEditorDeactivate" mnemonicParsing="false" text="Deactivate Editor" />
+                        <MenuItem fx:id="MenuEditorChangeSize" mnemonicParsing="false" text="Change Size of Field" />
                   </items>
                 </Menu>
                   <Menu fx:id="menuGame" mnemonicParsing="false" text="Game">
                      <items>
                       <MenuItem fx:id="menuGameSubmit" mnemonicParsing="false" text="Submit Answer" />
                       <MenuItem fx:id="menuGameRestart" mnemonicParsing="false" text="Restart Game" />
+                      <MenuItem fx:id="menuGameHint" mnemonicParsing="false" text="Help" />
                      </items>
                   </Menu>
               </menus>
             </MenuBar>
          </top>
          <center>
-            <Pane fx:id="gameFieldPane" prefHeight="330.0" prefWidth="490.0" BorderPane.alignment="CENTER">
+            <Pane fx:id="gameFieldPane" prefHeight="330.0" prefWidth="516.0" BorderPane.alignment="CENTER">
                <children>
                   <GridPane fx:id="gameField" alignment="CENTER">
                     <columnConstraints>
@@ -53,7 +55,7 @@
             </Pane>
          </center>
          <left>
-            <GridPane fx:id="gridLeft" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="60.0" style="-fx-border-color: grey;" BorderPane.alignment="CENTER">
+            <GridPane fx:id="gridLeft" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="42.0" style="-fx-border-color: grey;" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -70,7 +72,7 @@
             </GridPane>
          </left>
          <right>
-            <GridPane fx:id="gridRight" alignment="CENTER_RIGHT" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="60.0" BorderPane.alignment="CENTER">
+            <GridPane fx:id="gridRight" alignment="CENTER_RIGHT" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="42.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
@@ -87,7 +89,7 @@
             </GridPane>
          </right>
          <bottom>
-            <GridPane fx:id="gridBottom" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="46.0" prefWidth="500.0" BorderPane.alignment="CENTER">
+            <GridPane fx:id="gridBottom" gridLinesVisible="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="42.0" prefWidth="330.0" BorderPane.alignment="CENTER">
               <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

@@ -27,7 +27,7 @@ public class ApplicationMain extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         stage.setTitle("MacMahon Mosaik");
         stage.setMinHeight(460);
-        stage.setMinWidth(600);
+        stage.setMinWidth(460);
         stage.setScene(scene);
         stage.show();
     }
