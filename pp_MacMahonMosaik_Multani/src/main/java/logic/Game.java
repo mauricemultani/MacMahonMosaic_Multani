@@ -27,6 +27,7 @@ public class Game implements Solvability {
      */
     public Game(){
         initializeGame();
+
     }
 
     /**
@@ -43,6 +44,7 @@ public class Game implements Solvability {
      * Löscht alle Zellen und setzt das Spielfeld zurück.
      */
     public void initializeGame() {
+        gameField.getChildren().clear();
 
     }
 

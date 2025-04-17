@@ -4,12 +4,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
+import java.awt.*;
+import java.util.Random;
+
 /**
  * Steuerung des Spielfeldes.
  *
  * @author Maurice Singh Multani
  */
-public class GameFieldController {
+public class GameFieldController extends Canvas {
 
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
@@ -42,6 +45,14 @@ public class GameFieldController {
             "tiles/YYYY.png",
             ""
     };
+
+    String[] borderImagesPaths = {
+            "tiles/YYYY_ohne_Linien.png",
+            "tiles/GGGG_ohne_Linien.png",
+            "tiles/RRRR_ohne_Linien.png",
+    };
+
+
 
 
     /**
@@ -210,6 +221,30 @@ public class GameFieldController {
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     divide(rowsCount * rowsCount - 1).subtract(gridPane.getVgap()));
 
+        }
+    }
+
+    /**
+     * Die Methode soll für die Ränder des Spielfeldes zufällige Farben (Gelb, Grün und Rot) generieren.
+     */
+    public void randomColorsForBorder(){
+        final int columnsCount = gridPane.getColumnCount();
+        final int rowsCount = gridPane.getRowCount();
+
+        Random random = new Random();
+        ImageView[][] imageViews = new ImageView[rowsCount][columnsCount];
+
+        for (int row = 0; row < rowsCount; row++){
+            for (int column = 0; column < columnsCount; column++){
+
+                if ((row == 0) || (row == rowsCount - 1) || (column == 0) || (column == columnsCount -1)){
+                    String RandomColor  = borderImagesPaths[random.nextInt(borderImagesPaths.length)];
+                    Image borderImage = new Image(getClass().getResourceAsStream(RandomColor));
+                    ImageView imageView = new ImageView(borderImage);
+                    imageView.setImage(borderImage);
+                    // fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, true);
+                }
+            }
         }
     }
 }

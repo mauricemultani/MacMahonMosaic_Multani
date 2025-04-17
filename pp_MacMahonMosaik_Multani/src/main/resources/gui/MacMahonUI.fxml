@@ -13,21 +13,19 @@
                 <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem fx:id="menuFileSave" mnemonicParsing="false" text="Save" />
-                        <MenuItem fx:id="menuFileSaveAs" mnemonicParsing="false" text="Save as" />
                         <MenuItem fx:id="menuFileLoad" mnemonicParsing="false" text="Load" />
                         <MenuItem fx:id="menuFileClose" mnemonicParsing="false" text="Close" />
                   </items>
                 </Menu>
                 <Menu fx:id="menuEditor" mnemonicParsing="false" text="Editor">
                   <items>
-                    <MenuItem fx:id="menuEditorActivate" mnemonicParsing="false" text="Activate Editor" />
-                        <MenuItem fx:id="menuEditorDeactivate" mnemonicParsing="false" text="Deactivate Editor" />
+                        <CheckMenuItem mnemonicParsing="false" text="Activate Editor" />
                         <MenuItem fx:id="MenuEditorChangeSize" mnemonicParsing="false" text="Change Size of Field" />
                   </items>
                 </Menu>
                   <Menu fx:id="menuGame" mnemonicParsing="false" text="Game">
                      <items>
-                      <MenuItem fx:id="menuGameSubmit" mnemonicParsing="false" text="Submit Answer" />
+                      <MenuItem fx:id="menuGameSubmit" mnemonicParsing="false" text="Solution Help" />
                       <MenuItem fx:id="menuGameRestart" mnemonicParsing="false" text="Restart Game" />
                       <MenuItem fx:id="menuGameHint" mnemonicParsing="false" text="Help" />
                      </items>

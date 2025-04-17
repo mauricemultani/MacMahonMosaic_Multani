@@ -7,10 +7,13 @@ package logic;
  */
 public class GameField {
 
-    /**
-     * Array von Zellen. Stellt das Feld dar.
-     */
-    private String[][] gameField;
+    private final static MosaicTile[][] START_BOARD = {
+            {  MosaicTile.NNNN, MosaicTile.NNNN, MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN}, // x = 0
+            {  MosaicTile.NNNN, MosaicTile.GRRR, MosaicTile.GRYG, MosaicTile.GRGR,  MosaicTile.NNNN}, // x = 1
+            {  MosaicTile.NNNN, MosaicTile.GYYY, MosaicTile.GRYR, MosaicTile.GRYG,  MosaicTile.NNNN},
+            {  MosaicTile.NNNN, MosaicTile.YGRY, MosaicTile.RYGR, MosaicTile.GRGR,  MosaicTile.NNNN},
+            {  MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN}
+    };
 
     /**
      * Schaut sich die Position einer leeren Zelle an und gibt zurück, ob dort ein Mosaik-Tile reinpasst.

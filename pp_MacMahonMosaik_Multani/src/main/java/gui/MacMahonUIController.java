@@ -99,7 +99,7 @@ public class MacMahonUIController implements Solvability {
 
         // Initialisierung der Bilder in den GridPanes
         gameFieldController.initImagesGameField();
-        gameFieldController.initImagesOnBorderGameField();
+        gameFieldController.randomColorsForBorder();
         gridLeftController.initImages();
         gridRightController.initImages();
         gridBottomController.initImages();
