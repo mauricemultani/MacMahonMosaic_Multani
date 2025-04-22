@@ -8,50 +8,35 @@ package logic;
  */
 public enum MosaicTile {
 
-    GGGG("tiles/GGGG.png"),
-    GGRR("tiles/GGRR.png"),
-    GRGR("tiles/GRGR.png"),
-    GRRR("tiles/GRRR.png"),
-    GRYG("tiles/GRYG.png"),
-    GRYR("tiles/GRYR.png"),
-    GYRG("tiles/GYRG.png"),
-    GYYY("tiles/GYYY.png"),
+    GGGG,
+    GGRR,
+    GRGR,
+    GRRR,
+    GRYG,
+    GRYR,
+    GYRG,
+    GYYY,
 
-    HHHH("tiles/HHHH.png"),
-    NNNN("tiles/NNNN.png"),
+    HHHH,
+    NNNN,
 
-    RGGG("tiles/RGGG.png"),
-    RGYG("tiles/RGYG.png"),
-    RGYR("tiles/RGYR.png"),
-    RRRR("tiles/RRRR.png"),
-    RRYY("tiles/RRYY.png"),
-    RYGR("tiles/RYGR.png"),
-    RYGY("tiles/RYGY.png"),
-    RYYY("tiles/RYYY.png"),
+    RGGG,
+    RGYG,
+    RGYR,
+    RRRR,
+    RRYY,
+    RYGR,
+    RYGY,
+    RYYY,
 
-    YGGG("tiles/YGGG.png"),
-    YGRY("tiles/YGRY.png"),
-    YGYG("tiles/YGYG.png"),
-    YRGY("tiles/YRGY.png"),
-    YRRR("tiles/YRRR.png"),
-    YRYR("tiles/YRYR.png"),
-    YYGG("tiles/YYGG.png"),
-    YYYY("tiles/YYYY.png");
-
-    /**
-     * Das Bild, dass das Mosaik-Teil visuell darstellt.
-     */
-    private final String tileImage;
-
-    /**
-     * Konstruktor zur Initialisierung des Mosaik-Tiles mit einem Bild.
-     * @param tileImage das Bild, das das Mosaik-Tile darstellt.
-     */
-    MosaicTile(String tileImage) {
-        this.tileImage = tileImage;
-    }
-
-
+    YGGG,
+    YGRY,
+    YGYG,
+    YRGY,
+    YRRR,
+    YRYR,
+    YYGG,
+    YYYY;
 
     /**
      * rotiert die Mosaikzelle um 90° im Uhrzeigersinn.

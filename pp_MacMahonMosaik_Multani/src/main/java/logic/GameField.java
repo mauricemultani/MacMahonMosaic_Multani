@@ -7,12 +7,12 @@ package logic;
  */
 public class GameField {
 
-    private final static MosaicTile[][] START_BOARD = {
-            {  MosaicTile.NNNN, MosaicTile.NNNN, MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN}, // x = 0
-            {  MosaicTile.NNNN, MosaicTile.GRRR, MosaicTile.GRYG, MosaicTile.GRGR,  MosaicTile.NNNN}, // x = 1
-            {  MosaicTile.NNNN, MosaicTile.GYYY, MosaicTile.GRYR, MosaicTile.GRYG,  MosaicTile.NNNN},
-            {  MosaicTile.NNNN, MosaicTile.YGRY, MosaicTile.RYGR, MosaicTile.GRGR,  MosaicTile.NNNN},
-            {  MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN, MosaicTile.NNNN,  MosaicTile.NNNN}
+    private final static String[][] START_BOARD = {
+            {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"}, // x = 0
+            {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"}, // x = 1
+            {"NRNN", "NNNN", "NNNN", "NNNN", "NNNR"},
+            {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
+            {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
     };
 
     /**

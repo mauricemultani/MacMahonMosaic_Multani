@@ -28,35 +28,21 @@ public class GameFieldController extends Canvas {
     }
 
     /**
-     * String, dass Bilder speichert. Sind für die Grenzen des GameFields gemacht.
-     * Die leeren Strings sollen die jeweiligen Ecken ([0][0], [3][0], [0][2], [3][2]) in dem GameField sein.
+     * String welches die Randbilder enthält.
+     * Werden verwendet um die Ränder vom Bild darzustellen.
      */
-    String[] imagePaths = {
-            "",
-            "tiles/YYYY_ohne_Linien.png",
-            "tiles/RRRR_ohne_Linien.png",
-            "",
-            "tiles/RRRR.png",
-            "tiles/RYGR.png",
-            "tiles/RYGY.png",
-            "tiles/YYYY.png",
-            "",
-            "tiles/RRRR.png",
-            "tiles/YYYY.png",
-            ""
-    };
-
-    String[] borderImagesPaths = {
-            "tiles/YYYY_ohne_Linien.png",
-            "tiles/GGGG_ohne_Linien.png",
-            "tiles/RRRR_ohne_Linien.png",
+    String[] borderImages = {
+            "/gui/tiles/YYYY_ohne_Linien.png",
+            "/gui/tiles/GGGG_ohne_Linien.png",
+            "/gui/tiles/RRRR_ohne_Linien.png",
     };
 
 
 
 
     /**
-     * Anpassen der Größe des Spielfeldes mit der Anpassung, dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
+     * Anpassen der Größe des Spielfeldes mit der Anpassung,
+     * dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
      */
     public void adjustRowsAndColumnsGameField(){
         int cols = gridPane.getColumnCount();
@@ -82,7 +68,7 @@ public class GameFieldController extends Canvas {
     }
 
     /**
-     * Anpassen der mittleren Zellen des Spielfeldes
+     * Anpassen der mittleren Zellen des Spielfeldes.
      * Sollen quadratisch bleiben
      * @param width     Die Breite der Pane
      * @param height    Die Höhe der Pane
@@ -115,7 +101,7 @@ public class GameFieldController extends Canvas {
 
                 imageViews[row][column] = new ImageView();
 
-                imageViews[row][column].setImage(new Image(getClass().getResourceAsStream("tiles/GGGG.png")));
+                imageViews[row][column].setImage(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
                 gridPane.add(imageViews[row][column], column + 1, row + 1);
 
 
@@ -128,70 +114,68 @@ public class GameFieldController extends Canvas {
     }
 
     /**
-     * Intitialisierung der Bilder an den Grenzen des Spielfeldes
+     * Initialisierung der Bilder an den Grenzen des Spielfeldes.
      */
-    public void initImagesOnBorderGameField(){
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
-
-        ImageView[][] imageViews = new ImageView[rowsCount][columnsCount];
-
-        for (int row = 0; row < rowsCount; row++){
-            for (int column = 0; column < columnsCount; column++){
-
-                // Initialisierung der oberen Grenze
-                Image image = new Image(getClass().getResourceAsStream(imagePaths[column]));
-                ImageView imageView = new ImageView(image);
-
-                imageViews[0][column] = imageView;
-                gridPane.add(imageView, column, 0);
-                // else-Bedingung von fitImageViewToBorder
-                fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, false);
-
-
-                // Initialisierung der unteren Grenze
-                Image image2 = new Image(getClass().getResourceAsStream(imagePaths[column]));
-                ImageView imageView2 = new ImageView(image2);
-
-                imageViews[2][column] = imageView2;
-                gridPane.add(imageView2, column, 2);
-                // else-Bedingung von fitImageViewToBorder
-                fitImageViewToBorder(gridPane, imageView2, columnsCount, rowsCount, false);
-            }
-        }
-        initImagesLeftRightBorderGameField();
+    public void initImagesBorderGameField(){
+        initImagesColumnBorder();
+        initImagesRowBorder();
     }
 
     /**
-     * Initialisierung der Bilder an der linken und rechten Grenze.
-     * Wird in initImagesOnBorderGameField verwendet.
+     * Initialisierung der Bilder an der linken und rechten Grenze vom Spielfeld.
+     * Wird in initImagesBorderGameField verwendet.
      *
      */
-    private void initImagesLeftRightBorderGameField(){
+    private void initImagesColumnBorder(){
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
-        ImageView[][] imageViews = new ImageView[rowsCount][columnsCount];
+        Random random = new Random();
+        ImageView[][] imageViews = new ImageView[rowsCount - 1][1];
 
-                imageViews[1][0] = new ImageView();
+                for (int row = 1; row < rowsCount - 1; row++){
 
-                Image img = new Image(getClass().getResourceAsStream("tiles/GGGG_ohne_Linien.png"));
-                ImageView imageView = new ImageView(img);
+                    imageViews[row][0] = new ImageView();
 
-                imageViews[1][0] = imageView;
-                gridPane.add(imageView, 0, 1);
+                    String RandomColor = borderImages[random.nextInt(borderImages.length)];
+                    Image image = new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png"));
+                    ImageView leftBorderImages = new ImageView(image);
+                    ImageView rightBorderImages = new ImageView(image);
 
-                fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, true);
+                    gridPane.add(leftBorderImages, 0, row);
+                    gridPane.add(rightBorderImages, columnsCount - 1, row);
 
-                imageViews[1][3] = new ImageView();
+                    fitImageViewToBorder(rightBorderImages, true);
+                    fitImageViewToBorder(leftBorderImages, true);
+                }
+    }
 
-                Image image = new Image(getClass().getResourceAsStream("tiles/YYYY_ohne_Linien.png"));
-                ImageView imageView1 = new ImageView(image);
+    /**
+     * Initialisierung der Bilder an der oberen und unteren Grenze vom Spielfeld.
+     * Wird in initImagesBorderGameField verwendet.
+     */
+    private void initImagesRowBorder(){
+        final int columnsCount = gridPane.getColumnCount();
+        final int rowsCount = gridPane.getRowCount();
 
-                imageViews[1][3] = imageView1;
-                gridPane.add(imageView1, 3, 1);
+        Random random = new Random();
+        ImageView[][] imageViews = new ImageView[1][columnsCount - 1];
 
-                fitImageViewToBorder(gridPane, imageView1, columnsCount, rowsCount, true);
+        for (int column = 1; column < columnsCount - 1; column++){
+            imageViews[0][column] = new ImageView();
+
+            String RandomColor = borderImages[random.nextInt(borderImages.length)];
+            Image image = new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png"));
+
+            ImageView topBorderImages = new ImageView(image);
+            ImageView bottomBorderImage = new ImageView(image);
+
+            gridPane.add(topBorderImages, column, 0);
+            gridPane.add(bottomBorderImage, column, rowsCount - 1);
+
+            fitImageViewToBorder(topBorderImages, false);
+            fitImageViewToBorder(bottomBorderImage, false);
+        }
     }
 
     /**
@@ -201,25 +185,27 @@ public class GameFieldController extends Canvas {
      * Die if-Bedingung gilt für die Grenzen links und rechts vom Spielfeld.
      * die else-Bedingung gilt für die Grenzen oben und unten vom Spielfeld.
      *
-     * Wird in initImagesLeftRightBorderGameField und initImagesOnBorderGameField verwendet.
+     * Wird in initImagesColumnBorder und initImagesRowBorder verwendet.
      *
-     * @param gridPane das GridPane, in dem sich die Bilder befinden
      * @param imageView das ImageView, dessen Größe angepasst werden soll
-     * @param columnsCount die Anzahl der Spalten im GridPane.
-     * @param rowsCount die Anzahl der Reihen im GridPane.
+     * @param isColumnBorder Boolescher Wert um die Bedingungen klarzustellen.
+     *                       Wenn true, dann handelt es sich um die Grenzen links und rechts vom Spielfeld.
+     *                       Wenn false, dann handelt es sich um die Grenzen oben und unten vom Spielfeld.
      */
-    private void fitImageViewToBorder(GridPane gridPane, ImageView imageView, int columnsCount, int rowsCount, boolean isLeftRightBorder) {
+    private void fitImageViewToBorder(ImageView imageView, boolean isColumnBorder) {
+        final int columnsCount = gridPane.getColumnCount();
+        final int rowsCount = gridPane.getRowCount();
 
-        if (isLeftRightBorder) {
+        if (isColumnBorder) {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                    divide(columnsCount * columnsCount - 4).subtract(gridPane.getHgap()));
+                    divide(columnsCount * 3.25));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                    divide(rowsCount - 1).subtract(gridPane.getHgap()));
+                    divide(rowsCount - 1));
         } else {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                    divide(columnsCount - 1).subtract(gridPane.getHgap()));
+                    divide(columnsCount - 1));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                    divide(rowsCount * rowsCount - 1).subtract(gridPane.getVgap()));
+                    divide(rowsCount * 3.25));
 
         }
     }
@@ -238,7 +224,7 @@ public class GameFieldController extends Canvas {
             for (int column = 0; column < columnsCount; column++){
 
                 if ((row == 0) || (row == rowsCount - 1) || (column == 0) || (column == columnsCount -1)){
-                    String RandomColor  = borderImagesPaths[random.nextInt(borderImagesPaths.length)];
+                    String RandomColor  = borderImages[random.nextInt(borderImages.length)];
                     Image borderImage = new Image(getClass().getResourceAsStream(RandomColor));
                     ImageView imageView = new ImageView(borderImage);
                     imageView.setImage(borderImage);

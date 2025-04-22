@@ -79,7 +79,7 @@ public class MacMahonUIController implements Solvability {
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
 
         // Erstellung eines neuen Spiels
-        game = new Game();
+        // game = new Game();
 
         // Anpassung Zeilen und Spalten des Spielfelds
         gameFieldController.adjustRowsAndColumnsGameField();
@@ -99,7 +99,7 @@ public class MacMahonUIController implements Solvability {
 
         // Initialisierung der Bilder in den GridPanes
         gameFieldController.initImagesGameField();
-        gameFieldController.randomColorsForBorder();
+        gameFieldController.initImagesBorderGameField();
         gridLeftController.initImages();
         gridRightController.initImages();
         gridBottomController.initImages();
