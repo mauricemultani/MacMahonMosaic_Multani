@@ -98,11 +98,13 @@ public class MacMahonUIController implements Solvability {
 
 
         // Initialisierung der Bilder in den GridPanes
-        gameFieldController.initImagesGameField();
+        // gameFieldController.initImagesGameField();
         gameFieldController.initImagesBorderGameField();
         gridLeftController.initImages();
         gridRightController.initImages();
         gridBottomController.initImages();
+
+        gridBottomController.dragTiles();
     }
 
     /**
@@ -110,6 +112,7 @@ public class MacMahonUIController implements Solvability {
      *
      * Beachten, dass das Spiel vorher einen Namen hat.
      */
+    @FXML
     private void handleSave(){
 
     }
@@ -117,6 +120,7 @@ public class MacMahonUIController implements Solvability {
     /**
      * Speichert das laufende Spiel unter einen Namen.
      */
+    @FXML
     private void handleSaveAs(){
 
     }
@@ -127,6 +131,7 @@ public class MacMahonUIController implements Solvability {
      * Mögliche Dinge die zu beachten sind:
      * - Ob das Spiel unter einen Namen gespeichert werden soll.
      */
+    @FXML
     private void handleClose(){
 
     }
@@ -137,6 +142,7 @@ public class MacMahonUIController implements Solvability {
      * Mögliche Dinge die zu beachten sind:
      * Wenn laufendes Spiel keinen Namen hat, ob dieser unter einem Namen gespeichert werden soll.
      */
+    @FXML
     private void handleEditorActivate(){
 
     }
@@ -149,6 +155,7 @@ public class MacMahonUIController implements Solvability {
      * 2. Editor-Modus kann nur geschlossen werden, wenn das Puzzle gespielt werden kann
      *  (siehe Editor-class, die Methode switchBackToGameMode())
      */
+    @FXML
     private void handleEditorDeactivate(){
 
     }
@@ -157,6 +164,7 @@ public class MacMahonUIController implements Solvability {
      * Reicht das laufende Spiel ein.
      *
      */
+    @FXML
     private void handleGameSubmit(){
 
     }
@@ -168,6 +176,7 @@ public class MacMahonUIController implements Solvability {
      * Ob der Spieler nicht vielleicht, das laufende Spiel
      * speichern und einen Namen geben will.
      */
+    @FXML
     private void handleGameRestart(){
 
     }
@@ -177,8 +186,30 @@ public class MacMahonUIController implements Solvability {
      *
      * Zu Beachten: unendliche Nutzung möglich.
      */
+    @FXML
     private void handleGameHint(){
 
     }
 
+//    /**
+//     * Reagiert auf Änderungen des Berechnungstyps vom Nutzer.
+//     * Wenn der Benutzer einen anderen Berechnungstyp auswählt oder direkt eine neue Runde startet,
+//     * wird eine neue Runde gestartet.
+//     */
+//    @FXML
+//    private void handleCalcTypeChanged() {
+//        RadioMenuItem selectedMenu = (RadioMenuItem) tglGrpCalcType.getSelectedToggle();
+//        CalculationType selectedType = CalculationType.valueOf(selectedMenu.getText().toUpperCase());
+//
+//        MathProblem.operator = selectedType;
+//
+//        this.logic = new Logic(new JavaFXGUI(this.lblProgress, this.lblProblem, this.lblPrevProblems), selectedType);
+//
+//        lblPrevProblems.setText("");
+//        lblProgress.setText("");
+//        txtFldProblem.clear();
+//        hBxProblem.setDisable(false);
+//
+//        this.logic.solve(null);
+//    }
 }

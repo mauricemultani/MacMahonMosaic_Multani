@@ -53,4 +53,9 @@ public class GridRightController extends Controller {
         }
 
     }
+
+    @Override
+    public void dragTiles() {
+
+    }
 }

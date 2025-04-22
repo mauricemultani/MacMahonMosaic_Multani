@@ -88,6 +88,13 @@ public class GameFieldController extends Canvas {
     }
 
     /**
+     * Anpassung der GridLines beim Spielfeld
+     */
+    private void adjustGridLines(){
+
+    }
+
+    /**
      * Initialisierung der Bilder an das GridPane
      */
     public void initImagesGameField(){
@@ -98,12 +105,10 @@ public class GameFieldController extends Canvas {
 
         for (int row = 0; row < rowsCount - 2; row++){
             for (int column = 0; column < columnsCount - 2; column++){
-
                 imageViews[row][column] = new ImageView();
 
                 imageViews[row][column].setImage(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
                 gridPane.add(imageViews[row][column], column + 1, row + 1);
-
 
                 imageViews[row][column].fitWidthProperty().bind(gridPane.widthProperty().
                         divide(columnsCount - 1).subtract(gridPane.getHgap()));
@@ -133,21 +138,27 @@ public class GameFieldController extends Canvas {
         Random random = new Random();
         ImageView[][] imageViews = new ImageView[rowsCount - 1][1];
 
-                for (int row = 1; row < rowsCount - 1; row++){
+            for (int row = 1; row < rowsCount - 1; row++){
+                imageViews[row][0] = new ImageView();
 
-                    imageViews[row][0] = new ImageView();
+                String RandomColor = borderImages[random.nextInt(borderImages.length)];
+                Image image = new Image(getClass().getResourceAsStream(RandomColor));
 
-                    String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                    Image image = new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png"));
-                    ImageView leftBorderImages = new ImageView(image);
-                    ImageView rightBorderImages = new ImageView(image);
+                ImageView leftBorderImages = new ImageView(image);
+                gridPane.add(leftBorderImages, 0, row);
+                fitImageViewToBorder(leftBorderImages, true);
+            }
 
-                    gridPane.add(leftBorderImages, 0, row);
-                    gridPane.add(rightBorderImages, columnsCount - 1, row);
+            for (int row = 1; row < rowsCount - 1; row++){
+                imageViews[row][0] = new ImageView();
 
-                    fitImageViewToBorder(rightBorderImages, true);
-                    fitImageViewToBorder(leftBorderImages, true);
-                }
+                String RandomColor = borderImages[random.nextInt(borderImages.length)];
+                Image image = new Image(getClass().getResourceAsStream(RandomColor));
+
+                ImageView rightBorderImages = new ImageView(image);
+                gridPane.add(rightBorderImages, columnsCount - 1, row);
+                fitImageViewToBorder(rightBorderImages, true);
+            }
     }
 
     /**
@@ -165,15 +176,21 @@ public class GameFieldController extends Canvas {
             imageViews[0][column] = new ImageView();
 
             String RandomColor = borderImages[random.nextInt(borderImages.length)];
-            Image image = new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png"));
+            Image image = new Image(getClass().getResourceAsStream(RandomColor));
 
             ImageView topBorderImages = new ImageView(image);
-            ImageView bottomBorderImage = new ImageView(image);
-
             gridPane.add(topBorderImages, column, 0);
-            gridPane.add(bottomBorderImage, column, rowsCount - 1);
-
             fitImageViewToBorder(topBorderImages, false);
+        }
+
+        for (int column = 1; column < columnsCount - 1; column++){
+            imageViews[0][column] = new ImageView();
+
+            String RandomColor = borderImages[random.nextInt(borderImages.length)];
+            Image image = new Image(getClass().getResourceAsStream(RandomColor));
+
+            ImageView bottomBorderImage = new ImageView(image);
+            gridPane.add(bottomBorderImage, column, rowsCount - 1);
             fitImageViewToBorder(bottomBorderImage, false);
         }
     }
@@ -207,30 +224,6 @@ public class GameFieldController extends Canvas {
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     divide(rowsCount * 3.25));
 
-        }
-    }
-
-    /**
-     * Die Methode soll für die Ränder des Spielfeldes zufällige Farben (Gelb, Grün und Rot) generieren.
-     */
-    public void randomColorsForBorder(){
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
-
-        Random random = new Random();
-        ImageView[][] imageViews = new ImageView[rowsCount][columnsCount];
-
-        for (int row = 0; row < rowsCount; row++){
-            for (int column = 0; column < columnsCount; column++){
-
-                if ((row == 0) || (row == rowsCount - 1) || (column == 0) || (column == columnsCount -1)){
-                    String RandomColor  = borderImages[random.nextInt(borderImages.length)];
-                    Image borderImage = new Image(getClass().getResourceAsStream(RandomColor));
-                    ImageView imageView = new ImageView(borderImage);
-                    imageView.setImage(borderImage);
-                    // fitImageViewToBorder(gridPane, imageView, columnsCount, rowsCount, true);
-                }
-            }
         }
     }
 }

@@ -41,4 +41,9 @@ public abstract class Controller {
      *  Wird in den Unterklassen implementiert.
      */
     public abstract void initImages();
+
+    /**
+     * Ziehen der Mosaikteile.
+     */
+    public abstract void dragTiles();
 }
