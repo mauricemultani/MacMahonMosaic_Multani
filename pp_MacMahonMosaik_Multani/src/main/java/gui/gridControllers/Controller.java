@@ -17,7 +17,6 @@ public abstract class Controller {
      */
     protected final GridPane gridPane;
 
-
     /**
      *  Konstruktor zur Zuweisung des GridPanes.
      * @param gridPane Das GridPane, was vom Controller verwaltet wird.
@@ -25,7 +24,6 @@ public abstract class Controller {
     public Controller(GridPane gridPane) {
         this.gridPane = gridPane;
     }
-
 
     /**
      * String, dass Bilder speichert.
@@ -35,15 +33,9 @@ public abstract class Controller {
      */
     public abstract String[] images();
 
-
     /**
      *  Initialisierung der Bilder auf das GridPane.
      *  Wird in den Unterklassen implementiert.
      */
     public abstract void initImages();
-
-    /**
-     * Ziehen der Mosaikteile.
-     */
-    public abstract void dragTiles();
 }

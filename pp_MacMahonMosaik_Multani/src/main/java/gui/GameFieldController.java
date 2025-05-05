@@ -1,10 +1,14 @@
 package gui;
 
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -29,16 +33,13 @@ public class GameFieldController extends Canvas {
 
     /**
      * String welches die Randbilder enthält.
-     * Werden verwendet um die Ränder vom Bild darzustellen.
+     * Werden verwendet, um die Ränder vom Bild darzustellen.
      */
     String[] borderImages = {
             "/gui/tiles/YYYY_ohne_Linien.png",
             "/gui/tiles/GGGG_ohne_Linien.png",
             "/gui/tiles/RRRR_ohne_Linien.png",
     };
-
-
-
 
     /**
      * Anpassen der Größe des Spielfeldes mit der Anpassung,
@@ -74,7 +75,6 @@ public class GameFieldController extends Canvas {
      * @param height    Die Höhe der Pane
      */
     public void adjustGameField(double width, double height) {
-
         final int middleRows = gridPane.getRowCount() - 2;
         final int middleColumns = gridPane.getColumnCount() - 2;
 
@@ -88,7 +88,8 @@ public class GameFieldController extends Canvas {
     }
 
     /**
-     * Anpassung der GridLines beim Spielfeld
+     * Anpassung der GridLines beim Spielfeld.
+     * Implementierung fehlt noch.
      */
     private void adjustGridLines(){
 
@@ -107,7 +108,7 @@ public class GameFieldController extends Canvas {
             for (int column = 0; column < columnsCount - 2; column++){
                 imageViews[row][column] = new ImageView();
 
-                imageViews[row][column].setImage(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
+                imageViews[row][column].setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/NNNN.png"))));
                 gridPane.add(imageViews[row][column], column + 1, row + 1);
 
                 imageViews[row][column].fitWidthProperty().bind(gridPane.widthProperty().
@@ -136,28 +137,23 @@ public class GameFieldController extends Canvas {
         final int rowsCount = gridPane.getRowCount();
 
         Random random = new Random();
-        ImageView[][] imageViews = new ImageView[rowsCount - 1][1];
 
             for (int row = 1; row < rowsCount - 1; row++){
-                imageViews[row][0] = new ImageView();
-
                 String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(getClass().getResourceAsStream(RandomColor));
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
 
                 ImageView leftBorderImages = new ImageView(image);
                 gridPane.add(leftBorderImages, 0, row);
-                fitImageViewToBorder(leftBorderImages, true);
+                fitBorderImageView(leftBorderImages, true);
             }
 
             for (int row = 1; row < rowsCount - 1; row++){
-                imageViews[row][0] = new ImageView();
-
                 String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(getClass().getResourceAsStream(RandomColor));
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
 
                 ImageView rightBorderImages = new ImageView(image);
                 gridPane.add(rightBorderImages, columnsCount - 1, row);
-                fitImageViewToBorder(rightBorderImages, true);
+                fitBorderImageView(rightBorderImages, true);
             }
     }
 
@@ -170,38 +166,33 @@ public class GameFieldController extends Canvas {
         final int rowsCount = gridPane.getRowCount();
 
         Random random = new Random();
-        ImageView[][] imageViews = new ImageView[1][columnsCount - 1];
 
         for (int column = 1; column < columnsCount - 1; column++){
-            imageViews[0][column] = new ImageView();
-
             String RandomColor = borderImages[random.nextInt(borderImages.length)];
-            Image image = new Image(getClass().getResourceAsStream(RandomColor));
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
 
             ImageView topBorderImages = new ImageView(image);
             gridPane.add(topBorderImages, column, 0);
-            fitImageViewToBorder(topBorderImages, false);
+            fitBorderImageView(topBorderImages, false);
         }
 
         for (int column = 1; column < columnsCount - 1; column++){
-            imageViews[0][column] = new ImageView();
-
             String RandomColor = borderImages[random.nextInt(borderImages.length)];
-            Image image = new Image(getClass().getResourceAsStream(RandomColor));
+            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
 
             ImageView bottomBorderImage = new ImageView(image);
             gridPane.add(bottomBorderImage, column, rowsCount - 1);
-            fitImageViewToBorder(bottomBorderImage, false);
+            fitBorderImageView(bottomBorderImage, false);
         }
     }
 
     /**
      * Hilfsmethode um die Bilder automatisch an der Breite und Höhe des GridPanes anzupassen.
      * Die Hilfsmethode soll redundanten Code in den Methoden reduzieren.
-     *
+     * <p>
      * Die if-Bedingung gilt für die Grenzen links und rechts vom Spielfeld.
      * die else-Bedingung gilt für die Grenzen oben und unten vom Spielfeld.
-     *
+     * <p>
      * Wird in initImagesColumnBorder und initImagesRowBorder verwendet.
      *
      * @param imageView das ImageView, dessen Größe angepasst werden soll
@@ -209,7 +200,7 @@ public class GameFieldController extends Canvas {
      *                       Wenn true, dann handelt es sich um die Grenzen links und rechts vom Spielfeld.
      *                       Wenn false, dann handelt es sich um die Grenzen oben und unten vom Spielfeld.
      */
-    private void fitImageViewToBorder(ImageView imageView, boolean isColumnBorder) {
+    private void fitBorderImageView(ImageView imageView, boolean isColumnBorder) {
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -225,5 +216,82 @@ public class GameFieldController extends Canvas {
                     divide(rowsCount * 3.25));
 
         }
+    }
+
+    /**
+     * Methode zum droppen der Mosaikteile.
+     */
+    public void dropTiles(){
+            gridPane.setOnDragOver(dragEvent -> {
+                if (dragEvent.getDragboard().hasImage()) {
+                    dragEvent.acceptTransferModes(TransferMode.MOVE);
+                }
+                dragEvent.consume();
+            });
+
+            gridPane.setOnDragDropped(dragEvent -> {
+                Dragboard db = dragEvent.getDragboard();
+                if (db.hasImage()) {
+                    Image dropedImage = db.getImage();
+
+                    ImageView imageView = new ImageView(dropedImage);
+
+                    double cellWidth = 0;
+                    for (int i = 1; i < gridPane.getColumnCount() - 1; i++) {
+                        cellWidth += gridPane.getColumnConstraints().get(i).getPercentWidth();
+                    }
+
+                    double cellHeight = 0;
+                    for (int i = 1; i < gridPane.getRowCount() - 1; i++) {
+                        cellHeight += gridPane.getRowConstraints().get(i).getPercentHeight();
+                    }
+
+                    Label droppedLabel = new Label();
+                    droppedLabel.setGraphic(imageView);
+
+                    double x = dragEvent.getX();
+                    double y = dragEvent.getY();
+
+                    int column = (int) (x / cellWidth);
+                    int row = (int) (y /cellHeight);
+
+                    if (column > 0 && column < gridPane.getColumnCount() - 1 &&
+                            row > 0 && row < gridPane.getRowCount() - 1) {
+
+                        gridPane.add(droppedLabel, column, row);
+                        fitFieldImageView(imageView);
+                    }
+                }
+                dragEvent.setDropCompleted(true);
+                dragEvent.consume();
+            });
+    }
+
+    /**
+     * Anpassen der Mosaikteile an dem Spielfeld.
+     * Die Mosaikteile sollen sich mit der Vergrößerung/Verkleinerung des Spielfeldes
+     * sich anpassen.
+     * @param imageView das Bild vom Mosaikteil
+     */
+    private void fitFieldImageView(ImageView imageView) {
+        double middleColsPercent = 0;
+        for (int i = 1; i < gridPane.getColumnCount() - 1; i++) {
+            middleColsPercent += gridPane.getColumnConstraints().get(i).getPercentWidth();
+        }
+
+        double middleRowsPercent = 0;
+        for (int i = 1; i < gridPane.getRowCount() - 1; i++) {
+            middleRowsPercent += gridPane.getRowConstraints().get(i).getPercentHeight();
+        }
+
+        int middleColsCount = gridPane.getColumnCount() - 2;
+        int middleRowsCount = gridPane.getRowCount() - 2;
+
+        imageView.fitWidthProperty().bind(
+                gridPane.widthProperty().multiply(middleColsPercent / 100).divide(middleColsCount)
+        );
+        imageView.fitHeightProperty().bind(
+                gridPane.heightProperty().multiply(middleRowsPercent / 100).divide(middleRowsCount)
+        );
     }
 }

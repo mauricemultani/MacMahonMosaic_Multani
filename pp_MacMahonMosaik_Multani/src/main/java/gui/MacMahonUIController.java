@@ -104,7 +104,7 @@ public class MacMahonUIController implements Solvability {
         gridRightController.initImages();
         gridBottomController.initImages();
 
-        gridBottomController.dragTiles();
+        gameFieldController.dropTiles();
     }
 
     /**

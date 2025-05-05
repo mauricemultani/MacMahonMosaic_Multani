@@ -41,48 +41,28 @@ public class GridBottomController extends Controller {
     public void initImages() {
         final int columnCount = gridPane.getColumnCount();
 
-        ImageView[] imageViews = new ImageView[columnCount];
+        for (int bottom = 0; bottom < images().length; bottom++) {
+            Image img = new Image(getClass().getResourceAsStream(images()[bottom]));
 
-        for (int i = 0; i < images().length; i++) {
-            imageViews[i] = new ImageView();
+            ImageView imageView = new ImageView(img);
 
-            String imagePath = images()[i];
-
-            Image img = new Image(getClass().getResourceAsStream(imagePath));
-            imageViews[i].setImage(img);
-
-            gridPane.add(imageViews[i], i, 0);
-
-            imageViews[i].fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
-            imageViews[i].fitHeightProperty().bind(gridPane.heightProperty());
-        }
-    }
-
-    @Override
-    /**
-     * Ziehen der Mosaikteile.
-     */
-    public void dragTiles(){
-        for (String path : images()) {
-
-            Image image = new Image(path);
-            ImageView imageView = new ImageView(image);
-            // Anpassung der Größe fehlt noch
+            imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
+            imageView.fitHeightProperty().bind(gridPane.heightProperty());
+            imageView.setPreserveRatio(true);
 
             Label tile = new Label();
             tile.setGraphic(imageView);
 
+            // Drag starten
             tile.setOnDragDetected(mouseEvent -> {
                 Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
                 ClipboardContent content = new ClipboardContent();
-                content.putImage(image);
+                content.putImage(img);
                 db.setContent(content);
                 mouseEvent.consume();
             });
 
-            gridPane.add(tile, 0, 0);
-
-
+            gridPane.add(tile, bottom, 0);
         }
     }
 }
