@@ -3,6 +3,7 @@ package gui;
 import gui.gridControllers.GridBottomController;
 import gui.gridControllers.GridLeftController;
 import gui.gridControllers.GridRightController;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
@@ -43,7 +44,7 @@ public class MacMahonUIController implements Solvability {
     @FXML
     private MenuItem menuFileSave;
     @FXML
-    private MenuItem menuFileSaveAs;
+    private MenuItem menuFileLoad;
     @FXML
     private MenuItem menuFileClose;
 
@@ -51,18 +52,16 @@ public class MacMahonUIController implements Solvability {
     @FXML
     private MenuItem menuEditorActivate;
     @FXML
-    private MenuItem menuEditorDeactivate;
-    @FXML
     private MenuItem menuEditorChangeSize;
 
     // MenuItems, welche das Spiel einreichen, neu starten
     // und dem Spieler ein Hinweis geben
     @FXML
-    private MenuItem menuGameSubmit;
+    private MenuItem menuGameSolution;
     @FXML
     private MenuItem menuGameRestart;
     @FXML
-    private MenuItem menuGameHint;
+    private MenuItem menuGameHelp;
 
     private GameFieldController gameFieldController;
 
@@ -188,6 +187,11 @@ public class MacMahonUIController implements Solvability {
      */
     @FXML
     private void handleGameHint(){
+
+    }
+
+    @FXML
+    private void handleRotateButton(ActionEvent actionEvent) {
 
     }
 

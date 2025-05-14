@@ -1,12 +1,11 @@
 package gui.gridControllers;
 
+import gui.TileActions;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.Rotation;
 
 /**
  * Steuerung des GridPanes in "<BorderPane> <left>".
@@ -21,7 +20,7 @@ public class GridLeftController extends Controller {
      *
      * @param gridPane das GridPane, was mit dem GridLeftController initialisiert wird.
      */
-    public GridLeftController(GridPane gridPane){
+    public GridLeftController(GridPane gridPane) {
         super(gridPane);
     }
 
@@ -46,22 +45,16 @@ public class GridLeftController extends Controller {
             Image img = new Image(getClass().getResourceAsStream(images()[row]));
 
             ImageView imageView = new ImageView(img);
-
             imageView.fitWidthProperty().bind(gridPane.widthProperty());
             imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowsCount));
             imageView.setPreserveRatio(true);
 
             Label tile = new Label();
             tile.setGraphic(imageView);
+            tile.setUserData(Rotation.DEGREE_0);
 
             // Drag starten
-            tile.setOnDragDetected(mouseEvent -> {
-                Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putImage(img);
-                db.setContent(content);
-                mouseEvent.consume();
-            });
+            TileActions.dragTiles(gridPane, tile, imageView);
 
             gridPane.add(tile, 0, row);
         }

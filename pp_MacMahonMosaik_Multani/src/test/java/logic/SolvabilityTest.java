@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class SolvabilityTest implements Solvability{
 
     @Test
-    public void solveGame_emptyField() {
+    void solveGame_emptyField() {
         GameField gameField = new GameField();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -74,7 +74,7 @@ public class SolvabilityTest implements Solvability{
     }
 
     @Test
-    public void solveGame_exampleFieldNearlySolved(){
+    void solveGame_exampleFieldNearlySolved(){
         GameField gameField = new GameField();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));

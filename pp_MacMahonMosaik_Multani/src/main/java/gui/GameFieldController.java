@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.Rotation;
 
 import java.awt.*;
 import java.util.Objects;
@@ -186,6 +187,77 @@ public class GameFieldController extends Canvas {
         }
     }
 
+
+
+    /**
+     * Methode zum droppen der Mosaikteile.
+     */
+    public void dropTiles(){
+            gridPane.setOnDragOver(dragEvent -> {
+                if (dragEvent.getDragboard().hasImage()) {
+                    dragEvent.acceptTransferModes(TransferMode.MOVE);
+                }
+                dragEvent.consume();
+            });
+
+            gridPane.setOnDragDropped(dragEvent -> {
+                Dragboard db = dragEvent.getDragboard();
+                if (db.hasImage()) {
+                    double totalWidth = gridPane.getWidth();
+                    double totalHeight = gridPane.getHeight();
+
+                    int middleCols = gridPane.getColumnCount() - 2;
+                    int middleRows = gridPane.getRowCount() - 2;
+
+                    double cellWidth = totalWidth / (middleCols + 0.5 * 2);
+                    double cellHeight = totalHeight / (middleRows + 0.5 * 2);
+
+                    double x = dragEvent.getX();
+                    double y = dragEvent.getY();
+
+                    int column = (int) ((x - cellWidth * 0.5) / cellWidth);
+                    int row = (int) ((y - cellHeight * 0.5) / cellHeight);
+
+                    if (column >= 0 && column < middleCols &&
+                            row >= 0 && row < middleRows) {
+
+                        ImageView imageView = new ImageView(db.getImage());
+                        fitFieldImageView(imageView);
+
+                        Label droppedLabel = new Label();
+                        droppedLabel.setGraphic(imageView);
+                        droppedLabel.setUserData(Rotation.DEGREE_0);
+
+                        gridPane.add(droppedLabel, column + 1, row + 1);
+
+                        TileActions.dragTiles(gridPane, droppedLabel, imageView);
+                    }
+                }
+                dragEvent.setDropCompleted(true);
+                dragEvent.consume();
+            });
+    }
+
+    /**
+     * Anpassen der Mosaikteile an dem Spielfeld.
+     * Die Mosaikteile sollen sich mit der Vergrößerung/Verkleinerung des Spielfeldes
+     * sich anpassen.
+     * @param imageView das Bild vom Mosaikteil
+     */
+    private void fitFieldImageView(ImageView imageView) {
+        int columnscount = gridPane.getColumnCount();
+        int rowsCount = gridPane.getRowCount();
+
+        imageView.fitWidthProperty().bind(
+                gridPane.widthProperty().divide(columnscount - 1).
+                        subtract(gridPane.getHgap())
+        );
+        imageView.fitHeightProperty().bind(
+                gridPane.heightProperty().divide(rowsCount - 1).
+                        subtract(gridPane.getVgap())
+        );
+    }
+
     /**
      * Hilfsmethode um die Bilder automatisch an der Breite und Höhe des GridPanes anzupassen.
      * Die Hilfsmethode soll redundanten Code in den Methoden reduzieren.
@@ -214,84 +286,6 @@ public class GameFieldController extends Canvas {
                     divide(columnsCount - 1));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     divide(rowsCount * 3.25));
-
         }
-    }
-
-    /**
-     * Methode zum droppen der Mosaikteile.
-     */
-    public void dropTiles(){
-            gridPane.setOnDragOver(dragEvent -> {
-                if (dragEvent.getDragboard().hasImage()) {
-                    dragEvent.acceptTransferModes(TransferMode.MOVE);
-                }
-                dragEvent.consume();
-            });
-
-            gridPane.setOnDragDropped(dragEvent -> {
-                Dragboard db = dragEvent.getDragboard();
-                if (db.hasImage()) {
-                    Image dropedImage = db.getImage();
-
-                    ImageView imageView = new ImageView(dropedImage);
-
-                    double cellWidth = 0;
-                    for (int i = 1; i < gridPane.getColumnCount() - 1; i++) {
-                        cellWidth += gridPane.getColumnConstraints().get(i).getPercentWidth();
-                    }
-
-                    double cellHeight = 0;
-                    for (int i = 1; i < gridPane.getRowCount() - 1; i++) {
-                        cellHeight += gridPane.getRowConstraints().get(i).getPercentHeight();
-                    }
-
-                    Label droppedLabel = new Label();
-                    droppedLabel.setGraphic(imageView);
-
-                    double x = dragEvent.getX();
-                    double y = dragEvent.getY();
-
-                    int column = (int) (x / cellWidth);
-                    int row = (int) (y /cellHeight);
-
-                    if (column > 0 && column < gridPane.getColumnCount() - 1 &&
-                            row > 0 && row < gridPane.getRowCount() - 1) {
-
-                        gridPane.add(droppedLabel, column, row);
-                        fitFieldImageView(imageView);
-                    }
-                }
-                dragEvent.setDropCompleted(true);
-                dragEvent.consume();
-            });
-    }
-
-    /**
-     * Anpassen der Mosaikteile an dem Spielfeld.
-     * Die Mosaikteile sollen sich mit der Vergrößerung/Verkleinerung des Spielfeldes
-     * sich anpassen.
-     * @param imageView das Bild vom Mosaikteil
-     */
-    private void fitFieldImageView(ImageView imageView) {
-        double middleColsPercent = 0;
-        for (int i = 1; i < gridPane.getColumnCount() - 1; i++) {
-            middleColsPercent += gridPane.getColumnConstraints().get(i).getPercentWidth();
-        }
-
-        double middleRowsPercent = 0;
-        for (int i = 1; i < gridPane.getRowCount() - 1; i++) {
-            middleRowsPercent += gridPane.getRowConstraints().get(i).getPercentHeight();
-        }
-
-        int middleColsCount = gridPane.getColumnCount() - 2;
-        int middleRowsCount = gridPane.getRowCount() - 2;
-
-        imageView.fitWidthProperty().bind(
-                gridPane.widthProperty().multiply(middleColsPercent / 100).divide(middleColsCount)
-        );
-        imageView.fitHeightProperty().bind(
-                gridPane.heightProperty().multiply(middleRowsPercent / 100).divide(middleRowsCount)
-        );
     }
 }

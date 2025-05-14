@@ -7,7 +7,7 @@ package logic;
  */
 public class GameField {
 
-    private final static String[][] START_BOARD = {
+    private final static String[][] field = {
             {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"}, // x = 0
             {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"}, // x = 1
             {"NRNN", "NNNN", "NNNN", "NNNN", "NNNR"},

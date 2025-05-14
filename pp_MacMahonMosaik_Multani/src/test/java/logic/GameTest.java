@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GameTest implements Solvability{
 
     @Test
-    public void doesTileFitAtAnywhere_allNeighboursPlaced() {
+    void doesTileFitAtAnywhere_allNeighboursPlaced() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -42,7 +42,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAtAnywhere_placedOnEdge_allNeighboursPlaced() {
+    void doesTileFitAtAnywhere_placedOnEdge_allNeighboursPlaced() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -71,7 +71,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAtAnywhere_placedOnCorner_noTilesYetPlaced() {
+    void doesTileFitAtAnywhere_placedOnCorner_noTilesYetPlaced() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -81,7 +81,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAnywhere_borderingOnHole() {
+    void doesTileFitAnywhere_borderingOnHole() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -93,7 +93,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAt_allNeighboursPlaced() {
+    void doesTileFitAt_allNeighboursPlaced() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -114,7 +114,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAt_placedOnEdge_allNeighboursPlaced() {
+    void doesTileFitAt_placedOnEdge_allNeighboursPlaced() {
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -132,7 +132,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAt_placedOnCorner_noTilesYetPlaced(){
+    void doesTileFitAt_placedOnCorner_noTilesYetPlaced(){
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
@@ -148,7 +148,7 @@ public class GameTest implements Solvability{
     }
 
     @Test
-    public void doesTileFitAt_borderingOnHole(){
+    void doesTileFitAt_borderingOnHole(){
         GameField gameField = new GameField();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 

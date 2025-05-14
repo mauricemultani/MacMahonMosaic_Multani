@@ -1,12 +1,11 @@
 package gui.gridControllers;
 
+import gui.TileActions;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.Rotation;
 
 /**
  * Steuerung des GridPanes in "<BorderPane> <bottom>".
@@ -52,15 +51,10 @@ public class GridBottomController extends Controller {
 
             Label tile = new Label();
             tile.setGraphic(imageView);
+            tile.setUserData(Rotation.DEGREE_0);
 
             // Drag starten
-            tile.setOnDragDetected(mouseEvent -> {
-                Dragboard db = tile.startDragAndDrop(TransferMode.MOVE);
-                ClipboardContent content = new ClipboardContent();
-                content.putImage(img);
-                db.setContent(content);
-                mouseEvent.consume();
-            });
+            TileActions.dragTiles(gridPane, tile, imageView);
 
             gridPane.add(tile, bottom, 0);
         }

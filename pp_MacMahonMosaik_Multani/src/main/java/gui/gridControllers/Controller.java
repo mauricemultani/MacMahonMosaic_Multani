@@ -35,6 +35,7 @@ public abstract class Controller {
 
     /**
      *  Initialisierung der Bilder auf das GridPane.
+     *  Hier wird auch das ziehen bzw. draggen der Bilder implementiert.
      *  Wird in den Unterklassen implementiert.
      */
     public abstract void initImages();

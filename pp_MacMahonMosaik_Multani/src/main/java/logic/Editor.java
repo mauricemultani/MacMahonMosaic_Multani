@@ -2,8 +2,6 @@ package logic;
 
 import javafx.scene.layout.GridPane;
 
-import java.util.Scanner;
-
 /**
  * Der Editormodus. Der Spieler hat mit dem Editormodus die Möglichkeit sein eigenes Spiel zu erstellen.
  * Implementiert das Interface "Solve", welches Methoden zur Überprüfung der Lösbarkeit des Puzzles bereitstellt.
@@ -32,14 +30,12 @@ public class Editor implements Solvability {
      */
     public void switchToEditorMode(){
         gridPane.getChildren().clear();
-
     }
 
     /**
      * Methode zur Anpassung der Farben der Ränder (pro Teil)
      */
     public void adjustColorsOfBorder(){
-
     }
 
     /**
@@ -48,8 +44,6 @@ public class Editor implements Solvability {
      * Muss rechteckig, aber nicht quadratisch sein.
      */
     public void changeSizeOfGameField(){
-        Scanner sc = new Scanner(System.in);
-        
     }
 
     /**

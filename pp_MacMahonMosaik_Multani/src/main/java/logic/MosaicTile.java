@@ -37,14 +37,4 @@ public enum MosaicTile {
     YRYR,
     YYGG,
     YYYY;
-
-    /**
-     * rotiert die Mosaikzelle um 90° im Uhrzeigersinn.
-     */
-    public void rotateTile(){
-
-    }
-
-
-
 }

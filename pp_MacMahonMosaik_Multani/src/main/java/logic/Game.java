@@ -57,7 +57,12 @@ public class Game implements Solvability {
      * Klont das Spielfeld. Wird für den Wechsel in den Editor-Modus benötigt.
      */
     public void cloneGameField() {
-
+        String[][] copy = new String[ongoingGame.length][ongoingGame[0].length];
+        for (int row = 0; row < ongoingGame.length; row++){
+            for (int column = 0; column < ongoingGame[0].length; column++){
+                copy[row][column] = ongoingGame[row][column];
+            }
+        }
     }
 
     /**
