@@ -245,11 +245,11 @@ public class GameFieldController extends Canvas {
      * @param imageView das Bild vom Mosaikteil
      */
     private void fitFieldImageView(ImageView imageView) {
-        int columnscount = gridPane.getColumnCount();
+        int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
         imageView.fitWidthProperty().bind(
-                gridPane.widthProperty().divide(columnscount - 1).
+                gridPane.widthProperty().divide(columnCount - 1).
                         subtract(gridPane.getHgap())
         );
         imageView.fitHeightProperty().bind(

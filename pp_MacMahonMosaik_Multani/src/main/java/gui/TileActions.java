@@ -40,6 +40,7 @@ public class TileActions {
             }
         });
 
+        rotateTile(label, imageView);
     }
 
     /**
@@ -48,11 +49,13 @@ public class TileActions {
      * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
      */
     public static void rotateTile(Label label, ImageView imageView){
-
-
-        imageView.setOnMouseClicked(mouseEvent -> {
+        label.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 Rotation current = (Rotation) label.getUserData();
+
+                if (current == null){
+                    current = Rotation.DEGREE_0;
+                }
                 Rotation next = current.next();
 
                 imageView.setRotate(getDegrees(next));
