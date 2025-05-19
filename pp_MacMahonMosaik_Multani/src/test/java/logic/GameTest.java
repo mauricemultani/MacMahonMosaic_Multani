@@ -116,11 +116,11 @@ public class GameTest implements Solvability{
     @Test
     void doesTileFitAt_placedOnEdge_allNeighboursPlaced() {
         GameField gameField = new GameField();
-        MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
+        MosaicTile testingTile = MosaicTile.RGYG;
 
-        MosaicTile bottomTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY.png")));
-        MosaicTile leftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
-        MosaicTile rightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR.png")));
+        MosaicTile bottomTile = MosaicTile.YYYY;
+        MosaicTile leftTile   = MosaicTile.GGGG;
+        MosaicTile rightTile  = MosaicTile.RRRR;
 
         gameField.placeTileAt(bottomTile, 1, 2);
         gameField.placeTileAt(leftTile, 0, 1);

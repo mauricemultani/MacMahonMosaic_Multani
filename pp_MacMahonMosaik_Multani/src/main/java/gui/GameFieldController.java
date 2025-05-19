@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.MosaicTile;
 import logic.Rotation;
 
 import java.awt.*;
@@ -23,6 +24,8 @@ public class GameFieldController extends Canvas {
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
     private final GridPane gridPane;
+
+    private final TileActions tileActions = new TileActions();
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -42,13 +45,17 @@ public class GameFieldController extends Canvas {
             "/gui/tiles/RRRR_ohne_Linien.png",
     };
 
+    public void displayTile(MosaicTile tile){
+        String imagePath = tileActions.getImagePathTile(tile);
+    }
+
     /**
      * Anpassen der Größe des Spielfeldes mit der Anpassung,
      * dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
      */
     public void adjustRowsAndColumnsGameField(){
-        int cols = gridPane.getColumnCount();
-        int rows = gridPane.getRowCount();
+        final int cols = gridPane.getColumnCount();
+        final int rows = gridPane.getRowCount();
         double middleRowHeightPercentage = 100 / (rows - 1d);
         double borderRowHeightPercentage = middleRowHeightPercentage / 4;
 
@@ -193,49 +200,47 @@ public class GameFieldController extends Canvas {
      * Methode zum droppen der Mosaikteile.
      */
     public void dropTiles(){
-            gridPane.setOnDragOver(dragEvent -> {
-                if (dragEvent.getDragboard().hasImage()) {
-                    dragEvent.acceptTransferModes(TransferMode.MOVE);
+        gridPane.setOnDragOver(dragEvent -> {
+            if (dragEvent.getDragboard().hasImage()) {
+                dragEvent.acceptTransferModes(TransferMode.MOVE);
+            }
+            dragEvent.consume();
+        });
+
+        gridPane.setOnDragDropped(dragEvent -> {
+            Dragboard db = dragEvent.getDragboard();
+            if (db.hasImage()) {
+                double totalWidth = gridPane.getWidth();
+                double totalHeight = gridPane.getHeight();
+
+                int middleCols = gridPane.getColumnCount() - 2;
+                int middleRows = gridPane.getRowCount() - 2;
+
+                double cellWidth = totalWidth / (middleCols + 0.5 * 2);
+                double cellHeight = totalHeight / (middleRows + 0.5 * 2);
+
+                double x = dragEvent.getX();
+                double y = dragEvent.getY();
+
+                int column = (int) ((x - cellWidth * 0.5) / cellWidth);
+                int row = (int) ((y - cellHeight * 0.5) / cellHeight);
+
+                if (column >= 0 && column < middleCols &&
+                        row >= 0 && row < middleRows) {
+                    ImageView imageView = new ImageView(db.getImage());
+                    fitFieldImageView(imageView);
+
+                    Label droppedLabel = new Label();
+                    droppedLabel.setGraphic(imageView);
+                    droppedLabel.setUserData(Rotation.DEGREE_0);
+
+                    gridPane.add(droppedLabel, column + 1, row + 1);
+                    TileActions.dragTiles(gridPane, droppedLabel, imageView);
                 }
-                dragEvent.consume();
-            });
-
-            gridPane.setOnDragDropped(dragEvent -> {
-                Dragboard db = dragEvent.getDragboard();
-                if (db.hasImage()) {
-                    double totalWidth = gridPane.getWidth();
-                    double totalHeight = gridPane.getHeight();
-
-                    int middleCols = gridPane.getColumnCount() - 2;
-                    int middleRows = gridPane.getRowCount() - 2;
-
-                    double cellWidth = totalWidth / (middleCols + 0.5 * 2);
-                    double cellHeight = totalHeight / (middleRows + 0.5 * 2);
-
-                    double x = dragEvent.getX();
-                    double y = dragEvent.getY();
-
-                    int column = (int) ((x - cellWidth * 0.5) / cellWidth);
-                    int row = (int) ((y - cellHeight * 0.5) / cellHeight);
-
-                    if (column >= 0 && column < middleCols &&
-                            row >= 0 && row < middleRows) {
-
-                        ImageView imageView = new ImageView(db.getImage());
-                        fitFieldImageView(imageView);
-
-                        Label droppedLabel = new Label();
-                        droppedLabel.setGraphic(imageView);
-                        droppedLabel.setUserData(Rotation.DEGREE_0);
-
-                        gridPane.add(droppedLabel, column + 1, row + 1);
-
-                        TileActions.dragTiles(gridPane, droppedLabel, imageView);
-                    }
-                }
-                dragEvent.setDropCompleted(true);
-                dragEvent.consume();
-            });
+            }
+            dragEvent.setDropCompleted(true);
+            dragEvent.consume();
+        });
     }
 
     /**

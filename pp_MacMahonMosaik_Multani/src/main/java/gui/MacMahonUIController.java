@@ -1,8 +1,5 @@
 package gui;
 
-import gui.gridControllers.GridBottomController;
-import gui.gridControllers.GridLeftController;
-import gui.gridControllers.GridRightController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -31,12 +28,7 @@ public class MacMahonUIController implements Solvability {
     @FXML
     private Pane gameFieldPane;
 
-    // GridPane für die Anzeige der Bilder auf der linken, rechten und unteren Seite.
-    // Die Seite ist zu erkennen anhand der Benennung
-    @FXML
-    private GridPane gridLeft;
-    @FXML
-    private GridPane gridRight;
+    // GridPane für die Anzeige der Bilder auf der unteren Seite.
     @FXML
     private GridPane gridBottom;
 
@@ -73,8 +65,6 @@ public class MacMahonUIController implements Solvability {
 
         // Initialisierung der Controller für Spielfeld und GridPanes
         gameFieldController = new GameFieldController(gameField);
-        GridLeftController gridLeftController = new GridLeftController(gridLeft);
-        GridRightController gridRightController = new GridRightController(gridRight);
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
 
         // Erstellung eines neuen Spiels
@@ -99,11 +89,10 @@ public class MacMahonUIController implements Solvability {
         // Initialisierung der Bilder in den GridPanes
         // gameFieldController.initImagesGameField();
         gameFieldController.initImagesBorderGameField();
-        gridLeftController.initImages();
-        gridRightController.initImages();
         gridBottomController.initImages();
 
         gameFieldController.dropTiles();
+
     }
 
     /**

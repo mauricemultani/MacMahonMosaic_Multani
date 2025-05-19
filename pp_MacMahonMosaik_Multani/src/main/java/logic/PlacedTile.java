@@ -2,7 +2,7 @@ package logic;
 
 public class PlacedTile {
 
-    private MosaicTile tile;
+    private final MosaicTile tile;
     private Rotation rotation;
 
     public PlacedTile(MosaicTile tile, Rotation rotation){

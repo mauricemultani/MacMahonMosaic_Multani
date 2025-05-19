@@ -6,4 +6,7 @@ package logic;
  * @author Maurice Singh Multani
  */
 public interface GUIConnector {
+
+    void displaySolved(boolean gameFinished);
+
 }
