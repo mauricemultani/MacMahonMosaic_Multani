@@ -15,7 +15,7 @@ public class GameTest implements Solvability{
 
     @Test
     void doesTileFitAtAnywhere_allNeighboursPlaced() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGGG.png")));
@@ -43,7 +43,7 @@ public class GameTest implements Solvability{
 
     @Test
     void doesTileFitAtAnywhere_placedOnEdge_allNeighboursPlaced() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGGG.png")));
@@ -72,7 +72,7 @@ public class GameTest implements Solvability{
 
     @Test
     void doesTileFitAtAnywhere_placedOnCorner_noTilesYetPlaced() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         boolean result = gameField.doesTileFitAnywhere(gameField, testingTile);
@@ -82,7 +82,7 @@ public class GameTest implements Solvability{
 
     @Test
     void doesTileFitAnywhere_borderingOnHole() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile HoleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
@@ -94,7 +94,7 @@ public class GameTest implements Solvability{
 
     @Test
     void doesTileFitAt_allNeighboursPlaced() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile topTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGGG.png")));
@@ -108,14 +108,14 @@ public class GameTest implements Solvability{
         gameField.placeTileAt(leftTile, 2, 3);
         gameField.placeTileAt(rightTile, 2, 1);
 
-        boolean result = gameField.doesTileFitAt(testingTile, 2, 2);
+        boolean result = gameField.isPositionValid(testingTile, 2, 2);
 
         assertFalse(result);
     }
 
     @Test
     void doesTileFitAt_placedOnEdge_allNeighboursPlaced() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = MosaicTile.RGYG;
 
         MosaicTile bottomTile = MosaicTile.YYYY;
@@ -126,14 +126,14 @@ public class GameTest implements Solvability{
         gameField.placeTileAt(leftTile, 0, 1);
         gameField.placeTileAt(rightTile, 0, 3);
 
-        boolean result = gameField.doesTileFitAt(testingTile, 0, 2);
+        boolean result = gameField.isPositionValid(testingTile, 0, 2);
 
         assertFalse(result);
     }
 
     @Test
     void doesTileFitAt_placedOnCorner_noTilesYetPlaced(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile bottomTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY.png")));
@@ -142,21 +142,21 @@ public class GameTest implements Solvability{
         gameField.placeTileAt(bottomTile, 1, 4);
         gameField.placeTileAt(leftTile, 0, 3);
 
-        boolean result = gameField.doesTileFitAt(testingTile, 0, 4);
+        boolean result = gameField.isPositionValid(testingTile, 0, 4);
 
         assertFalse(result);
     }
 
     @Test
     void doesTileFitAt_borderingOnHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
         MosaicTile testingTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
 
         MosaicTile HoleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
 
         gameField.placeTileAt(HoleTile, 0, 2);
 
-        boolean result = gameField.doesTileFitAt(testingTile, 0, 3);
+        boolean result = gameField.isPositionValid(testingTile, 0, 3);
 
         assertFalse(result);
     }

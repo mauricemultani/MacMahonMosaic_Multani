@@ -1,12 +1,34 @@
 package logic;
 
+import javafx.fxml.FXML;
+import javafx.scene.layout.GridPane;
+
 /**
- * Interface. Wird von den Klassen "Editor" und "Game" implementiert, da beide die Lösbarkeit verwenden.
- * Das Interface implementiert Methoden über die Lösbarkeit verbunden mit den Regeln.
+ * Die Klasse Solvability. Hier wird die Lösbarkeit überprüft.
  *
  * @author Maurice Singh Multani
  */
-public interface Solvability {
+public class Solvability {
+
+    private final int rows;
+    private final int columns;
+
+    private final MosaicTile tile;
+
+    private final Rotation rotation;
+
+    private final BoardCell cell;
+
+    @FXML
+    GridPane gameField;
+
+    public Solvability(int rows, int columns, MosaicTile tile, Rotation rotation, BoardCell cell) {
+        this.rows = rows;
+        this.columns = columns;
+        this.tile = tile;
+        this.rotation = rotation;
+        this.cell = cell;
+    }
 
     /**
      * Prüft, ob das Spiel lösbar ist.
@@ -18,19 +40,21 @@ public interface Solvability {
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      * Spieler wird auch über die Lösbarkeit im aktuellen Spielstand informiert.
      */
-    default boolean solveGame(GameField gameField){
-        return true;
+    public boolean solveGame(Board board, Position pos){
+        return board.isPositionValid(pos)
+                && board.fitsNeighbours(tile, rotation, pos)
+                && allTilesPlaced(board);
     }
 
     /**
      * Prüft im aktuellen Spielstand, bei freien Stellen und verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
-    default void possibleSolvation(){
+    public void possibleSolvation(){
 
     }
 
     /**
-     * Soll dem Spieler die Möglichkeit geben einen Tip für die Lösung zu bekommen.
+     * Soll dem Spieler die Möglichkeit geben, einen Tipp für die Lösung zu bekommen.
      * Prüft zunächst auf eine mögliche Lösung.
      *
      * Wenn es eine mögliche Lösung gibt, wird eine leere Zelle belegt.
@@ -38,7 +62,7 @@ public interface Solvability {
      *
      *  Unendliche Nutzung möglich. Puzzle kann auch nur mit der Hilfe gelöst werden.
      */
-    default void helpSolve() {
+    public void helpSolve() {
 
     }
 
@@ -46,7 +70,7 @@ public interface Solvability {
      * Hilfsmethode um die Lösung zu prüfen.
      * Prüft, ob die Kanten dieselben Farben haben.
      */
-    default void sameColouredEdges() {
+    public void sameColouredEdges() {
 
     }
 
@@ -54,14 +78,21 @@ public interface Solvability {
      * Hilfsmethode um die Lösung zu prüfen.
      * Prüft, ob alle Zellen belegt sind.
      */
-    default void allTilesPlaced() {
-
+    public boolean allTilesPlaced(Board board) {
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int column = 0; column < board.getColumns(); column++) {
+                if (!board.getCell(row, column).isPlaced() && !board.getCell(row, column).isHole()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
      * Prüfung zur Testung, ob das Spiel fertig ist.
      */
-    default boolean gameDone(GameField gameField){
+    public boolean gameDone(Board gameField){
         return true;
     }
 }

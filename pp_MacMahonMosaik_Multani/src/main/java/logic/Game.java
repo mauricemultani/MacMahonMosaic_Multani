@@ -10,7 +10,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author Maurice Singh Multani
  */
-public class Game implements Solvability {
+public class Game {
 
     /**
      * Das GridPane auf dass, das Spielfeld dargestellt wird.
@@ -55,6 +55,8 @@ public class Game implements Solvability {
 
     /**
      * Klont das Spielfeld. Wird für den Wechsel in den Editor-Modus benötigt.
+     *
+     * Bisher noch unklar, ob es benötigt wird oder nicht.
      */
     public void cloneGameField() {
         String[][] copy = new String[ongoingGame.length][ongoingGame[0].length];
@@ -96,4 +98,6 @@ public class Game implements Solvability {
     public void showNotMatchingEdge(){
 
     }
+
+
 }

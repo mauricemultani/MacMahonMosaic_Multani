@@ -9,7 +9,6 @@ import javafx.scene.layout.GridPane;
 import logic.MosaicTile;
 import logic.Rotation;
 
-import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
@@ -18,7 +17,7 @@ import java.util.Random;
  *
  * @author Maurice Singh Multani
  */
-public class GameFieldController extends Canvas {
+public class BoardController {
 
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
@@ -27,11 +26,13 @@ public class GameFieldController extends Canvas {
 
     private final TileActions tileActions = new TileActions();
 
+    private final Random random = new Random();
+
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      */
-    public GameFieldController(GridPane gridPane){
+    public BoardController(GridPane gridPane){
         this.gridPane = gridPane;
     }
 
@@ -40,9 +41,9 @@ public class GameFieldController extends Canvas {
      * Werden verwendet, um die Ränder vom Bild darzustellen.
      */
     String[] borderImages = {
-            "/gui/tiles/YYYY_ohne_Linien.png",
             "/gui/tiles/GGGG_ohne_Linien.png",
             "/gui/tiles/RRRR_ohne_Linien.png",
+            "/gui/tiles/YYYY_ohne_Linien.png"
     };
 
     public void displayTile(MosaicTile tile){
@@ -144,11 +145,9 @@ public class GameFieldController extends Canvas {
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
-        Random random = new Random();
-
             for (int row = 1; row < rowsCount - 1; row++){
                 String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(String.valueOf(RandomColor))));
 
                 ImageView leftBorderImages = new ImageView(image);
                 gridPane.add(leftBorderImages, 0, row);
@@ -157,7 +156,7 @@ public class GameFieldController extends Canvas {
 
             for (int row = 1; row < rowsCount - 1; row++){
                 String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
+                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(String.valueOf(RandomColor))));
 
                 ImageView rightBorderImages = new ImageView(image);
                 gridPane.add(rightBorderImages, columnsCount - 1, row);
@@ -172,8 +171,6 @@ public class GameFieldController extends Canvas {
     private void initImagesRowBorder(){
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
-
-        Random random = new Random();
 
         for (int column = 1; column < columnsCount - 1; column++){
             String RandomColor = borderImages[random.nextInt(borderImages.length)];

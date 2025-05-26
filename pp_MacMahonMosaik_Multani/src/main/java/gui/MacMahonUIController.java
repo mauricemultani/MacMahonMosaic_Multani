@@ -6,7 +6,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import logic.Game;
-import logic.Solvability;
 
 /**
  * Main class for the user interface.
@@ -16,7 +15,7 @@ import logic.Solvability;
  *
  * @author mjo, cei, Maurice Singh Multani
  */
-public class MacMahonUIController implements Solvability {
+public class MacMahonUIController {
 
     private Game game;
 
@@ -55,7 +54,7 @@ public class MacMahonUIController implements Solvability {
     @FXML
     private MenuItem menuGameHelp;
 
-    private GameFieldController gameFieldController;
+    private BoardController gameFieldController;
 
     /**
      * This is where you need to add code that should happen during
@@ -64,7 +63,7 @@ public class MacMahonUIController implements Solvability {
     public void initialize() {
 
         // Initialisierung der Controller für Spielfeld und GridPanes
-        gameFieldController = new GameFieldController(gameField);
+        gameFieldController = new BoardController(gameField);
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
 
         // Erstellung eines neuen Spiels

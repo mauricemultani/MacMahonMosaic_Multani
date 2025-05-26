@@ -10,7 +10,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     void solveGame_emptyField() {
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -75,7 +75,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     void solveGame_exampleFieldNearlySolved(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -140,7 +140,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void solveGame_oneTilePlacedFalsely(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -205,7 +205,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void solveGame_emptyField_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -270,7 +270,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void solveGame_exampleFieldNearlySolved_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -335,7 +335,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void solveGame_oneTilePlacedFalsely_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -400,7 +400,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_doneField(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -465,7 +465,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_exampleFieldNearlySolved(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -530,7 +530,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_partiallyDoneField_OneTilePlacedWrong(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -595,7 +595,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_doneField_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -660,7 +660,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_exampleFieldNearlySolved_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
@@ -725,7 +725,7 @@ public class SolvabilityTest implements Solvability{
 
     @Test
     public void finishGame_partiallyDoneField_OneTilePlacedWrong_withHole(){
-        GameField gameField = new GameField();
+        Board gameField = new Board();
 
         MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
         MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));

@@ -66,4 +66,15 @@ public enum MosaicTile {
         }
         return colors;
     }
+
+    public Color[] getColors(Rotation rotation){
+        Color[] original = this.getColors();
+        Color[] rotated = new Color[4];
+
+        for (int i = 0; i < 4; i++) {
+            rotated[i] = original[(i - rotation.getRotation() + 4) % 4];
+        }
+        return rotated;
+    }
+
 }
