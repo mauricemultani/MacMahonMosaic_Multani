@@ -1,10 +1,7 @@
 package logic;
 
-import javafx.scene.layout.GridPane;
-
 import java.awt.*;
-
-import static logic.MosaicTile.*;
+import java.util.Random;
 
 /**
  * Stellt das Spielfeld dar.
@@ -16,21 +13,18 @@ public class Board {
     private final int rows;
     private final int columns;
     private final BoardCell[][] cells;
-    private final Color[][] borderColors;
 
-    private final MosaicTile[][] board = {
-            {NNNN, GGGG, GGGG, GGGG, NNNN}, // x = 0
-            {GGGG, NNNN, NNNN, NNNN, GGGG}, // x = 1
-            {GGGG, NNNN, NNNN, NNNN, GGGG},
-            {GGGG, NNNN, NNNN, NNNN, GGGG},
-            {NNNN, RRRR, RRRR, RRRR, NNNN}
-    };
-
-    public Board(int rows, int columns, BoardCell[][] cells, Color[][] borderColors, GridPane gridPane) {
+    public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
-        this.borderColors = borderColors;
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+
+                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, false);
+            }
+        }
     }
 
     public BoardCell getCell(int row, int column) {
@@ -45,16 +39,39 @@ public class Board {
         return columns;
     }
 
+    public boolean[][] generateHoles(int rows, int columns) {
+        int totalCells = rows * columns;
+        int maxTiles = 24;
+        int numHoles = Math.max(0, totalCells - maxTiles);
+
+        boolean[][] holes = new boolean[rows][columns];
+        Random random = new Random();
+
+        if (numHoles > 0) {
+            int r = random.nextInt(rows);
+            int c = random.nextInt(columns);
+
+            if (!holes[r][c]) {
+                holes[r][c] = true;
+                numHoles--;
+            }
+        }
+        return holes;
+    }
+
     /**
      * Schaut sich die Position einer leeren Zelle an und gibt zurück, ob dort ein Mosaik-Tile reinpasst.
      * @return Ob an der Position das Mosaik-Tile passt oder nicht.
      */
     public boolean isPositionValid(Position pos){
-        if (cells[pos.getRow()][pos.getColumn()].isHole()){
+        int row = pos.getRow();
+        int column = pos.getColumn();
+
+        if (row < 0 || row >= rows || column < 0 || column >= columns) {
             return false;
         }
-        return pos.getRow() >= 0 && pos.getRow() < board.length &&
-                pos.getColumn() >= 0 && pos.getColumn() < board[0].length;
+
+        return !cells[row][column].isHole();
     }
 
     public boolean fitsNeighbours(MosaicTile tile, Rotation rotation, Position pos) {
@@ -72,7 +89,7 @@ public class Board {
             int newCol = pos.getColumn() + directions[i][1];
 
             // Überprüfung ob Nachbar
-            if (newRow < 0 || newRow >= rows || newCol < 0 || newCol >= columns) {
+            if (newRow >= 0 && newRow <  rows && newCol >= 0 && newCol < columns) {
                 BoardCell neighbourCell = cells[newRow][newCol];
 
                 if (neighbourCell.isPlaced()) {
@@ -90,11 +107,10 @@ public class Board {
 
     /**
      * Schaut sich an, ob das MosaikTile irgendwo auf dem Spielfeld passt.
-     * @param board das Spielfeld
      * @param tile das Mosaik-Tile, welches nach einer freien Position sucht.
      * @return Ob das Mosaik-Tile überhaupt im Spielfeld passt.
      */
-    public boolean doesTileFitAnywhere(Board board, MosaicTile tile){
+    public boolean doesTileFitAnywhere(MosaicTile tile){
         for (int row = 0; row < rows; row++){
             for (int col = 0; col < columns; col++){
                 Position pos = new Position(row, col);

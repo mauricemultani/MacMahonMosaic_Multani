@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane;
  *
  * @author Maurice Singh Multani
  */
-public class Editor implements Solvability {
+public class Editor {
 
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
@@ -35,7 +35,8 @@ public class Editor implements Solvability {
     /**
      * Methode zur Anpassung der Farben der Ränder (pro Teil)
      */
-    public void adjustColorsOfBorder(){
+    public void adjustColorsOfBorder() {
+
     }
 
     /**

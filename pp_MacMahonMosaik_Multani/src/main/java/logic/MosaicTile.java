@@ -76,5 +76,4 @@ public enum MosaicTile {
         }
         return rotated;
     }
-
 }

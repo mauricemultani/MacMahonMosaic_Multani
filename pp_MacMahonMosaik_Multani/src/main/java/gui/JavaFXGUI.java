@@ -12,7 +12,7 @@ import logic.GUIConnector;
 public class JavaFXGUI implements GUIConnector {
 
     @Override
-    public void displaySolved(boolean gameFinished) {
+    public void gameEnded(boolean gameFinished) {
 
     }
 }

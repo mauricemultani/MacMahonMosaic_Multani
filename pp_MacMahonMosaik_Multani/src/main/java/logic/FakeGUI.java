@@ -6,8 +6,9 @@ package logic;
  * @author Maurice Singh Multani
  */
 public class FakeGUI implements GUIConnector{
+
     @Override
-    public void displaySolved(boolean gameFinished) {
+    public void gameEnded(boolean gameFinished) {
 
     }
 }

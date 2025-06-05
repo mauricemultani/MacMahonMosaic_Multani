@@ -10,37 +10,33 @@ import javafx.scene.layout.GridPane;
  */
 public class Solvability {
 
-    private final int rows;
-    private final int columns;
-
     private final MosaicTile tile;
 
     private final Rotation rotation;
 
-    private final BoardCell cell;
+    private Board board;
+
+    private Position pos;
 
     @FXML
     GridPane gameField;
 
-    public Solvability(int rows, int columns, MosaicTile tile, Rotation rotation, BoardCell cell) {
-        this.rows = rows;
-        this.columns = columns;
+    public Solvability(MosaicTile tile, Rotation rotation) {
         this.tile = tile;
         this.rotation = rotation;
-        this.cell = cell;
     }
 
     /**
      * Prüft, ob das Spiel lösbar ist.
      *
      * Spiel ist erfolgreich lösbar wenn:
-     * 1. Zwei Teile, die sich an einer Kante berühren dieselbe Farbe haben.
+     * 1. Alle Teile, die sich an einer Kante berühren dieselbe Farbe haben.
      * 2. Alle möglich belegbaren Zellen belegt sind.
      *
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      * Spieler wird auch über die Lösbarkeit im aktuellen Spielstand informiert.
      */
-    public boolean solveGame(Board board, Position pos){
+    public boolean solveGame(){
         return board.isPositionValid(pos)
                 && board.fitsNeighbours(tile, rotation, pos)
                 && allTilesPlaced(board);
@@ -92,7 +88,14 @@ public class Solvability {
     /**
      * Prüfung zur Testung, ob das Spiel fertig ist.
      */
-    public boolean gameDone(Board gameField){
-        return true;
+    public boolean gameDone() {
+        return solveGame();
+    }
+
+    /**
+     *
+     */
+    public boolean gameNotFinished() {
+        return !solveGame();
     }
 }

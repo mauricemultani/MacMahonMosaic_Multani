@@ -50,7 +50,7 @@ public class TileActions {
             }
         });
 
-        rotateTile(label, imageView);
+        rotateTile(gridPane, label, imageView);
     }
 
     /**
@@ -68,7 +68,6 @@ public class TileActions {
 
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
-
             if (db.hasImage()) {
                 boolean dropped = false;
                 final double totalWidth = gridPane.getWidth();
@@ -111,10 +110,12 @@ public class TileActions {
 
     /**
      * Ermöglicht, das Rotieren des Bildes.
+     *
+     * @param gridPane      Das GridPane, in dass das Mosaikteil platziert werden darf.
      * @param label         Das Label, das rotiert werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(Label label, ImageView imageView){
+    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView){
         label.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 Rotation current = (Rotation) label.getUserData();
@@ -124,7 +125,9 @@ public class TileActions {
                 }
                 Rotation next = current.next();
 
+
                 imageView.setRotate(getDegrees(next));
+                fitFieldImageView(gridPane, imageView, next);
                 label.setUserData(next);
             }
         });
@@ -154,5 +157,39 @@ public class TileActions {
             case DEGREE_270 -> 270;
             default -> 0; // Standardwert für DEGREE_0
         };
+    }
+
+    /**
+     * Anpassen der Mosaikteile an dem Spielfeld.
+     * Die Mosaikteile sollen sich mit der Vergrößerung/Verkleinerung des Spielfeldes
+     * sich anpassen.
+     *
+     * @param gridPane  das GridPane, in dass das Mosaikteil platziert werden darf.
+     * @param imageView das Bild vom Mosaikteil
+     */
+    private static void fitFieldImageView(GridPane gridPane, ImageView imageView, Rotation rotation) {
+        int columnCount = gridPane.getColumnCount();
+        int rowsCount = gridPane.getRowCount();
+
+        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
+            imageView.fitWidthProperty().bind(
+                    gridPane.widthProperty().divide(columnCount - 1).
+                            subtract(gridPane.getHgap())
+            );
+            imageView.fitHeightProperty().bind(
+                    gridPane.heightProperty().divide(rowsCount - 1).
+                            subtract(gridPane.getVgap())
+            );
+        } else {
+            imageView.fitWidthProperty().bind(
+                    gridPane.heightProperty().divide(rowsCount - 1).
+                            subtract(gridPane.getVgap())
+            );
+            imageView.fitHeightProperty().bind(
+                    gridPane.widthProperty().divide(columnCount - 1).
+                            subtract(gridPane.getHgap())
+            );
+        }
+
     }
 }

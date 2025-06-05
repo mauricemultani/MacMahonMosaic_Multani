@@ -1,12 +1,18 @@
 package logic;
 
 /**
- * Ein Interface, welches von der Logik genutzt wird, um etwas auf der Oberfläche darstellen zu können.
+ * Die Verbindung von Logik zur GUI.
  *
  * @author Maurice Singh Multani
  */
 public interface GUIConnector {
 
-    void displaySolved(boolean gameFinished);
+    /**
+     * Wird angezeigt, wenn das Spiel korrekt beendet ist.
+     * @param gameFinished boolescher Wert um zu bestimmen, ob das Spiel zu Ende ist.
+     */
+    void gameEnded(boolean gameFinished);
+
+
 
 }

@@ -213,17 +213,26 @@ public class BoardController {
                 int middleCols = gridPane.getColumnCount() - 2;
                 int middleRows = gridPane.getRowCount() - 2;
 
-                double cellWidth = totalWidth / (middleCols + 0.5 * 2);
-                double cellHeight = totalHeight / (middleRows + 0.5 * 2);
+                double cellWidth = totalWidth / (middleCols + 0.5);
+                double cellHeight = totalHeight / (middleRows + 0.5);
 
                 double x = dragEvent.getX();
                 double y = dragEvent.getY();
 
-                int column = (int) ((x - cellWidth * 0.5) / cellWidth);
-                int row = (int) ((y - cellHeight * 0.5) / cellHeight);
+                double borderWidth = cellWidth * 0.25;
+                double borderHeight = cellHeight * 0.25;
 
-                if (column >= 0 && column < middleCols &&
-                        row >= 0 && row < middleRows) {
+                int column = (int) ((x - borderWidth) / cellWidth);
+                int row = (int) ((y - borderHeight) / cellHeight);
+
+                if (x < borderWidth || x > totalWidth - borderWidth ||
+                        y < borderHeight || y > totalHeight - borderHeight){
+                    dragEvent.setDropCompleted(false);
+                    dragEvent.consume();
+                    return;
+                }
+
+                if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
                     ImageView imageView = new ImageView(db.getImage());
                     fitFieldImageView(imageView);
 
@@ -250,14 +259,11 @@ public class BoardController {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
-        imageView.fitWidthProperty().bind(
-                gridPane.widthProperty().divide(columnCount - 1).
-                        subtract(gridPane.getHgap())
-        );
-        imageView.fitHeightProperty().bind(
-                gridPane.heightProperty().divide(rowsCount - 1).
-                        subtract(gridPane.getVgap())
-        );
+        double cellWidth = (gridPane.getWidth() / (columnCount - 1)) - gridPane.getHgap();
+        double cellHeight = (gridPane.getHeight() / (rowsCount - 1)) - gridPane.getVgap();
+
+        imageView.setFitWidth(cellWidth);
+        imageView.setFitHeight(cellHeight);
     }
 
     /**
@@ -278,6 +284,7 @@ public class BoardController {
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
+        // Herausfinden, weshalb 3.25 richtig ist und die Berechnung aktualisieren
         if (isColumnBorder) {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
                     divide(columnsCount * 3.25));
