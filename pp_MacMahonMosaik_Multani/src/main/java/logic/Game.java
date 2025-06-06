@@ -32,6 +32,7 @@ public class Game {
      * Konstruktor für ein neues Spiel.
      */
     public Game(){
+        // Eigentlich dynamische Verwendung erwünscht. Wird noch geändert.
         int rows = 5;
         int columns = 5;
 
@@ -40,7 +41,7 @@ public class Game {
 
     /**
      * Konstruktor für Testzwecke. Erzeugt ein befindliches Spiel mitten im Spielgeschehen.
-     * Nimmt das Spielfeld in Form eines StringArrays entgegen.
+     * Nimmt das Spielfeld in Form eines BoardCell-Arrays entgegen.
      * @param ongoingGame das laufende Spiel
      */
     public Game(BoardCell[][] ongoingGame){

@@ -13,6 +13,14 @@ public class Board {
     private final int rows;
     private final int columns;
     private final BoardCell[][] cells;
+    private final boolean[][] isHole;
+
+    private final String[] topBorderColors;
+    private final String[] bottomBorderColors;
+    private final String[] leftBorderColors;
+    private final String[] rightBorderColors;
+
+    Random random = new Random();
 
     public Board(int rows, int columns) {
         this.rows = rows;
@@ -25,6 +33,12 @@ public class Board {
                 this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, false);
             }
         }
+        this.isHole = generateHoles(rows, columns);
+
+        this.topBorderColors = initRandomColors(rows, borderImages, random);
+        this.bottomBorderColors = initRandomColors(rows, borderImages, random);
+        this.leftBorderColors = initRandomColors(columns, borderImages, random);
+        this.rightBorderColors = initRandomColors(columns, borderImages, random);
     }
 
     public BoardCell getCell(int row, int column) {
@@ -39,6 +53,38 @@ public class Board {
         return columns;
     }
 
+    public String[] getTopBorderColors() {
+        return topBorderColors;
+    }
+
+    public String[] getBottomBorderColors() {
+        return bottomBorderColors;
+    }
+
+    public String[] getLeftBorderColors() {
+        return leftBorderColors;
+    }
+
+    public String[] getRightBorderColors() {
+        return rightBorderColors;
+    }
+
+    /**
+     * String welches die Randbilder enthält.
+     * Werden verwendet, um die Ränder vom Bild darzustellen.
+     */
+    String[] borderImages = {
+            "/gui/tiles/GGGG_ohne_Linien.png",
+            "/gui/tiles/RRRR_ohne_Linien.png",
+            "/gui/tiles/YYYY_ohne_Linien.png"
+    };
+
+    /**
+     * Generiert zufällig Löcher im Spiel, es mehr als 24 Zellen im Spielfeld gibt.
+     * @param rows      Variable für die Reihe
+     * @param columns   Variable für die Spalte
+     * @return Anzahl an Löcher gespeichert im Array
+     */
     public boolean[][] generateHoles(int rows, int columns) {
         int totalCells = rows * columns;
         int maxTiles = 24;
@@ -103,6 +149,15 @@ public class Board {
             }
         }
         return true;
+    }
+
+    private String[] initRandomColors(int count, String[] imagePath, Random random) {
+        String[] images = new String[count];
+
+        for (int i = 0; i < count; i++) {
+            images[i] = imagePath[random.nextInt(imagePath.length)];
+        }
+        return images;
     }
 
     /**

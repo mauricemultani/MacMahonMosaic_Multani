@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import logic.Board;
 import logic.Game;
 
 /**
@@ -54,6 +55,8 @@ public class MacMahonUIController {
     @FXML
     private MenuItem menuGameHelp;
 
+    private Board board;
+
     private BoardController gameFieldController;
 
     /**
@@ -61,9 +64,10 @@ public class MacMahonUIController {
      * initialization and then change the java doc comment.
      */
     public void initialize() {
+        board = new Board(5, 6);
 
         // Initialisierung der Controller für Spielfeld und GridPanes
-        gameFieldController = new BoardController(gameField);
+        gameFieldController = new BoardController(gameField, board);
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
 
         // Erstellung eines neuen Spiels

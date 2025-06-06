@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.Board;
 import logic.MosaicTile;
 import logic.Rotation;
 
@@ -24,16 +25,29 @@ public class BoardController {
      */
     private final GridPane gridPane;
 
+    /**
+     * Das Spielfeld
+     */
+    private final Board board;
+
+    /**
+     * Konstruktor zum Zugriff auf TileActions
+     */
     private final TileActions tileActions = new TileActions();
 
+    /**
+     *
+     */
     private final Random random = new Random();
+
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      */
-    public BoardController(GridPane gridPane){
+    public BoardController(GridPane gridPane, Board board){
         this.gridPane = gridPane;
+        this.board = board;
     }
 
     /**
@@ -100,14 +114,14 @@ public class BoardController {
      * Anpassung der GridLines beim Spielfeld.
      * Implementierung fehlt noch.
      */
-    private void adjustGridLines(){
+    private void adjustGridLines() {
 
     }
 
     /**
      * Initialisierung der Bilder an das GridPane
      */
-    public void initImagesGameField(){
+    public void initImagesGameField() {
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -131,9 +145,9 @@ public class BoardController {
     /**
      * Initialisierung der Bilder an den Grenzen des Spielfeldes.
      */
-    public void initImagesBorderGameField(){
-        initImagesColumnBorder();
-        initImagesRowBorder();
+    public void initImagesBorderGameField() {
+        setImagesColumnBorder();
+        setImagesRowBorder();
     }
 
     /**
@@ -141,25 +155,17 @@ public class BoardController {
      * Wird in initImagesBorderGameField verwendet.
      *
      */
-    private void initImagesColumnBorder(){
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
+    private void setImagesColumnBorder() {
+        String[] leftBorderColors = board.getLeftBorderColors();
+        String[] rightBorderColors = board.getRightBorderColors();
 
-            for (int row = 1; row < rowsCount - 1; row++){
-                String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(String.valueOf(RandomColor))));
-
-                ImageView leftBorderImages = new ImageView(image);
-                gridPane.add(leftBorderImages, 0, row);
+            for (int column = 1; column < board.getColumns(); column++){
+                ImageView leftBorderImages = new ImageView(leftBorderColors[column]);
+                gridPane.add(leftBorderImages, 0, column);
                 fitBorderImageView(leftBorderImages, true);
-            }
 
-            for (int row = 1; row < rowsCount - 1; row++){
-                String RandomColor = borderImages[random.nextInt(borderImages.length)];
-                Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(String.valueOf(RandomColor))));
-
-                ImageView rightBorderImages = new ImageView(image);
-                gridPane.add(rightBorderImages, columnsCount - 1, row);
+                ImageView rightBorderImages = new ImageView(rightBorderColors[column]);
+                gridPane.add(rightBorderImages, board.getColumns() - 1, column);
                 fitBorderImageView(rightBorderImages, true);
             }
     }
@@ -168,27 +174,19 @@ public class BoardController {
      * Initialisierung der Bilder an der oberen und unteren Grenze vom Spielfeld.
      * Wird in initImagesBorderGameField verwendet.
      */
-    private void initImagesRowBorder(){
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
+    private void setImagesRowBorder() {
+        String[] topBorderColors = board.getTopBorderColors();
+        String[] bottomBorderColors = board.getBottomBorderColors();
 
-        for (int column = 1; column < columnsCount - 1; column++){
-            String RandomColor = borderImages[random.nextInt(borderImages.length)];
-            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
+            for (int row = 1; row < board.getRows(); row++){
+                ImageView topBorderImages = new ImageView(topBorderColors[row]);
+                gridPane.add(topBorderImages, row, 0);
+                fitBorderImageView(topBorderImages, false);
 
-            ImageView topBorderImages = new ImageView(image);
-            gridPane.add(topBorderImages, column, 0);
-            fitBorderImageView(topBorderImages, false);
-        }
-
-        for (int column = 1; column < columnsCount - 1; column++){
-            String RandomColor = borderImages[random.nextInt(borderImages.length)];
-            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(RandomColor)));
-
-            ImageView bottomBorderImage = new ImageView(image);
-            gridPane.add(bottomBorderImage, column, rowsCount - 1);
-            fitBorderImageView(bottomBorderImage, false);
-        }
+                ImageView bottomBorderImages = new ImageView(bottomBorderColors[row]);
+                gridPane.add(bottomBorderImages, row, board.getRows() - 1);
+                fitBorderImageView(bottomBorderImages, false);
+            }
     }
 
 
@@ -196,7 +194,7 @@ public class BoardController {
     /**
      * Methode zum droppen der Mosaikteile.
      */
-    public void dropTiles(){
+    public void dropTiles() {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasImage()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
