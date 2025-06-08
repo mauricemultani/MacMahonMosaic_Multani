@@ -1,4 +1,4 @@
-package gui;
+package logic;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -9,8 +9,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
-import logic.MosaicTile;
-import logic.Rotation;
 
 /**
  * Klasse für die Drag&Drop Logik und die rotierungs Logik.

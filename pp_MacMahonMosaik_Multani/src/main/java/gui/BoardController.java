@@ -1,17 +1,21 @@
 package gui;
 
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import logic.Board;
 import logic.MosaicTile;
 import logic.Rotation;
+import logic.TileActions;
 
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * Steuerung des Spielfeldes.
@@ -23,12 +27,19 @@ public class BoardController {
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
+    @FXML
     private final GridPane gridPane;
 
     /**
-     * Das Spielfeld
+     * Das Spielfeld.
      */
     private final Board board;
+
+    /**
+     * Pane, die das Spielfeld enthält (Wichtig für die Größenverhältnisse).
+     */
+    @FXML
+    private Pane gameFieldPane;
 
     /**
      * Konstruktor zum Zugriff auf TileActions
@@ -36,18 +47,13 @@ public class BoardController {
     private final TileActions tileActions = new TileActions();
 
     /**
-     *
-     */
-    private final Random random = new Random();
-
-
-    /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      */
-    public BoardController(GridPane gridPane, Board board){
+    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane){
         this.gridPane = gridPane;
         this.board = board;
+        this.gameFieldPane = gameFieldPane;
     }
 
     /**
@@ -60,33 +66,88 @@ public class BoardController {
             "/gui/tiles/YYYY_ohne_Linien.png"
     };
 
+    /**
+     * Zeigt, das Mosaikteil an
+     * @param tile das Mosaikteil
+     */
     public void displayTile(MosaicTile tile){
         String imagePath = tileActions.getImagePathTile(tile);
+    }
+
+    public void initializeBoard() {
+        // Überschreiben von Zeilen und Spalten des GridPanes.
+        createBoard();
+
+        // Anpassung Zeilen und Spalten des Spielfelds
+        adjustRowsAndColumns();
+
+        // Anpassen der mittleren Zellen des Spielfeldes.
+        // Sollen quadratisch bleiben
+        adjustGameField(gameFieldPane.getWidth(), gridPane.getHeight());
+
+        // Anpassung des Spielfeldes bei Größenveränderung
+        // Spielfeld bleibt quadratisch
+        gameFieldPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(newVal.doubleValue(), gameFieldPane.getHeight());
+        });
+        gameFieldPane.heightProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(gameFieldPane.getWidth(), newVal.doubleValue());
+        });
+
+        // Initialisiert die Bilder an den Grenzen des Spielfeldes
+        initImagesBorderBoard();
+
+        // ermöglicht das droppen der Mosaikteile
+        dropTiles();
+    }
+
+    /**
+     * Erstellt ein Spielfeld.
+     */
+    private void createBoard() {
+        // Exception, falls das Board 0 Reihen oder 0 Spalten hat.
+        if (board.getRows() == 0 || board.getColumns() == 0) {
+            throw new IllegalArgumentException("Column or Row is Empty");
+        }
+
+        // löscht die vorhanden Reihen und Spalten Constraints
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+
+        // überschreibt neue Constraints mit der Anzahl an Reihen
+        for (int row = 0; row < board.getRows(); row++) {
+            RowConstraints rowConstraints = new RowConstraints();
+            gridPane.getRowConstraints().add(rowConstraints);
+        }
+
+        // überschreibt neue Constraints mit der Anzahl an Spalten
+        for (int column = 0; column < board.getColumns(); column++) {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            gridPane.getColumnConstraints().add(columnConstraints);
+        }
     }
 
     /**
      * Anpassen der Größe des Spielfeldes mit der Anpassung,
      * dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
      */
-    public void adjustRowsAndColumnsGameField(){
-        final int cols = gridPane.getColumnCount();
-        final int rows = gridPane.getRowCount();
-        double middleRowHeightPercentage = 100 / (rows - 1d);
+    private void adjustRowsAndColumns(){
+        double middleRowHeightPercentage = 100 / (board.getRows() - 1d);
         double borderRowHeightPercentage = middleRowHeightPercentage / 4;
 
-        double middleColWidthPercentage = 100 / (cols - 1d);
+        double middleColWidthPercentage = 100 / (board.getColumns() - 1d);
         double borderColWidthPercentage = middleColWidthPercentage / 4;
 
         gridPane.getRowConstraints().getFirst().setPercentHeight(borderRowHeightPercentage);
-        gridPane.getRowConstraints().getLast().setPercentHeight(borderRowHeightPercentage);
+        gridPane.getRowConstraints().get(board.getRows() - 1).setPercentHeight(borderRowHeightPercentage);
 
         gridPane.getColumnConstraints().getFirst().setPercentWidth(borderColWidthPercentage);
-        gridPane.getColumnConstraints().getLast().setPercentWidth(borderColWidthPercentage);
+        gridPane.getColumnConstraints().get(board.getColumns() - 1).setPercentWidth(borderColWidthPercentage);
 
-        for (int x = 1; x < cols - 1; x++) {
+        for (int x = 1; x < board.getColumns() - 1; x++) {
             gridPane.getColumnConstraints().get(x).setPercentWidth(middleColWidthPercentage);
         }
-        for (int y = 1; y < rows - 1; y++) {
+        for (int y = 1; y < board.getRows() - 1; y++) {
             gridPane.getRowConstraints().get(y).setPercentHeight(middleRowHeightPercentage);
         }
     }
@@ -97,9 +158,9 @@ public class BoardController {
      * @param width     Die Breite der Pane
      * @param height    Die Höhe der Pane
      */
-    public void adjustGameField(double width, double height) {
-        final int middleRows = gridPane.getRowCount() - 2;
-        final int middleColumns = gridPane.getColumnCount() - 2;
+    private void adjustGameField(double width, double height) {
+        final int middleRows = board.getRows() - 2;
+        final int middleColumns = board.getColumns() - 2;
 
         final double outerColumn = middleColumns + 0.5d;
         final double outerRows = middleRows + 0.5d;
@@ -110,18 +171,12 @@ public class BoardController {
         }
     }
 
-    /**
-     * Anpassung der GridLines beim Spielfeld.
-     * Implementierung fehlt noch.
-     */
-    private void adjustGridLines() {
 
-    }
 
     /**
      * Initialisierung der Bilder an das GridPane
      */
-    public void initImagesGameField() {
+    private void initImagesGameField() {
         final int columnsCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -145,7 +200,7 @@ public class BoardController {
     /**
      * Initialisierung der Bilder an den Grenzen des Spielfeldes.
      */
-    public void initImagesBorderGameField() {
+    private void initImagesBorderBoard() {
         setImagesColumnBorder();
         setImagesRowBorder();
     }
@@ -159,7 +214,7 @@ public class BoardController {
         String[] leftBorderColors = board.getLeftBorderColors();
         String[] rightBorderColors = board.getRightBorderColors();
 
-            for (int column = 1; column < board.getColumns(); column++){
+            for (int column = 1; column < board.getColumns() - 2; column++){
                 ImageView leftBorderImages = new ImageView(leftBorderColors[column]);
                 gridPane.add(leftBorderImages, 0, column);
                 fitBorderImageView(leftBorderImages, true);
@@ -194,7 +249,7 @@ public class BoardController {
     /**
      * Methode zum droppen der Mosaikteile.
      */
-    public void dropTiles() {
+    private void dropTiles() {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasImage()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
@@ -205,6 +260,7 @@ public class BoardController {
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             if (db.hasImage()) {
+
                 double totalWidth = gridPane.getWidth();
                 double totalHeight = gridPane.getHeight();
 
@@ -224,7 +280,7 @@ public class BoardController {
                 int row = (int) ((y - borderHeight) / cellHeight);
 
                 if (x < borderWidth || x > totalWidth - borderWidth ||
-                        y < borderHeight || y > totalHeight - borderHeight){
+                        y < borderHeight || y > totalHeight - borderHeight) {
                     dragEvent.setDropCompleted(false);
                     dragEvent.consume();
                     return;
@@ -294,5 +350,13 @@ public class BoardController {
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     divide(rowsCount * 3.25));
         }
+    }
+
+    /**
+     * Anpassung der GridLines beim Spielfeld.
+     * Implementierung fehlt noch.
+     */
+    private void adjustGridLines() {
+
     }
 }

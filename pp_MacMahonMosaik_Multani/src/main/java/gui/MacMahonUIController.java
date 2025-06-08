@@ -20,19 +20,21 @@ public class MacMahonUIController {
 
     private Game game;
 
-    // GridPane für das Spielfeld
+
+    /**
+     * das Spielfeld, die zugehörige Pane dazu
+     * und die Anzeige der benutzbaren Bilder via einer GridPane darunter.
+     */
     @FXML
     private GridPane gameField;
-
-    // Pane, die das Spielfeld enthält (Wichtig für die Größenverhältnisse).
     @FXML
     private Pane gameFieldPane;
-
-    // GridPane für die Anzeige der Bilder auf der unteren Seite.
     @FXML
     private GridPane gridBottom;
 
-    // MenuItems, welche die Datei speichern, speichern unter und schließen
+    /**
+     * MenuItems, welche die Datei speichern, speichern unter und schließen
+     */
     @FXML
     private MenuItem menuFileSave;
     @FXML
@@ -40,14 +42,19 @@ public class MacMahonUIController {
     @FXML
     private MenuItem menuFileClose;
 
-    // MenuItems, welche den Editor aktivieren, bei aktivierung die Größe des Feldes ändern lassen und deaktivieren.
+    /**
+     * MenuItems, welche den Editor aktivieren, bei Aktivierung
+     * die Größe des Feldes ändern lassen und deaktivieren.
+      */
     @FXML
     private MenuItem menuEditorActivate;
     @FXML
     private MenuItem menuEditorChangeSize;
 
-    // MenuItems, welche das Spiel einreichen, neu starten
-    // und dem Spieler ein Hinweis geben
+    /**
+     * MenuItems, welche das Spiel einreichen, neu starten
+     * und dem Spieler ein Hinweis geben
+     */
     @FXML
     private MenuItem menuGameSolution;
     @FXML
@@ -55,47 +62,33 @@ public class MacMahonUIController {
     @FXML
     private MenuItem menuGameHelp;
 
-    private Board board;
-
-    private BoardController gameFieldController;
-
     /**
      * This is where you need to add code that should happen during
      * initialization and then change the java doc comment.
      */
     public void initialize() {
-        board = new Board(5, 6);
+        // Anzahl an Reihen
+        int rows = 4;
+
+        // Anzahl an Spalten
+        int columns = 6;
+
+        // Initialisiert das Spielfeld mit Anzahl an Reihen und Spalten.
+        Board board = new Board(rows, columns);
 
         // Initialisierung der Controller für Spielfeld und GridPanes
-        gameFieldController = new BoardController(gameField, board);
+        BoardController boardController = new BoardController(gameField, board, gameFieldPane);
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
+
+        // Initialisiert das Spielfeld
+        boardController.initializeBoard();
 
         // Erstellung eines neuen Spiels
         // game = new Game();
 
-        // Anpassung Zeilen und Spalten des Spielfelds
-        gameFieldController.adjustRowsAndColumnsGameField();
-        gameFieldController.adjustGameField(gameFieldPane.getWidth(), gameField.getHeight());
-
-        // Anpassung des Spielfeldes bei Größenveränderung
-        // Spielfeld bleibt quadratisch
-        gameFieldPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            gameFieldController.adjustGameField(newVal.doubleValue(), gameFieldPane.getHeight());
-        });
-        gameFieldPane.heightProperty().addListener((obs, oldVal, newVal) -> {
-            gameFieldController.adjustGameField(gameFieldPane.getWidth(), newVal.doubleValue());
-        });
-
-
-
-
-        // Initialisierung der Bilder in den GridPanes
-        // gameFieldController.initImagesGameField();
-        gameFieldController.initImagesBorderGameField();
+        // lädt Bilder hoch.
+        // Drag-Logik ist auch drin.
         gridBottomController.initImages();
-
-        gameFieldController.dropTiles();
-
     }
 
     /**

@@ -25,15 +25,21 @@ public class Board {
     public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-        this.cells = new BoardCell[rows][columns];
 
+        this.cells = new BoardCell[rows][columns];
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
 
                 this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, false);
             }
         }
+
         this.isHole = generateHoles(rows, columns);
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, true);
+            }
+        }
 
         this.topBorderColors = initRandomColors(rows, borderImages, random);
         this.bottomBorderColors = initRandomColors(rows, borderImages, random);
@@ -79,6 +85,21 @@ public class Board {
             "/gui/tiles/YYYY_ohne_Linien.png"
     };
 
+    public void createBoard(MosaicTile[][] tiles) {
+        if (tiles == null || tiles.length == 0 || tiles[0].length == 0) {
+            throw new IllegalArgumentException("MosaicTile array is null or empty");
+        }
+
+        for (int row = 0; row < tiles.length; row++) {
+            for (int column = 0; column < tiles[row].length; column++) {
+                MosaicTile tile = tiles[row][column];
+                if (tile != null) {
+                    cells[row][column].placeTile(tile, Rotation.DEGREE_0);
+                }
+            }
+        }
+    }
+
     /**
      * Generiert zufällig Löcher im Spiel, es mehr als 24 Zellen im Spielfeld gibt.
      * @param rows      Variable für die Reihe
@@ -93,7 +114,7 @@ public class Board {
         boolean[][] holes = new boolean[rows][columns];
         Random random = new Random();
 
-        if (numHoles > 0) {
+        while (numHoles > 0) {
             int r = random.nextInt(rows);
             int c = random.nextInt(columns);
 
@@ -134,7 +155,7 @@ public class Board {
             int newRow = pos.getRow() + directions[i][0];
             int newCol = pos.getColumn() + directions[i][1];
 
-            // Überprüfung ob Nachbar
+            // Überprüfung, ob Nachbar
             if (newRow >= 0 && newRow <  rows && newCol >= 0 && newCol < columns) {
                 BoardCell neighbourCell = cells[newRow][newCol];
 
