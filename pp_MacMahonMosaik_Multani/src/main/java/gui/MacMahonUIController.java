@@ -68,7 +68,7 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 4;
+        int rows = 5;
 
         // Anzahl an Spalten
         int columns = 6;

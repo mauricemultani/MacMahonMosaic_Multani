@@ -117,12 +117,14 @@ public class BoardController {
         // überschreibt neue Constraints mit der Anzahl an Reihen
         for (int row = 0; row < board.getRows(); row++) {
             RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setMinHeight(2);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
         // überschreibt neue Constraints mit der Anzahl an Spalten
         for (int column = 0; column < board.getColumns(); column++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setMinWidth(2);
             gridPane.getColumnConstraints().add(columnConstraints);
         }
     }
@@ -214,13 +216,13 @@ public class BoardController {
         String[] leftBorderColors = board.getLeftBorderColors();
         String[] rightBorderColors = board.getRightBorderColors();
 
-            for (int column = 1; column < board.getColumns() - 2; column++){
+            for (int column = 1; column < board.getColumns(); column++){
                 ImageView leftBorderImages = new ImageView(leftBorderColors[column]);
                 gridPane.add(leftBorderImages, 0, column);
                 fitBorderImageView(leftBorderImages, true);
 
                 ImageView rightBorderImages = new ImageView(rightBorderColors[column]);
-                gridPane.add(rightBorderImages, board.getColumns() - 1, column);
+                gridPane.add(rightBorderImages, board.getColumns(), column);
                 fitBorderImageView(rightBorderImages, true);
             }
     }
@@ -239,7 +241,7 @@ public class BoardController {
                 fitBorderImageView(topBorderImages, false);
 
                 ImageView bottomBorderImages = new ImageView(bottomBorderColors[row]);
-                gridPane.add(bottomBorderImages, row, board.getRows() - 1);
+                gridPane.add(bottomBorderImages, row, board.getRows());
                 fitBorderImageView(bottomBorderImages, false);
             }
     }
@@ -335,8 +337,8 @@ public class BoardController {
      *                       Wenn false, dann handelt es sich um die Grenzen oben und unten vom Spielfeld.
      */
     private void fitBorderImageView(ImageView imageView, boolean isColumnBorder) {
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
+        final int columnsCount = board.getColumns();
+        final int rowsCount = board.getRows();
 
         // Herausfinden, weshalb 3.25 richtig ist und die Berechnung aktualisieren
         if (isColumnBorder) {
