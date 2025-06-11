@@ -209,6 +209,7 @@ public class BoardController {
                 ImageView rightBorderImages = new ImageView(rightBorderColors[column]);
                 gridPane.add(rightBorderImages, board.getColumns() - 1, column);
                 fitBorderImageView(rightBorderImages, true);
+
             }
     }
 
