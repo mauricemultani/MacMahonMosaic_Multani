@@ -1,11 +1,14 @@
 package logic;
 
-import javafx.scene.layout.GridPane;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * Repräsentiert das Spiel.
  * Verwaltet das Spielfeld, die Platzierung der Mosaikteile und den aktuellen Spielstand.
- * Implementiert das Interface "Solvability", welches Methoden zur Überprüfung der Lösbarkeit des Puzzles bereitstellt.
  * Die Klasse ist verantwortlich für die Spiellogik, Initialisieren und Verwalten des Spiels.
  *
  * @author Maurice Singh Multani
@@ -18,10 +21,9 @@ public class Game {
     private Position pos;
     private Rotation rotation;
 
-    /**
-     * Das GridPane auf dass, das Spielfeld dargestellt wird.
-     */
-    private GridPane gameField;
+    private final int rows;
+
+    private final int columns;
 
     /**
      * Ein Array zur Speicherung des aktuellen Spielstands.
@@ -31,12 +33,11 @@ public class Game {
     /**
      * Konstruktor für ein neues Spiel.
      */
-    public Game(){
-        // Eigentlich dynamische Verwendung erwünscht. Wird noch geändert.
-        int rows = 5;
-        int columns = 5;
+    public Game(int rows, int columns){
+        this.rows = rows;
+        this.columns = columns;
 
-        initializeGame(rows, columns);
+        initializeGame();
     }
 
     /**
@@ -44,13 +45,14 @@ public class Game {
      * Nimmt das Spielfeld in Form eines BoardCell-Arrays entgegen.
      * @param ongoingGame das laufende Spiel
      */
-    public Game(BoardCell[][] ongoingGame){
+    public Game(int rows, int columns, BoardCell[][] ongoingGame){
+        this.rows = rows;
+        this.columns = columns;
         this.ongoingGame = ongoingGame;
     }
 
     /**
      * Hier findet der Prozess vom Spiel statt.
-     *
      */
     public void macMahonGame(){
         board.placeTileAt(tile, rotation, pos);
@@ -63,12 +65,10 @@ public class Game {
      * Initialisiert das Spiel.
      * Löscht alle Zellen und setzt das Spielfeld zurück.
      */
-    public void initializeGame(int rows, int columns) {
+    public void initializeGame() {
         this.board = new Board(rows, columns);
 
         this.ongoingGame = new BoardCell[rows][columns];
-
-        this.gameField = new GridPane();
 
         clearBoard();
     }
@@ -99,11 +99,11 @@ public class Game {
         BoardCell[][] copy = new BoardCell[ongoingGame.length][ongoingGame[0].length];
         for (int row = 0; row < ongoingGame.length; row++){
             for (int column = 0; column < ongoingGame[0].length; column++) {
-                BoardCell orig = ongoingGame[row][column];
+                BoardCell original = ongoingGame[row][column];
                 copy[row][column] = new BoardCell(
-                        orig.getTile(),
-                        orig.getRotation(),
-                        orig.isHole()
+                        original.getTile(),
+                        original.getRotation(),
+                        original.isHole()
                 );
             }
         }
@@ -115,6 +115,18 @@ public class Game {
      * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
      */
     public void saveGame(){
+        // Gson-Objekt erstellen
+        Gson gson = new Gson();
+
+        // BoardCell Array in JSON-String umwandeln
+        String json = gson.toJson(ongoingGame);
+
+        try (FileWriter fileWriter = new FileWriter("ongoingGame.json")){
+            fileWriter.write(json);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -122,6 +134,8 @@ public class Game {
      * Lädt ein gespeichertes Spiel
      */
     public void loadGame(){
+        JsonArray jsonArray = new JsonArray();
+
 
     }
 

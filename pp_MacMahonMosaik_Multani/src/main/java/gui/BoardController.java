@@ -57,16 +57,6 @@ public class BoardController {
     }
 
     /**
-     * String welches die Randbilder enthält.
-     * Werden verwendet, um die Ränder vom Bild darzustellen.
-     */
-    String[] borderImages = {
-            "/gui/tiles/GGGG_ohne_Linien.png",
-            "/gui/tiles/RRRR_ohne_Linien.png",
-            "/gui/tiles/YYYY_ohne_Linien.png"
-    };
-
-    /**
      * Zeigt, das Mosaikteil an
      * @param tile das Mosaikteil
      */
@@ -80,10 +70,7 @@ public class BoardController {
 
         // Anpassung Zeilen und Spalten des Spielfelds
         adjustRowsAndColumns();
-
-        // Anpassen der mittleren Zellen des Spielfeldes.
-        // Sollen quadratisch bleiben
-        adjustGameField(gameFieldPane.getWidth(), gridPane.getHeight());
+        adjustGameField(board.getColumns(), board.getRows());
 
         // Anpassung des Spielfeldes bei Größenveränderung
         // Spielfeld bleibt quadratisch
@@ -117,12 +104,14 @@ public class BoardController {
         // überschreibt neue Constraints mit der Anzahl an Reihen
         for (int row = 0; row < board.getRows(); row++) {
             RowConstraints rowConstraints = new RowConstraints();
+            rowConstraints.setMinHeight(2);
             gridPane.getRowConstraints().add(rowConstraints);
         }
 
         // überschreibt neue Constraints mit der Anzahl an Spalten
         for (int column = 0; column < board.getColumns(); column++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setMinWidth(2);
             gridPane.getColumnConstraints().add(columnConstraints);
         }
     }
@@ -171,8 +160,6 @@ public class BoardController {
         }
     }
 
-
-
     /**
      * Initialisierung der Bilder an das GridPane
      */
@@ -214,7 +201,7 @@ public class BoardController {
         String[] leftBorderColors = board.getLeftBorderColors();
         String[] rightBorderColors = board.getRightBorderColors();
 
-            for (int column = 1; column < board.getColumns() - 2; column++){
+            for (int column = 1; column < board.getColumns() - 1; column++){
                 ImageView leftBorderImages = new ImageView(leftBorderColors[column]);
                 gridPane.add(leftBorderImages, 0, column);
                 fitBorderImageView(leftBorderImages, true);
@@ -233,7 +220,7 @@ public class BoardController {
         String[] topBorderColors = board.getTopBorderColors();
         String[] bottomBorderColors = board.getBottomBorderColors();
 
-            for (int row = 1; row < board.getRows(); row++){
+            for (int row = 1; row < board.getRows() - 1; row++){
                 ImageView topBorderImages = new ImageView(topBorderColors[row]);
                 gridPane.add(topBorderImages, row, 0);
                 fitBorderImageView(topBorderImages, false);
