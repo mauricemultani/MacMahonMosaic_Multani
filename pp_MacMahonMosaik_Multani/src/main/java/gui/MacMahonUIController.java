@@ -73,7 +73,7 @@ public class MacMahonUIController {
         // Anzahl an Spalten
         int columns = 6;
 
-        // Initialisiert das Spielfeld mit Anzahl an Reihen und Spalten.
+        // Konstruktor, welches die Zeilen und Spalten aufnimmt
         Board board = new Board(rows, columns);
 
         // Initialisierung der Controller für Spielfeld und GridPanes
@@ -84,7 +84,7 @@ public class MacMahonUIController {
         boardController.initializeBoard();
 
         // Erstellung eines neuen Spiels
-        // game = new Game();
+        game = new Game(rows, columns);
 
         // lädt Bilder hoch.
         // Drag-Logik ist auch drin.
@@ -98,14 +98,6 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleSave(){
-
-    }
-
-    /**
-     * Speichert das laufende Spiel unter einen Namen.
-     */
-    @FXML
-    private void handleSaveAs(){
 
     }
 

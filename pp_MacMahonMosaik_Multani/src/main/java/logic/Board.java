@@ -41,10 +41,10 @@ public class Board {
             }
         }
 
-        this.topBorderColors = initRandomColors(rows, borderImages, random);
-        this.bottomBorderColors = initRandomColors(rows, borderImages, random);
-        this.leftBorderColors = initRandomColors(columns, borderImages, random);
-        this.rightBorderColors = initRandomColors(columns, borderImages, random);
+        this.topBorderColors = initRandomColors(columns, borderImages, random);
+        this.bottomBorderColors = initRandomColors(columns, borderImages, random);
+        this.leftBorderColors = initRandomColors(rows, borderImages, random);
+        this.rightBorderColors = initRandomColors(rows, borderImages, random);
     }
 
     public BoardCell getCell(int row, int column) {

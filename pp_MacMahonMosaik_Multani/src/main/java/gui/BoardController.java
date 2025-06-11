@@ -28,7 +28,7 @@ public class BoardController {
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
     @FXML
-    private final GridPane gridPane;
+    private GridPane gridPane;
 
     /**
      * Das Spielfeld.
@@ -45,6 +45,12 @@ public class BoardController {
      * Konstruktor zum Zugriff auf TileActions
      */
     private final TileActions tileActions = new TileActions();
+
+    /**
+     *  Wert, um Bilder an den Grenzen visuell schmaler darzustellen.
+     *  Wert wurde per Tests herausgefunden.
+     */
+    private static final double BORDER_DIVIDE_FACTOR = 3.25;
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -64,6 +70,11 @@ public class BoardController {
         String imagePath = tileActions.getImagePathTile(tile);
     }
 
+    /**
+     * Hier wird das Board initialisiert.
+     * Die Methode wird als einzige Methode an der MacMahonUIController Class
+     * übergeben.
+     */
     public void initializeBoard() {
         // Überschreiben von Zeilen und Spalten des GridPanes.
         createBoard();
@@ -120,7 +131,7 @@ public class BoardController {
      * Anpassen der Größe des Spielfeldes mit der Anpassung,
      * dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
      */
-    private void adjustRowsAndColumns(){
+    private void adjustRowsAndColumns() {
         double middleRowHeightPercentage = 100 / (board.getRows() - 1d);
         double borderRowHeightPercentage = middleRowHeightPercentage / 4;
 
@@ -144,8 +155,9 @@ public class BoardController {
     /**
      * Anpassen der mittleren Zellen des Spielfeldes.
      * Sollen quadratisch bleiben
-     * @param width     Die Breite der Pane
-     * @param height    Die Höhe der Pane
+     *
+     * @param width  Die Breite der Pane
+     * @param height Die Höhe der Pane
      */
     private void adjustGameField(double width, double height) {
         final int middleRows = board.getRows() - 2;
@@ -169,8 +181,8 @@ public class BoardController {
 
         ImageView[][] imageViews = new ImageView[rowsCount - 2][columnsCount - 2];
 
-        for (int row = 0; row < rowsCount - 2; row++){
-            for (int column = 0; column < columnsCount - 2; column++){
+        for (int row = 0; row < rowsCount - 2; row++) {
+            for (int column = 0; column < columnsCount - 2; column++) {
                 imageViews[row][column] = new ImageView();
 
                 imageViews[row][column].setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/NNNN.png"))));
@@ -201,15 +213,14 @@ public class BoardController {
         String[] leftBorderColors = board.getLeftBorderColors();
         String[] rightBorderColors = board.getRightBorderColors();
 
-            for (int column = 1; column < board.getColumns() - 1; column++){
-                ImageView leftBorderImages = new ImageView(leftBorderColors[column]);
-                gridPane.add(leftBorderImages, 0, column);
+            for (int row = 1; row < board.getRows() - 1; row++){
+                ImageView leftBorderImages = new ImageView(leftBorderColors[row]);
+                gridPane.add(leftBorderImages, 0, row);
                 fitBorderImageView(leftBorderImages, true);
 
-                ImageView rightBorderImages = new ImageView(rightBorderColors[column]);
-                gridPane.add(rightBorderImages, board.getColumns() - 1, column);
+                ImageView rightBorderImages = new ImageView(rightBorderColors[row]);
+                gridPane.add(rightBorderImages, board.getColumns() - 1, row);
                 fitBorderImageView(rightBorderImages, true);
-
             }
     }
 
@@ -221,13 +232,13 @@ public class BoardController {
         String[] topBorderColors = board.getTopBorderColors();
         String[] bottomBorderColors = board.getBottomBorderColors();
 
-            for (int row = 1; row < board.getRows() - 1; row++){
-                ImageView topBorderImages = new ImageView(topBorderColors[row]);
-                gridPane.add(topBorderImages, row, 0);
+            for (int columns = 1; columns < board.getColumns() - 1; columns++){
+                ImageView topBorderImages = new ImageView(topBorderColors[columns]);
+                gridPane.add(topBorderImages, columns, 0);
                 fitBorderImageView(topBorderImages, false);
 
-                ImageView bottomBorderImages = new ImageView(bottomBorderColors[row]);
-                gridPane.add(bottomBorderImages, row, board.getRows() - 1);
+                ImageView bottomBorderImages = new ImageView(bottomBorderColors[columns]);
+                gridPane.add(bottomBorderImages, columns, board.getRows() - 1);
                 fitBorderImageView(bottomBorderImages, false);
             }
     }
@@ -298,8 +309,8 @@ public class BoardController {
      * @param imageView das Bild vom Mosaikteil
      */
     private void fitFieldImageView(ImageView imageView) {
-        int columnCount = gridPane.getColumnCount();
-        int rowsCount = gridPane.getRowCount();
+        int columnCount = board.getColumns();
+        int rowsCount = board.getRows();
 
         double cellWidth = (gridPane.getWidth() / (columnCount - 1)) - gridPane.getHgap();
         double cellHeight = (gridPane.getHeight() / (rowsCount - 1)) - gridPane.getVgap();
@@ -323,20 +334,26 @@ public class BoardController {
      *                       Wenn false, dann handelt es sich um die Grenzen oben und unten vom Spielfeld.
      */
     private void fitBorderImageView(ImageView imageView, boolean isColumnBorder) {
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
+        final int columnsCount = board.getColumns();
+        final int rowsCount = board.getRows();
 
         // Herausfinden, weshalb 3.25 richtig ist und die Berechnung aktualisieren
         if (isColumnBorder) {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                    divide(columnsCount * 3.25));
+                    divide(columnsCount * BORDER_DIVIDE_FACTOR));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     divide(rowsCount - 1));
+
+            gridPane.setMinWidth(2);
+            gridPane.setMinHeight(2);
         } else {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
                     divide(columnsCount - 1));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                    divide(rowsCount * 3.25));
+                    divide(rowsCount * BORDER_DIVIDE_FACTOR));
+
+            gridPane.setMinHeight(2);
+            gridPane.setMinWidth(2);
         }
     }
 
