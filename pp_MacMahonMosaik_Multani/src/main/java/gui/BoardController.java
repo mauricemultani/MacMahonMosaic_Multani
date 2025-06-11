@@ -108,6 +108,14 @@ public class BoardController {
             throw new IllegalArgumentException("Column or Row is Empty");
         }
 
+        if (board.getRows() < 4 || board.getColumns() < 4) {
+            throw new IllegalArgumentException("Das Spielfeld muss mindestens 4 Zeilen und Spalten haben");
+        }
+
+        if (board.getRows() > 8 || board.getColumns() > 8) {
+            throw new IllegalArgumentException("Das Spielfeld darf maximal 8 Zeilen und Spalten haben");
+        }
+
         // löscht die vorhanden Reihen und Spalten Constraints
         gridPane.getRowConstraints().clear();
         gridPane.getColumnConstraints().clear();
