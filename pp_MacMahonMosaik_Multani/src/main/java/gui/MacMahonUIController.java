@@ -68,10 +68,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 8;
+        int rows = 5;
 
         // Anzahl an Spalten
-        int columns = 8;
+        int columns = 6;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         Board board = new Board(rows, columns);

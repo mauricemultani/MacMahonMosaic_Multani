@@ -19,9 +19,6 @@ public enum MosaicTile {
     GYRG,
     GYYY,
 
-    HHHH,
-    NNNN,
-
     RGGG,
     RGYG,
     RGYR,
@@ -38,7 +35,10 @@ public enum MosaicTile {
     YRRR,
     YRYR,
     YYGG,
-    YYYY;
+    YYYY,
+
+    HHHH,
+    NNNN;
 
     /**
      * Gibt den Pfad zur Bilddatei zurück, die dieses MosaikTile repräsentiert.

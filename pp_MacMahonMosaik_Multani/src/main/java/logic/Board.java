@@ -85,6 +85,12 @@ public class Board {
             "/gui/tiles/YYYY_ohne_Linien.png"
     };
 
+    /**
+     * Für Testzwecke gedacht. Erstellt ein mitten im Spielgeschehen befindliches Spiel
+     * und nimmt das Spielfeld in Form eines StringArrays (äguivalent zur Spielstandsdatei) entgegen.
+     *
+     * @param tiles die Mosaikteile auf dem Spielfeld
+     */
     public void createBoard(MosaicTile[][] tiles) {
         if (tiles == null || tiles.length == 0 || tiles[0].length == 0) {
             throw new IllegalArgumentException("MosaicTile array is null or empty");

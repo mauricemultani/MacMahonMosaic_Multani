@@ -1,14 +1,15 @@
-package logic;
+package gui;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.MosaicTile;
+import logic.Rotation;
 
 /**
  * Klasse für die Drag&Drop Logik und die rotierungs Logik.
@@ -22,6 +23,36 @@ public class TileActions {
         return tile.getImagePath();
     }
 
+    /**
+     * Die Methode beschränkt sich auf alle Aktionen, die im Spielfeld gemacht werden dürfen.
+     * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
+     * @param label         Das Label, das verschoben werden soll.
+     * @param imageView     Das ImageView, dessen Bild übertragen wird.
+     * @param tile          Das Mosaikteil
+     * @param rotation      Die Rotation vom Mosaikteil
+     */
+    public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile, Rotation rotation) {
+        dragTiles(gridPane, label, imageView, tile);
+
+        dropTiles(gridPane);
+
+        rotateTile(label, imageView);
+
+        fitBoardImageView(gridPane, imageView, rotation);
+    }
+
+    /**
+     * Die Methode beschränkt sich auf alle Aktionen, die im gridBottom gridPane gemacht werden dürfen.
+     * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
+     * @param label         Das Label, das verschoben werden soll.
+     * @param imageView     Das ImageView, dessen Bild übertragen wird.
+     * @param tile          Das Mosaikteil
+     */
+    public static void gridBottomActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
+        dragTiles(gridPane, label, imageView, tile);
+
+        dropTiles(gridPane);
+    }
 
     /**
      * Methode, welche das Drag-Verhalten für ein Label
@@ -30,13 +61,21 @@ public class TileActions {
      * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
      * @param label         Das Label, das verschoben werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
+     * @param tile          Das Mosaikteil
      */
-    public static void dragTiles(GridPane gridPane, Label label, ImageView imageView){
+    private static void dragTiles(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile){
         label.setOnDragDetected(mouseEvent -> {
            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
+
                ClipboardContent content = new ClipboardContent();
                content.putImage(imageView.getImage());
+
+               Rotation rotation = (Rotation) label.getUserData();
+               String data = tile.name() + '/' + rotation.name();
+
+               content.putString(data);
+
                db.setContent(content);
                mouseEvent.consume();
            }
@@ -48,7 +87,7 @@ public class TileActions {
             }
         });
 
-        rotateTile(gridPane, label, imageView);
+
     }
 
     /**
@@ -56,9 +95,9 @@ public class TileActions {
      *
      * @param gridPane      Das GridPane, in dass das Mosaikteil platziert werden darf.
      */
-    public static void dropTiles(GridPane gridPane){
+    private static void dropTiles(GridPane gridPane){
         gridPane.setOnDragOver(dragEvent -> {
-            if (dragEvent.getDragboard().hasImage()) {
+            if (dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
             }
             dragEvent.consume();
@@ -66,12 +105,11 @@ public class TileActions {
 
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
-            if (db.hasImage()) {
+            if (db.hasString()) {
                 boolean dropped = false;
                 final double totalWidth = gridPane.getWidth();
                 final int columnCount = gridPane.getColumnCount();
                 final int rowCount = gridPane.getRowCount();
-
 
                 double cellWidth = totalWidth / columnCount;
                 double x = dragEvent.getX();
@@ -81,8 +119,14 @@ public class TileActions {
                     // Finde die erste freie Zeile in der Spalte
                     for (int row = 0; row < rowCount; row++) {
                         if (isCellEmpty(gridPane, column, row)) {
-                            Image image = db.getImage();
-                            ImageView imageView = new ImageView(image);
+
+                            String[] tileInfo = db.getString().split("/");
+                            MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                            Rotation rotation = Rotation.valueOf(tileInfo[1]);
+
+                            ImageView imageView = new ImageView(db.getImage());
+
+                            imageView.setRotate(getDegrees(rotation));
 
                             imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
                             imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowCount));
@@ -94,7 +138,7 @@ public class TileActions {
                             droppedLabel.setUserData(Rotation.DEGREE_0);
 
                             gridPane.add(droppedLabel, column, row);
-                            dragTiles(gridPane, droppedLabel, imageView);
+                            dragTiles(gridPane, droppedLabel, imageView, tile);
                             dropped = true;
                         }
                     }
@@ -109,11 +153,10 @@ public class TileActions {
     /**
      * Ermöglicht, das Rotieren des Bildes.
      *
-     * @param gridPane      Das GridPane, in dass das Mosaikteil platziert werden darf.
      * @param label         Das Label, das rotiert werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView){
+    private static void rotateTile(Label label, ImageView imageView){
         label.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 Rotation current = (Rotation) label.getUserData();
@@ -125,7 +168,6 @@ public class TileActions {
 
 
                 imageView.setRotate(getDegrees(next));
-                fitFieldImageView(gridPane, imageView, next);
                 label.setUserData(next);
             }
         });
@@ -163,9 +205,10 @@ public class TileActions {
      * sich anpassen.
      *
      * @param gridPane  das GridPane, in dass das Mosaikteil platziert werden darf.
-     * @param imageView das Bild vom Mosaikteil
+     * @param imageView das Bild vom Mosaikteil.
+     * @param rotation  Rotation vom Bild.
      */
-    private static void fitFieldImageView(GridPane gridPane, ImageView imageView, Rotation rotation) {
+    private static void fitBoardImageView(GridPane gridPane, ImageView imageView, Rotation rotation) {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 

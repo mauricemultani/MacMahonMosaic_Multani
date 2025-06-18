@@ -71,6 +71,7 @@ public class Game {
         this.ongoingGame = new BoardCell[rows][columns];
 
         clearBoard();
+        board.generateHoles(rows, columns);
     }
 
     /**

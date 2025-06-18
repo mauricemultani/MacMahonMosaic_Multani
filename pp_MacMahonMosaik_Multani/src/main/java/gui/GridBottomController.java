@@ -4,14 +4,13 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import logic.MosaicTile;
 import logic.Rotation;
-import logic.TileActions;
 
 import java.util.Objects;
 
 /**
  * Steuerung des GridPanes in "<BorderPane> <bottom>".
- * Die Klasse erbt von Controller.
  *
  * @author Maurice Singh Multani
  */
@@ -20,14 +19,14 @@ public class GridBottomController {
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
-    private final GridPane gridPane;
+    private static GridPane gridPane;
 
     /**
      *  Konstruktor zur Zuweisung des GridPanes.
      * @param gridPane Das GridPane, was vom Controller verwaltet wird.
      */
     public GridBottomController(GridPane gridPane) {
-        this.gridPane = gridPane;
+        GridBottomController.gridPane = gridPane;
     }
 
     /**
@@ -65,8 +64,8 @@ public class GridBottomController {
     }
 
     /**
-     *  Initialisierung der Bilder auf das GridPane.
-     *  Hier wird auch das ziehen bzw. draggen der Bilder implementiert
+     * Initialisierung der Bilder auf das GridPane.
+     * Hier wird auch das ziehen bzw. draggen der Bilder implementiert
      */
     public void initImages() {
         final int columnCount = gridPane.getColumnCount();
@@ -77,7 +76,10 @@ public class GridBottomController {
         for (int row = 0; row < rowsCount; row++) {
             for (int column = 0; column < columnCount; column++) {
 
-                Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(images()[imageIndex++])));
+                MosaicTile tileValue = MosaicTile.values()[imageIndex];
+                String path = tileValue.getImagePath();
+
+                Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
 
                 ImageView imageView = new ImageView(img);
 
@@ -88,16 +90,16 @@ public class GridBottomController {
                 tile.setUserData(Rotation.DEGREE_0);
 
                 // Drag starten
-                TileActions.dragTiles(gridPane, tile, imageView);
-                TileActions.dropTiles(gridPane);
+                TileActions.gridBottomActions(gridPane, tile, imageView, tileValue);
 
                 gridPane.add(tile, column, row);
+                imageIndex++;
             }
         }
     }
 
     private void fitFieldImageView(ImageView imageView){
-        int columnCount = gridPane.getColumnCount();
+        final int columnCount = gridPane.getColumnCount();
 
         imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
         imageView.fitHeightProperty().bind(gridPane.heightProperty());

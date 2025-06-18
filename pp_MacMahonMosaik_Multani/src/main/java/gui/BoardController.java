@@ -13,7 +13,6 @@ import javafx.scene.layout.RowConstraints;
 import logic.Board;
 import logic.MosaicTile;
 import logic.Rotation;
-import logic.TileActions;
 
 import java.util.Objects;
 
@@ -251,14 +250,12 @@ public class BoardController {
             }
     }
 
-
-
     /**
      * Methode zum droppen der Mosaikteile.
      */
     private void dropTiles() {
         gridPane.setOnDragOver(dragEvent -> {
-            if (dragEvent.getDragboard().hasImage()) {
+            if (dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
             }
             dragEvent.consume();
@@ -266,7 +263,7 @@ public class BoardController {
 
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
-            if (db.hasImage()) {
+            if (db.hasString()) {
 
                 double totalWidth = gridPane.getWidth();
                 double totalHeight = gridPane.getHeight();
@@ -294,15 +291,19 @@ public class BoardController {
                 }
 
                 if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
+                    String[] tileInfo = db.getString().split("/");
+                    MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                    Rotation rotation = Rotation.valueOf(tileInfo[1]);
+
                     ImageView imageView = new ImageView(db.getImage());
                     fitFieldImageView(imageView);
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
-                    droppedLabel.setUserData(Rotation.DEGREE_0);
+                    droppedLabel.setUserData(rotation);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
-                    TileActions.dragTiles(gridPane, droppedLabel, imageView);
+                    TileActions.boardActions(gridPane, droppedLabel, imageView, tile, rotation);
                 }
             }
             dragEvent.setDropCompleted(true);
