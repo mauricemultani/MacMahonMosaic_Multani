@@ -4,7 +4,9 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * Stellt das Spielfeld dar.
+ * Stellt das Spielfeld dar, auf dem die Mosaikteile platziert werden können.
+ * Klasse kümmert sich um Validierung von Positionen, den Nachbarn,
+ * platzieren von Tiles und allgemein auch die Verwaltung der Zellen.
  *
  * @author Maurice Singh Multani
  */
@@ -13,7 +15,6 @@ public class Board {
     private final int rows;
     private final int columns;
     private final BoardCell[][] cells;
-    private final boolean[][] isHole;
 
     private final String[] topBorderColors;
     private final String[] bottomBorderColors;
@@ -22,6 +23,14 @@ public class Board {
 
     Random random = new Random();
 
+    /**
+     * Konstruktor für Spielfeld. Setzt die Anzahl an Reihen und Spalten.
+     * Initialisiert das Spielfeld mit leeren Zellen und auch mit Löchern (falls Zellen > 24).
+     * Initialisiert ebenfalls auch die Randfarben.
+     *
+     * @param rows    die Anzahl an Reihen im Spielfeld.
+     * @param columns die Anzahl an Spalten im Spielfeld.
+     */
     public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
@@ -34,7 +43,7 @@ public class Board {
             }
         }
 
-        this.isHole = generateHoles(rows, columns);
+        boolean[][] isHole = generateHoles(rows, columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, true);
@@ -47,30 +56,67 @@ public class Board {
         this.rightBorderColors = initRandomColors(rows, borderImages, random);
     }
 
+    /**
+     * Gibt die Zelle an der angegebenen Position wieder zurück.
+     *
+     * @param row    Reihe der Zelle
+     * @param column Spalte der Zelle
+     * @return Zelle an der angegebenen Position
+     */
     public BoardCell getCell(int row, int column) {
         return cells[row][column];
     }
 
+    /**
+     * Gibt die Anzahl der Reihen zurück.
+     *
+     * @return Anzahl an Reihen.
+     */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Gibt die Anzahl an Spalten zurück.
+     *
+     * @return Anzahl an Spalten
+     */
     public int getColumns() {
         return columns;
     }
 
+    /**
+     * Gibt Farben des oberen Spielfeldrands zurück.
+     *
+     * @return Array mit Farbwerten vom oberen Spielfeldrand.
+     */
     public String[] getTopBorderColors() {
         return topBorderColors;
     }
 
+    /**
+     * Gibt Farben des unteren Spielfeldrands zurück.
+     *
+     * @return Array mit Farbwerten vom unteren Spielfeldrand.
+     */
     public String[] getBottomBorderColors() {
         return bottomBorderColors;
     }
 
+    /**
+     * Gibt Farben des linken Spielfeldrands zurück.
+     *
+     * @return Array mit Farbwerten vom linken Spielfeldrand.
+     */
     public String[] getLeftBorderColors() {
         return leftBorderColors;
     }
 
+    /**
+     * Gibt Farben des rechten Spielfeldrands zurück.
+     *
+     * @return Array mit Farbwerten vom rechten Spielfeldrand.
+     */
     public String[] getRightBorderColors() {
         return rightBorderColors;
     }
@@ -89,13 +135,9 @@ public class Board {
      * Für Testzwecke gedacht. Erstellt ein mitten im Spielgeschehen befindliches Spiel
      * und nimmt das Spielfeld in Form eines StringArrays (äguivalent zur Spielstandsdatei) entgegen.
      *
-     * @param tiles die Mosaikteile auf dem Spielfeld
+     * @param tiles     die Mosaikteile auf dem Spielfeld
      */
     public void createBoard(MosaicTile[][] tiles) {
-        if (tiles == null || tiles.length == 0 || tiles[0].length == 0) {
-            throw new IllegalArgumentException("MosaicTile array is null or empty");
-        }
-
         for (int row = 0; row < tiles.length; row++) {
             for (int column = 0; column < tiles[row].length; column++) {
                 MosaicTile tile = tiles[row][column];
@@ -108,9 +150,10 @@ public class Board {
 
     /**
      * Generiert zufällig Löcher im Spiel, es mehr als 24 Zellen im Spielfeld gibt.
+     *
      * @param rows      Variable für die Reihe
      * @param columns   Variable für die Spalte
-     * @return Anzahl an Löcher gespeichert im Array
+     * @return          Anzahl an Löcher gespeichert im Array
      */
     public boolean[][] generateHoles(int rows, int columns) {
         int totalCells = rows * columns;
@@ -133,10 +176,12 @@ public class Board {
     }
 
     /**
-     * Schaut sich die Position einer leeren Zelle an und gibt zurück, ob dort ein Mosaik-Tile reinpasst.
-     * @return Ob an der Position das Mosaik-Tile passt oder nicht.
+     * Schaut sich die Position einer leeren Zelle an und gibt zurück, ob dort ein Mosaikteil reinpasst.
+     *
+     * @param pos   die Position wo das Mosaikteil platziert werden soll.
+     * @return      True, wenn das Mosaikteil an der Position passt, ansonsten false.
      */
-    public boolean isPositionValid(Position pos){
+    public boolean isPositionValid(Position pos) {
         int row = pos.getRow();
         int column = pos.getColumn();
 
@@ -147,6 +192,14 @@ public class Board {
         return !cells[row][column].isHole();
     }
 
+    /**
+     * Methode, welche sich anschaut, ob ein platziertes Mosaikteil mit seinen Nachbarn passt.
+     *
+     * @param tile      das Mosaikteil, das platziert wird.
+     * @param rotation  die derzeitige Rotation vom Mosaikteil.
+     * @param pos       die Position, wo das Mosaikteil platziert werden soll.
+     * @return          True, wenn das Mosaikteil mit seinen Nachbarn passt, ansonsten false.
+     */
     public boolean fitsNeighbours(MosaicTile tile, Rotation rotation, Position pos) {
         Color[] tileColors = tile.getColors(rotation);
 
@@ -157,12 +210,12 @@ public class Board {
                 {0, 1}   // rechter Nachbar
         };
 
-        for (int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             int newRow = pos.getRow() + directions[i][0];
             int newCol = pos.getColumn() + directions[i][1];
 
             // Überprüfung, ob Nachbar
-            if (newRow >= 0 && newRow <  rows && newCol >= 0 && newCol < columns) {
+            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < columns) {
                 BoardCell neighbourCell = cells[newRow][newCol];
 
                 if (neighbourCell.isPlaced()) {
@@ -178,6 +231,14 @@ public class Board {
         return true;
     }
 
+    /**
+     * Ein Array, welches zufällige Randfarben generiert.
+     *
+     * @param count     Anzahl der zu erzeugenden Farben.
+     * @param imagePath Bildpfad für die Randfarben.
+     * @param random    Zufällige Generierung der Randfarben.
+     * @return          Ein Array mit zufällig generierten Farben.
+     */
     private String[] initRandomColors(int count, String[] imagePath, Random random) {
         String[] images = new String[count];
 
@@ -189,12 +250,13 @@ public class Board {
 
     /**
      * Schaut sich an, ob das MosaikTile irgendwo auf dem Spielfeld passt.
-     * @param tile das Mosaik-Tile, welches nach einer freien Position sucht.
-     * @return Ob das Mosaik-Tile überhaupt im Spielfeld passt.
+     *
+     * @param tile  das Mosaikteil, welches nach einer freien Position sucht.
+     * @return      True, wenn es irgendwo auf dem Spielfeld passt, ansonsten false.
      */
-    public boolean doesTileFitAnywhere(MosaicTile tile){
-        for (int row = 0; row < rows; row++){
-            for (int col = 0; col < columns; col++){
+    public boolean doesTileFitAnywhere(MosaicTile tile) {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
                 Position pos = new Position(row, col);
 
                 if (isPositionValid(pos) && !cells[row][col].isPlaced()) {
@@ -211,10 +273,13 @@ public class Board {
     }
 
     /**
-     * Fügt ein Mosaik-Tile an einer Position hinzu.
-     * @param mosaicTile das Mosaik-Tile welches an einer Position hinzugefügt werden soll.
+     * Fügt ein Mosaikteil an einer Position hinzu.
+     *
+     * @param mosaicTile    das Mosaik-Tile welches an einer Position hinzugefügt werden soll.
+     * @param rotation      die derzeitige Rotation vom Mosaikteil
+     * @param pos           die Position, wo das Mosaikteil platziert werden soll.
      */
-    public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos){
+    public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos) {
         cells[pos.getRow()][pos.getColumn()].placeTile(mosaicTile, rotation);
     }
 

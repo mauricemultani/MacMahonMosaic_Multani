@@ -1,5 +1,10 @@
 package logic;
 
+/**
+ * Eine Enum-Klasse für die Rotation.
+ *
+ * @author Maurice Singh Multani
+ */
 public enum Rotation {
 
     DEGREE_0,
@@ -19,6 +24,10 @@ public enum Rotation {
         };
     }
 
+    /**
+     * Gibt die Rotation in Zahlen von 0 bis 3 wieder.
+     * @return  Die Rotation in einer Zahl umgewandelt.
+     */
     public int getRotation() {
         return switch (this) {
             case DEGREE_0 -> 0;

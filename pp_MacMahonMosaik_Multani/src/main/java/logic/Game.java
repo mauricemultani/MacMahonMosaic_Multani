@@ -1,10 +1,8 @@
 package logic;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Repräsentiert das Spiel.
@@ -15,11 +13,8 @@ import java.io.IOException;
  */
 public class Game {
 
-    private MosaicTile tile;
-    private BoardCell cell;
+
     private Board board;
-    private Position pos;
-    private Rotation rotation;
 
     private final int rows;
 
@@ -33,7 +28,7 @@ public class Game {
     /**
      * Konstruktor für ein neues Spiel.
      */
-    public Game(int rows, int columns){
+    public Game(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
 
@@ -43,9 +38,10 @@ public class Game {
     /**
      * Konstruktor für Testzwecke. Erzeugt ein befindliches Spiel mitten im Spielgeschehen.
      * Nimmt das Spielfeld in Form eines BoardCell-Arrays entgegen.
+     *
      * @param ongoingGame das laufende Spiel
      */
-    public Game(int rows, int columns, BoardCell[][] ongoingGame){
+    public Game(int rows, int columns, BoardCell[][] ongoingGame) {
         this.rows = rows;
         this.columns = columns;
         this.ongoingGame = ongoingGame;
@@ -54,10 +50,9 @@ public class Game {
     /**
      * Hier findet der Prozess vom Spiel statt.
      */
-    public void macMahonGame(){
-        board.placeTileAt(tile, rotation, pos);
+    public void macMahonGame(MosaicTile tile, Rotation rotation, Position pos, BoardCell cell) {
         if (cell.isPlaced() && board.isPositionValid(pos)) {
-
+            board.placeTileAt(tile, rotation, pos);
         }
     }
 
@@ -81,8 +76,8 @@ public class Game {
         int rows = board.getRows();
         int columns = board.getColumns();
 
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
+        for (int row = 1; row < rows - 1; row++) {
+            for (int column = 1; column < columns - 1; column++) {
                 // Kann vllt später verwendet werden
                 // boolean isHole = board.getCell(row, column).isHole();
 
@@ -93,12 +88,11 @@ public class Game {
 
     /**
      * Klont das Spielfeld. Wird für den Wechsel in den Editor-Modus benötigt.
-     *
      * Bisher noch unklar, ob es benötigt wird oder nicht.
      */
     public void cloneGameField() {
         BoardCell[][] copy = new BoardCell[ongoingGame.length][ongoingGame[0].length];
-        for (int row = 0; row < ongoingGame.length; row++){
+        for (int row = 0; row < ongoingGame.length; row++) {
             for (int column = 0; column < ongoingGame[0].length; column++) {
                 BoardCell original = ongoingGame[row][column];
                 copy[row][column] = new BoardCell(
@@ -112,19 +106,17 @@ public class Game {
 
     /**
      * Speichert das laufende Spiel.
-     *
      * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
      */
-    public void saveGame(){
+    public void saveGame(File file) {
         // Gson-Objekt erstellen
         Gson gson = new Gson();
 
         // BoardCell Array in JSON-String umwandeln
         String json = gson.toJson(ongoingGame);
 
-        try (FileWriter fileWriter = new FileWriter("ongoingGame.json")){
+        try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(json);
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -134,17 +126,28 @@ public class Game {
     /**
      * Lädt ein gespeichertes Spiel
      */
-    public void loadGame(){
-        JsonArray jsonArray = new JsonArray();
+    public void loadGame(File file) {
+        try (Reader reader = new FileReader(file)) {
+            Gson gson = new Gson();
+            ongoingGame = gson.fromJson(reader, BoardCell[][].class);
 
+            for (int row = 0; row < ongoingGame.length; row++) {
+                for (int col = 0; col < ongoingGame[0].length; col++) {
+                    BoardCell cell = ongoingGame[row][col];
+                    board.getCell(row, col).placeTile(cell.getTile(), cell.getRotation());
+                }
+            }
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Benachrichtigt dem Spieler, dass er das Spiel gewonnen hat.
      * Der Spieler wird erst dann benachrichtigt, wenn alle Zellen belegt und die Farb-Regel nicht verletzt wird.
      */
-    public void winningGame(){
+    public void winningGame() {
 
     }
 
@@ -152,7 +155,7 @@ public class Game {
      * Dem Spieler wird sichtbar angezeigt, welche Zellen nicht die passenden Farben an den Kanten haben.
      * Soll nur eine Anzeige sein, der Spieler muss den Fehler nicht sofort beheben.
      */
-    public void showNotMatchingEdge(){
+    public void showNotMatchingEdge() {
 
     }
 

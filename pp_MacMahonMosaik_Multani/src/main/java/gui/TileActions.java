@@ -34,8 +34,6 @@ public class TileActions {
     public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile, Rotation rotation) {
         dragTiles(gridPane, label, imageView, tile);
 
-        dropTiles(gridPane);
-
         rotateTile(label, imageView);
 
         fitBoardImageView(gridPane, imageView, rotation);
@@ -72,6 +70,10 @@ public class TileActions {
                content.putImage(imageView.getImage());
 
                Rotation rotation = (Rotation) label.getUserData();
+               if (rotation == null) {
+                   rotation = Rotation.DEGREE_0;
+               }
+
                String data = tile.name() + '/' + rotation.name();
 
                content.putString(data);
@@ -86,7 +88,6 @@ public class TileActions {
                 gridPane.getChildren().remove(label);
             }
         });
-
 
     }
 
@@ -135,7 +136,7 @@ public class TileActions {
                             Label droppedLabel = new Label();
 
                             droppedLabel.setGraphic(imageView);
-                            droppedLabel.setUserData(Rotation.DEGREE_0);
+                            droppedLabel.setUserData(rotation);
 
                             gridPane.add(droppedLabel, column, row);
                             dragTiles(gridPane, droppedLabel, imageView, tile);
@@ -158,21 +159,34 @@ public class TileActions {
      */
     private static void rotateTile(Label label, ImageView imageView){
         label.setOnMouseClicked(mouseEvent -> {
+            // rotiert nur bei Rechtsklick
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                // holt sich den derzeitigen Rotierungsgrad
                 Rotation current = (Rotation) label.getUserData();
 
+                // Wenn die derzeitige Rotierung == null ist,
+                // dann wird sie auf 0-Grad gesetzt.
                 if (current == null){
                     current = Rotation.DEGREE_0;
                 }
+                // andernfalls geht sie zur nächsten rotierung rüber.
                 Rotation next = current.next();
 
-
+                // das imageView und auch das label werden auf die nächste Rotation gesetzt.
                 imageView.setRotate(getDegrees(next));
                 label.setUserData(next);
             }
         });
     }
 
+    /**
+     * Private Methode welche prüft, ob eine Zelle leer ist, oder nicht.
+     *
+     * @param gridPane  das Spielfeld.
+     * @param column    Spalte bzw. Spaltenanzahl
+     * @param row       Reihe bzw. Reihenanzahl
+     * @return          true, wenn eine leere Zelle gefunden wird, ansonsten false.
+     */
     private static boolean isCellEmpty(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {
             Integer col = GridPane.getColumnIndex(node);
@@ -190,7 +204,7 @@ public class TileActions {
      * @param rotation  Rotationsrichtung als Enum-Wert.
      * @return          Rotationsrichtung als Winkel in Grad.
      */
-    private static double getDegrees(Rotation rotation) {
+    public static double getDegrees(Rotation rotation) {
         return switch (rotation) {
             case DEGREE_90 -> 90;
             case DEGREE_180 -> 180;
@@ -212,6 +226,8 @@ public class TileActions {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
+        // Anpassen der Bilder anhand der Rotation
+        // Methode verwendet
         if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
             imageView.fitWidthProperty().bind(
                     gridPane.widthProperty().divide(columnCount - 1).
@@ -221,7 +237,7 @@ public class TileActions {
                     gridPane.heightProperty().divide(rowsCount - 1).
                             subtract(gridPane.getVgap())
             );
-        } else {
+        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
             imageView.fitWidthProperty().bind(
                     gridPane.heightProperty().divide(rowsCount - 1).
                             subtract(gridPane.getVgap())

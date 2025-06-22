@@ -68,10 +68,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 5;
+        int rows = 6;
 
         // Anzahl an Spalten
-        int columns = 6;
+        int columns = 5;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         Board board = new Board(rows, columns);
@@ -98,7 +98,7 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleSave(){
-
+        
     }
 
     /**

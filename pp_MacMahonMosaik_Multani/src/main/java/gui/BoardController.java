@@ -2,7 +2,6 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -14,7 +13,7 @@ import logic.Board;
 import logic.MosaicTile;
 import logic.Rotation;
 
-import java.util.Objects;
+import static gui.TileActions.getDegrees;
 
 /**
  * Steuerung des Spielfeldes.
@@ -100,6 +99,8 @@ public class BoardController {
 
     /**
      * Erstellt ein Spielfeld.
+     * Das Board darf nicht mit weniger als 4, oder mehr als 8 Zeilen oder Spalten generiert werden.
+     * Bedingungen sind mit entsprechenden Exceptions gesetzt.
      */
     private void createBoard() {
         // Exception, falls das Board 0 Reihen oder 0 Spalten hat.
@@ -107,6 +108,7 @@ public class BoardController {
             throw new IllegalArgumentException("Column or Row is Empty");
         }
 
+        // Exception, falls das Board
         if (board.getRows() < 4 || board.getColumns() < 4) {
             throw new IllegalArgumentException("Das Spielfeld muss mindestens 4 Zeilen und Spalten haben");
         }
@@ -179,29 +181,29 @@ public class BoardController {
         }
     }
 
-    /**
-     * Initialisierung der Bilder an das GridPane
-     */
-    private void initImagesGameField() {
-        final int columnsCount = gridPane.getColumnCount();
-        final int rowsCount = gridPane.getRowCount();
-
-        ImageView[][] imageViews = new ImageView[rowsCount - 2][columnsCount - 2];
-
-        for (int row = 0; row < rowsCount - 2; row++) {
-            for (int column = 0; column < columnsCount - 2; column++) {
-                imageViews[row][column] = new ImageView();
-
-                imageViews[row][column].setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/NNNN.png"))));
-                gridPane.add(imageViews[row][column], column + 1, row + 1);
-
-                imageViews[row][column].fitWidthProperty().bind(gridPane.widthProperty().
-                        divide(columnsCount - 1).subtract(gridPane.getHgap()));
-                imageViews[row][column].fitHeightProperty().bind(gridPane.heightProperty().
-                        divide(rowsCount - 1).subtract(gridPane.getVgap()));
-            }
-        }
-    }
+//    /**
+//     * Initialisierung der Bilder an das GridPane
+//     */
+//    private void initImagesGameField() {
+//        final int columnsCount = gridPane.getColumnCount();
+//        final int rowsCount = gridPane.getRowCount();
+//
+//        ImageView[][] imageViews = new ImageView[rowsCount - 2][columnsCount - 2];
+//
+//        for (int row = 0; row < rowsCount - 2; row++) {
+//            for (int column = 0; column < columnsCount - 2; column++) {
+//                imageViews[row][column] = new ImageView();
+//
+//                imageViews[row][column].setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/NNNN.png"))));
+//                gridPane.add(imageViews[row][column], column + 1, row + 1);
+//
+//                imageViews[row][column].fitWidthProperty().bind(gridPane.widthProperty().
+//                        divide(columnsCount - 1).subtract(gridPane.getHgap()));
+//                imageViews[row][column].fitHeightProperty().bind(gridPane.heightProperty().
+//                        divide(rowsCount - 1).subtract(gridPane.getVgap()));
+//            }
+//        }
+//    }
 
     /**
      * Initialisierung der Bilder an den Grenzen des Spielfeldes.
@@ -252,6 +254,7 @@ public class BoardController {
 
     /**
      * Methode zum droppen der Mosaikteile.
+     * Es gibt eine auch in TileActions, allerdings
      */
     private void dropTiles() {
         gridPane.setOnDragOver(dragEvent -> {
@@ -296,7 +299,7 @@ public class BoardController {
                     Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
                     ImageView imageView = new ImageView(db.getImage());
-                    fitFieldImageView(imageView);
+                    fitFieldImageView(imageView, rotation);
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
@@ -317,15 +320,31 @@ public class BoardController {
      * sich anpassen.
      * @param imageView das Bild vom Mosaikteil
      */
-    private void fitFieldImageView(ImageView imageView) {
-        int columnCount = board.getColumns();
-        int rowsCount = board.getRows();
+    private void fitFieldImageView(ImageView imageView, Rotation rotation) {
+        int columnCount = gridPane.getColumnCount();
+        int rowsCount = gridPane.getRowCount();
 
-        double cellWidth = (gridPane.getWidth() / (columnCount - 1)) - gridPane.getHgap();
-        double cellHeight = (gridPane.getHeight() / (rowsCount - 1)) - gridPane.getVgap();
-
-        imageView.setFitWidth(cellWidth);
-        imageView.setFitHeight(cellHeight);
+        // Anpassen der Bilder anhand der Rotation
+        // Methode verwendet
+        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
+            imageView.fitWidthProperty().bind(
+                    gridPane.widthProperty().divide(columnCount - 1).
+                            subtract(gridPane.getHgap())
+            );
+            imageView.fitHeightProperty().bind(
+                    gridPane.heightProperty().divide(rowsCount - 1).
+                            subtract(gridPane.getVgap())
+            );
+        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
+            imageView.fitWidthProperty().bind(
+                    gridPane.heightProperty().divide(rowsCount - 1).
+                            subtract(gridPane.getVgap())
+            );
+            imageView.fitHeightProperty().bind(
+                    gridPane.widthProperty().divide(columnCount - 1).
+                            subtract(gridPane.getHgap())
+            );
+        }
     }
 
     /**

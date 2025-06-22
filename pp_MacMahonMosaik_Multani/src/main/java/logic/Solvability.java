@@ -1,8 +1,5 @@
 package logic;
 
-import javafx.fxml.FXML;
-import javafx.scene.layout.GridPane;
-
 /**
  * Die Klasse Solvability. Hier wird die Lösbarkeit überprüft.
  *
@@ -14,16 +11,15 @@ public class Solvability {
 
     private final Rotation rotation;
 
-    private Board board;
+    private final Board board;
 
-    private Position pos;
+    private final Position pos;
 
-    @FXML
-    GridPane gameField;
-
-    public Solvability(MosaicTile tile, Rotation rotation) {
+    public Solvability(MosaicTile tile, Rotation rotation, Board board, Position pos) {
         this.tile = tile;
         this.rotation = rotation;
+        this.board = board;
+        this.pos = pos;
     }
 
     /**
@@ -90,12 +86,5 @@ public class Solvability {
      */
     public boolean gameDone() {
         return solveGame();
-    }
-
-    /**
-     *
-     */
-    public boolean gameNotFinished() {
-        return !solveGame();
     }
 }

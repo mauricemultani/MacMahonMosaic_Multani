@@ -30,40 +30,6 @@ public class GridBottomController {
     }
 
     /**
-     * String, dass die Mosaikteile speichert.
-     */
-    private String[] images() {
-        return new String[]{
-                "/gui/tiles/RGGG.png",
-                "/gui/tiles/RGYG.png",
-                "/gui/tiles/RGYR.png",
-                "/gui/tiles/RRRR.png",
-                "/gui/tiles/RRYY.png",
-                "/gui/tiles/RYGR.png",
-                "/gui/tiles/RYGY.png",
-                "/gui/tiles/RYYY.png",
-
-                "/gui/tiles/GGGG.png",
-                "/gui/tiles/GGRR.png",
-                "/gui/tiles/GRGR.png",
-                "/gui/tiles/GRRR.png",
-                "/gui/tiles/GRYG.png",
-                "/gui/tiles/GRYR.png",
-                "/gui/tiles/GYRG.png",
-                "/gui/tiles/GYYY.png",
-
-                "/gui/tiles/YGGG.png",
-                "/gui/tiles/YGRY.png",
-                "/gui/tiles/YGYG.png",
-                "/gui/tiles/YRGY.png",
-                "/gui/tiles/YRRR.png",
-                "/gui/tiles/YRYR.png",
-                "/gui/tiles/YYGG.png",
-                "/gui/tiles/YYYY.png",
-        };
-    }
-
-    /**
      * Initialisierung der Bilder auf das GridPane.
      * Hier wird auch das ziehen bzw. draggen der Bilder implementiert
      */
@@ -98,6 +64,11 @@ public class GridBottomController {
         }
     }
 
+    /**
+     * Passt die Bilder an das GridPane <GridBottom> an.
+     *
+     * @param imageView das ImageView
+     */
     private void fitFieldImageView(ImageView imageView){
         final int columnCount = gridPane.getColumnCount();
 

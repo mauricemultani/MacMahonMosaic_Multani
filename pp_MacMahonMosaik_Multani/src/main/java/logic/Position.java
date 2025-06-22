@@ -1,11 +1,18 @@
 package logic;
 
+/**
+ * Klasse für die Position.
+ * Wird verwendet, um Positionen zurückzugeben oder neue zu erstellen.
+ *
+ * @author Maurice Singh Multani
+ */
 public class Position {
 
     /**
      * X-Koordinate
      */
     private final int column;
+
     /**
      * Y-Koordinate
      */
