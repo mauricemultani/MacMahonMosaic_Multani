@@ -2,6 +2,7 @@ package gui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -12,6 +13,8 @@ import javafx.scene.layout.RowConstraints;
 import logic.Board;
 import logic.MosaicTile;
 import logic.Rotation;
+
+import java.util.Objects;
 
 import static gui.TileActions.getDegrees;
 
@@ -43,12 +46,6 @@ public class BoardController {
      * Konstruktor zum Zugriff auf TileActions
      */
     private final TileActions tileActions = new TileActions();
-
-    /**
-     *  Wert, um Bilder an den Grenzen visuell schmaler darzustellen.
-     *  Wert wurde per Tests herausgefunden.
-     */
-    private static final double BORDER_DIVIDE_FACTOR = 3.25;
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -93,8 +90,11 @@ public class BoardController {
         // Initialisiert die Bilder an den Grenzen des Spielfeldes
         initImagesBorderBoard();
 
-        // ermöglicht das droppen der Mosaikteile
+        // Ermöglicht das droppen der Mosaikteile
         dropTiles();
+
+        // Erstellt Löcher auf dem Spielfeld, wenn es mehr als 24 belegbare Zellen gibt.
+        generatingHoles();
     }
 
     /**
@@ -181,29 +181,30 @@ public class BoardController {
         }
     }
 
-//    /**
-//     * Initialisierung der Bilder an das GridPane
-//     */
-//    private void initImagesGameField() {
-//        final int columnsCount = gridPane.getColumnCount();
-//        final int rowsCount = gridPane.getRowCount();
-//
-//        ImageView[][] imageViews = new ImageView[rowsCount - 2][columnsCount - 2];
-//
-//        for (int row = 0; row < rowsCount - 2; row++) {
-//            for (int column = 0; column < columnsCount - 2; column++) {
-//                imageViews[row][column] = new ImageView();
-//
-//                imageViews[row][column].setImage(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/NNNN.png"))));
-//                gridPane.add(imageViews[row][column], column + 1, row + 1);
-//
-//                imageViews[row][column].fitWidthProperty().bind(gridPane.widthProperty().
-//                        divide(columnsCount - 1).subtract(gridPane.getHgap()));
-//                imageViews[row][column].fitHeightProperty().bind(gridPane.heightProperty().
-//                        divide(rowsCount - 1).subtract(gridPane.getVgap()));
-//            }
-//        }
-//    }
+    /**
+     * Private Methode die Löcher generiert wenn es mehr als
+     */
+    private void generatingHoles() {
+        Rotation rotation = Rotation.DEGREE_0;
+        boolean[][] holes = board.generateHoles(board.getRows(), board.getColumns());
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int column = 1; column < board.getColumns() - 1; column++) {
+                if (holes[row][column]) {
+                    Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
+                    ImageView imageView = new ImageView(img);
+
+                    fitFieldImageView(imageView, rotation);
+
+                    Label hole = new Label();
+                    hole.setGraphic(imageView);
+
+                    gridPane.add(hole, column, row);
+                }
+            }
+        }
+
+    }
 
     /**
      * Initialisierung der Bilder an den Grenzen des Spielfeldes.
@@ -352,43 +353,29 @@ public class BoardController {
      * <p>
      * Die if-Bedingung gilt für die Grenzen links und rechts vom Spielfeld.
      * die else-Bedingung gilt für die Grenzen oben und unten vom Spielfeld.
-     * <p>
-     * Wird in initImagesColumnBorder und initImagesRowBorder verwendet.
      *
-     * @param imageView das ImageView, dessen Größe angepasst werden soll
+     * @param imageView      das ImageView, dessen Größe angepasst werden soll
      * @param isColumnBorder Boolescher Wert um die Bedingungen klarzustellen.
      *                       Wenn true, dann handelt es sich um die Grenzen links und rechts vom Spielfeld.
      *                       Wenn false, dann handelt es sich um die Grenzen oben und unten vom Spielfeld.
      */
     private void fitBorderImageView(ImageView imageView, boolean isColumnBorder) {
-        final int columnsCount = board.getColumns();
-        final int rowsCount = board.getRows();
+        double middleRowHeightPercentage = 100 / (board.getRows() - 1d);
+        double borderRowHeightPercentage = middleRowHeightPercentage / 4;
 
-        // Herausfinden, weshalb 3.25 richtig ist und die Berechnung aktualisieren
+        double middleColWidthPercentage = 100 / (board.getColumns() - 1d);
+        double borderColWidthPercentage = middleColWidthPercentage / 4;
+
         if (isColumnBorder) {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                    divide(columnsCount * BORDER_DIVIDE_FACTOR));
+                    multiply(borderColWidthPercentage / 100));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                    divide(rowsCount - 1));
-
-            gridPane.setMinWidth(2);
-            gridPane.setMinHeight(2);
+                    multiply(middleRowHeightPercentage / 100));
         } else {
             imageView.fitWidthProperty().bind(gridPane.widthProperty().
-                    divide(columnsCount - 1));
+                    multiply(middleColWidthPercentage / 100));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
-                    divide(rowsCount * BORDER_DIVIDE_FACTOR));
-
-            gridPane.setMinHeight(2);
-            gridPane.setMinWidth(2);
+                    multiply(borderRowHeightPercentage / 100));
         }
-    }
-
-    /**
-     * Anpassung der GridLines beim Spielfeld.
-     * Implementierung fehlt noch.
-     */
-    private void adjustGridLines() {
-
     }
 }

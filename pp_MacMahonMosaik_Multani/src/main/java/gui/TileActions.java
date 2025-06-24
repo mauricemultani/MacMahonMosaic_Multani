@@ -34,7 +34,7 @@ public class TileActions {
     public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile, Rotation rotation) {
         dragTiles(gridPane, label, imageView, tile);
 
-        rotateTile(label, imageView);
+        rotateTile(gridPane, label, imageView);
 
         fitBoardImageView(gridPane, imageView, rotation);
     }
@@ -81,16 +81,12 @@ public class TileActions {
 
                db.setContent(content);
                mouseEvent.consume();
-               gridPane.getChildren().remove(label);
            }
         });
 
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
-            } else {
-
-                gridPane.add(label, c);
             }
         });
 
@@ -163,7 +159,7 @@ public class TileActions {
      * @param label         Das Label, das rotiert werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(Label label, ImageView imageView){
+    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView){
         label.setOnMouseClicked(mouseEvent -> {
             // rotiert nur bei Rechtsklick
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
@@ -177,6 +173,7 @@ public class TileActions {
                 }
                 // andernfalls geht sie zur nächsten rotierung rüber.
                 Rotation next = current.next();
+                fitBoardImageView(gridPane, imageView, next);
 
                 // das imageView und auch das label werden auf die nächste Rotation gesetzt.
                 imageView.setRotate(getDegrees(next));
@@ -233,7 +230,7 @@ public class TileActions {
         int rowsCount = gridPane.getRowCount();
 
         // Anpassen der Bilder anhand der Rotation
-        // Methode verwendet
+        // Methode getDegrees() verwendet
         if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
             imageView.fitWidthProperty().bind(
                     gridPane.widthProperty().divide(columnCount - 1).
@@ -253,6 +250,5 @@ public class TileActions {
                             subtract(gridPane.getHgap())
             );
         }
-
     }
 }

@@ -68,7 +68,7 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 6;
+        int rows = 8;
 
         // Anzahl an Spalten
         int columns = 8;
@@ -86,7 +86,7 @@ public class MacMahonUIController {
         // Erstellung eines neuen Spiels
         game = new Game(rows, columns);
 
-        // lädt Bilder hoch.
+        // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
         gridBottomController.initImages();
     }

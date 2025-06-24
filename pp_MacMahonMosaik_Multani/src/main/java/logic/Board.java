@@ -151,24 +151,27 @@ public class Board {
     /**
      * Generiert zufällig Löcher im Spiel, es mehr als 24 Zellen im Spielfeld gibt.
      *
-     * @param rows      Variable für die Reihe
-     * @param columns   Variable für die Spalte
-     * @return          Anzahl an Löcher gespeichert im Array
+     * @param row      Variable für die Reihe
+     * @param column   Variable für die Spalte
+     * @return         Anzahl an Löcher gespeichert im Array
      */
-    public boolean[][] generateHoles(int rows, int columns) {
-        int totalCells = rows * columns;
+    public boolean[][] generateHoles(int row, int column) {
+        int boardRows = row - 2;
+        int boardCols = column - 2;
+        int totalCells = boardRows * boardCols;
+
         int maxTiles = 24;
         int numHoles = Math.max(0, totalCells - maxTiles);
 
-        boolean[][] holes = new boolean[rows][columns];
+        boolean[][] holes = new boolean[row][column];
         Random random = new Random();
 
         while (numHoles > 0) {
-            int r = random.nextInt(rows);
-            int c = random.nextInt(columns);
+            int r = random.nextInt(boardRows);
+            int c = random.nextInt(boardCols);
 
-            if (!holes[r][c]) {
-                holes[r][c] = true;
+            if (!holes[r + 1][c + 1]) {
+                holes[r + 1][c + 1] = true;
                 numHoles--;
             }
         }
