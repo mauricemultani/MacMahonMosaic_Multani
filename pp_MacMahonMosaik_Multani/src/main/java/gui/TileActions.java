@@ -66,6 +66,7 @@ public class TileActions {
            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
 
+               //TODO: gedrehtes Bild übertragen und nicht das Standardbild.
                ClipboardContent content = new ClipboardContent();
                content.putImage(imageView.getImage());
 
@@ -80,12 +81,16 @@ public class TileActions {
 
                db.setContent(content);
                mouseEvent.consume();
+               gridPane.getChildren().remove(label);
            }
         });
 
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
+            } else {
+
+                gridPane.add(label, c);
             }
         });
 
@@ -107,7 +112,6 @@ public class TileActions {
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             if (db.hasString()) {
-                boolean dropped = false;
                 final double totalWidth = gridPane.getWidth();
                 final int columnCount = gridPane.getColumnCount();
                 final int rowCount = gridPane.getRowCount();
@@ -140,7 +144,9 @@ public class TileActions {
 
                             gridPane.add(droppedLabel, column, row);
                             dragTiles(gridPane, droppedLabel, imageView, tile);
-                            dropped = true;
+                        }
+                        else if (!isCellEmpty(gridPane, column, row)) {
+                            dragEvent.setDropCompleted(false);
                         }
                     }
                 }
@@ -187,7 +193,7 @@ public class TileActions {
      * @param row       Reihe bzw. Reihenanzahl
      * @return          true, wenn eine leere Zelle gefunden wird, ansonsten false.
      */
-    private static boolean isCellEmpty(GridPane gridPane, int column, int row) {
+    public static boolean isCellEmpty(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {
             Integer col = GridPane.getColumnIndex(node);
             Integer rows = GridPane.getRowIndex(node);

@@ -253,13 +253,14 @@ public class BoardController {
     }
 
     /**
-     * Methode zum droppen der Mosaikteile.
-     * Es gibt eine auch in TileActions, allerdings
+     * Methode zum droppen der Mosaikteile. Speziell für Board
+     * wegen Berechnungen der Zellen.
      */
     private void dropTiles() {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
+
             }
             dragEvent.consume();
         });
@@ -286,8 +287,7 @@ public class BoardController {
                 int column = (int) ((x - borderWidth) / cellWidth);
                 int row = (int) ((y - borderHeight) / cellHeight);
 
-                if (x < borderWidth || x > totalWidth - borderWidth ||
-                        y < borderHeight || y > totalHeight - borderHeight) {
+                if (!TileActions.isCellEmpty(gridPane, column + 1, row + 1)) {
                     dragEvent.setDropCompleted(false);
                     dragEvent.consume();
                     return;
@@ -299,7 +299,6 @@ public class BoardController {
                     Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
                     ImageView imageView = new ImageView(db.getImage());
-                    fitFieldImageView(imageView, rotation);
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
