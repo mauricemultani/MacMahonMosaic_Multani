@@ -34,19 +34,32 @@ public class Board {
     public Board(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-
         this.cells = new BoardCell[rows][columns];
+
+        boolean[][] holes = generateHoles(rows, columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-
-                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, false);
+                boolean isHole = holes[row][column];
+                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, isHole);
             }
         }
 
-        boolean[][] isHole = generateHoles(rows, columns);
+        this.topBorderColors = initRandomColors(columns, borderImages, random);
+        this.bottomBorderColors = initRandomColors(columns, borderImages, random);
+        this.leftBorderColors = initRandomColors(rows, borderImages, random);
+        this.rightBorderColors = initRandomColors(rows, borderImages, random);
+    }
+
+    public Board(int rows, int columns, MosaicTile tile, Rotation rotation) {
+        this.rows = rows;
+        this.columns = columns;
+        this.cells = new BoardCell[rows][columns];
+
+        boolean[][] holes = generateHoles(rows, columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, true);
+                boolean isHole = holes[row][column];
+                this.cells[row][column] = new BoardCell(tile, rotation, isHole);
             }
         }
 
@@ -192,7 +205,7 @@ public class Board {
             return false;
         }
 
-        return !cells[row][column].isHole();
+        return cells[row][column].isHole();
     }
 
     /**
@@ -249,6 +262,18 @@ public class Board {
             images[i] = imagePath[random.nextInt(imagePath.length)];
         }
         return images;
+    }
+
+    /**
+     * Methode, welche bei einer gespeicherten Datei
+     * die richtigen Randfarben wiedergeben soll.
+     *
+     * @return ein String aus den gespeicherten Randfarben.
+     *
+     * // TODO Beenden.
+     */
+    private String[] initSavedColors() {
+        return initSavedColors();
     }
 
     /**

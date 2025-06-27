@@ -43,11 +43,6 @@ public class BoardController {
     private Pane gameFieldPane;
 
     /**
-     * Konstruktor zum Zugriff auf TileActions
-     */
-    private final TileActions tileActions = new TileActions();
-
-    /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      */
@@ -55,14 +50,6 @@ public class BoardController {
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
-    }
-
-    /**
-     * Zeigt, das Mosaikteil an
-     * @param tile das Mosaikteil
-     */
-    public void displayTile(MosaicTile tile){
-        String imagePath = tileActions.getImagePathTile(tile);
     }
 
     /**
@@ -300,6 +287,7 @@ public class BoardController {
                     Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
                     ImageView imageView = new ImageView(db.getImage());
+                    imageView.setRotate(getDegrees(rotation));
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);

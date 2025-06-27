@@ -19,10 +19,6 @@ import logic.Rotation;
  */
 public class TileActions {
 
-    public String getImagePathTile(MosaicTile tile){
-        return tile.getImagePath();
-    }
-
     /**
      * Die Methode beschränkt sich auf alle Aktionen, die im Spielfeld gemacht werden dürfen.
      * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
@@ -67,13 +63,18 @@ public class TileActions {
                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
 
                //TODO: gedrehtes Bild übertragen und nicht das Standardbild.
+               ImageView rotatedView = new ImageView(imageView.getImage());
+               Rotation rotation = (Rotation) label.getUserData();
+
+               if (rotation == null) rotation = Rotation.DEGREE_0;
+
+               rotatedView.setRotate(TileActions.getDegrees(rotation));
+
+               rotatedView.setFitWidth(imageView.getFitWidth());
+               rotatedView.setFitHeight(imageView.getFitHeight());
+
                ClipboardContent content = new ClipboardContent();
                content.putImage(imageView.getImage());
-
-               Rotation rotation = (Rotation) label.getUserData();
-               if (rotation == null) {
-                   rotation = Rotation.DEGREE_0;
-               }
 
                String data = tile.name() + '/' + rotation.name();
 

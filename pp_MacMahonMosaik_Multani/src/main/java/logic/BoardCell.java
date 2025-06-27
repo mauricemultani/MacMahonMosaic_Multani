@@ -7,24 +7,36 @@ public class BoardCell {
 
     private MosaicTile tile;
     private Rotation rotation;
-    private final boolean isHole;
+    private boolean hole;
 
     public BoardCell(MosaicTile tile, Rotation rotation, boolean isHole) {
         this.tile = tile;
         this.rotation = rotation;
-        this.isHole = isHole;
-    }
-
-    public boolean isHole() {
-        return isHole;
+        this.hole = isHole;
     }
 
     public MosaicTile getTile() {
         return tile;
     }
 
+    public void setTile(MosaicTile tile) {
+        this.tile = tile;
+    }
+
     public Rotation getRotation() {
         return rotation;
+    }
+
+    public void setRotation(Rotation rotation) {
+        this.rotation = rotation;
+    }
+
+    public boolean isHole() {
+        return hole;
+    }
+
+    public void setHole(boolean hole) {
+        this.hole = hole;
     }
 
     public Rotation rotate() {
@@ -33,7 +45,7 @@ public class BoardCell {
     }
 
     public void placeTile(MosaicTile tile, Rotation rotation) {
-        if (!isHole()) {
+        if (!hole) {
             this.tile = tile;
             this.rotation = rotation;
         }

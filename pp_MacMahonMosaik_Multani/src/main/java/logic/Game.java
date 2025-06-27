@@ -66,7 +66,6 @@ public class Game {
         this.ongoingGame = new BoardCell[rows][columns];
 
         clearBoard();
-        board.generateHoles(rows, columns);
     }
 
     /**
@@ -76,8 +75,8 @@ public class Game {
         int rows = board.getRows();
         int columns = board.getColumns();
 
-        for (int row = 1; row < rows - 1; row++) {
-            for (int column = 1; column < columns - 1; column++) {
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
                 // Kann vllt später verwendet werden
                 // boolean isHole = board.getCell(row, column).isHole();
 
@@ -87,19 +86,13 @@ public class Game {
     }
 
     /**
-     * Klont das Spielfeld. Wird für den Wechsel in den Editor-Modus benötigt.
-     * Bisher noch unklar, ob es benötigt wird oder nicht.
+     * Klont das Spielfeld.
+     * Wird für die Speicherung des Spielfelds verwendet.
      */
     public void cloneGameField() {
-        BoardCell[][] copy = new BoardCell[ongoingGame.length][ongoingGame[0].length];
-        for (int row = 0; row < ongoingGame.length; row++) {
-            for (int column = 0; column < ongoingGame[0].length; column++) {
-                BoardCell original = ongoingGame[row][column];
-                copy[row][column] = new BoardCell(
-                        original.getTile(),
-                        original.getRotation(),
-                        original.isHole()
-                );
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                ongoingGame[row][column] = board.getCell(row, column);
             }
         }
     }
@@ -109,6 +102,8 @@ public class Game {
      * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
      */
     public void saveGame(File file) {
+        cloneGameField();
+
         // Gson-Objekt erstellen
         Gson gson = new Gson();
 
@@ -127,6 +122,8 @@ public class Game {
      * Lädt ein gespeichertes Spiel
      */
     public void loadGame(File file) {
+
+
         try (Reader reader = new FileReader(file)) {
             Gson gson = new Gson();
             ongoingGame = gson.fromJson(reader, BoardCell[][].class);
@@ -134,7 +131,9 @@ public class Game {
             for (int row = 0; row < ongoingGame.length; row++) {
                 for (int col = 0; col < ongoingGame[0].length; col++) {
                     BoardCell cell = ongoingGame[row][col];
-                    board.getCell(row, col).placeTile(cell.getTile(), cell.getRotation());
+                    BoardCell boardCell = board.getCell(row, col);
+                    boardCell.placeTile(cell.getTile(), cell.getRotation());
+                    boardCell.setHole(cell.isHole());
                 }
             }
 

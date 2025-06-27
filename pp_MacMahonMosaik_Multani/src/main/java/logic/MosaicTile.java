@@ -97,4 +97,22 @@ public enum MosaicTile {
         }
         return rotated;
     }
+
+    /**
+     * Methode, welche die Enum-Teile in einzelne Buchstaben trennt.
+     *
+     * @return  das Mosaikteil zertrennt in seinen Buchstaben.
+     */
+    public char[] splitTile() {
+        return this.name().toCharArray();
+    }
+
+    /**
+     * Methode, welche einen einzelnen Buchstaben anhand des Index zurückgibt.
+     *
+     * @return  den einzelnen Buchstaben anhand seines Index.
+     */
+    public char giveSingleTile(int index){
+        return this.name().charAt(index);
+    }
 }

@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.scene.control.Alert;
 import logic.GUIConnector;
 
 /**
@@ -14,5 +15,27 @@ public class JavaFXGUI implements GUIConnector {
     @Override
     public void gameEnded(boolean gameFinished) {
 
+    }
+
+    /**
+     *  Soll bei erfolgreicher Speicherung, dies dem Spieler auch mitteilen.
+     */
+    public void showSuccess() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Game was successfully saved!");
+        alert.setContentText("You may close the Window.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Soll bei einer nicht erfolgreichen Speicherung, dies dem Spieler auch mitteilen.
+     */
+    public void showFail() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Game was not saved!");
+        alert.setContentText("You may close the Window.");
+        alert.showAndWait();
     }
 }
