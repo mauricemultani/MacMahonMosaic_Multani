@@ -16,6 +16,9 @@ public class BoardCell {
     }
 
     public MosaicTile getTile() {
+        if (tile == null) {
+            return MosaicTile.NNNN;
+        }
         return tile;
     }
 
@@ -54,4 +57,5 @@ public class BoardCell {
     public boolean isPlaced() {
         return tile != null;
     }
+
 }

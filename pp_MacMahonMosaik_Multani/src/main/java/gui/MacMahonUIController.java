@@ -6,8 +6,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import logic.Board;
-import logic.Game;
+import logic.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -25,7 +24,13 @@ public class MacMahonUIController {
 
     private Game game;
 
+    private MosaicTile tile;
+
+    private Rotation rotation;
+
     private boolean success;
+
+    private BoardCell[][] ongoingGame;
 
     /**
      * das Spielfeld, die zugehörige Pane dazu
@@ -74,10 +79,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 4;
+        int rows = 8;
 
         // Anzahl an Spalten
-        int columns = 5;
+        int columns = 8;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.

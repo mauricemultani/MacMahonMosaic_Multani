@@ -15,6 +15,7 @@ public class Board {
     private final int rows;
     private final int columns;
     private final BoardCell[][] cells;
+    private MosaicTile tile;
 
     private final String[] topBorderColors;
     private final String[] bottomBorderColors;
@@ -36,11 +37,11 @@ public class Board {
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
 
-        boolean[][] holes = generateHoles(rows, columns);
+        boolean[][] holes = generateHoles(getRows(), getColumns());
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 boolean isHole = holes[row][column];
-                this.cells[row][column] = new BoardCell(null, Rotation.DEGREE_0, isHole);
+                this.cells[row][column] = new BoardCell(tile, Rotation.DEGREE_0, isHole);
             }
         }
 
@@ -50,16 +51,19 @@ public class Board {
         this.rightBorderColors = initRandomColors(rows, borderImages, random);
     }
 
-    public Board(int rows, int columns, MosaicTile tile, Rotation rotation) {
+    public Board(int rows, int columns, BoardCell[][] saveCells) {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
 
-        boolean[][] holes = generateHoles(rows, columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                boolean isHole = holes[row][column];
-                this.cells[row][column] = new BoardCell(tile, rotation, isHole);
+                BoardCell savedCell = saveCells[row][column];
+                this.cells[row][column] = new BoardCell(
+                        savedCell.getTile(),
+                        savedCell.getRotation(),
+                        savedCell.isHole()
+                );
             }
         }
 
@@ -186,6 +190,21 @@ public class Board {
             if (!holes[r + 1][c + 1]) {
                 holes[r + 1][c + 1] = true;
                 numHoles--;
+            }
+        }
+        return holes;
+    }
+
+    /**
+     * Methode um die Löcher aus dem Spielfeld herauszufinden.
+     * @return ein boolescher-Array mit den Löchern im Spielfeld.
+     */
+    public boolean[][] getHoles() {
+        boolean[][] holes = new boolean[rows][columns];
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                holes[row][column] = cells[row][column].isHole();
             }
         }
         return holes;

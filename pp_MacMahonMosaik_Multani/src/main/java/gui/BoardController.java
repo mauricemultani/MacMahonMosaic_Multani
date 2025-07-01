@@ -34,7 +34,7 @@ public class BoardController {
     /**
      * Das Spielfeld.
      */
-    private final Board board;
+    private Board board;
 
     /**
      * Pane, die das Spielfeld enthält (Wichtig für die Größenverhältnisse).
@@ -124,6 +124,14 @@ public class BoardController {
     }
 
     /**
+     * Setzt das Board.
+     * @param board
+     */
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    /**
      * Anpassen der Größe des Spielfeldes mit der Anpassung,
      * dass die Randzellen um 1/4 kleiner als die Spielfeldzellen sind.
      */
@@ -173,7 +181,7 @@ public class BoardController {
      */
     private void generatingHoles() {
         Rotation rotation = Rotation.DEGREE_0;
-        boolean[][] holes = board.generateHoles(board.getRows(), board.getColumns());
+        boolean[][] holes = board.getHoles();
 
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int column = 1; column < board.getColumns() - 1; column++) {
@@ -188,9 +196,9 @@ public class BoardController {
 
                     gridPane.add(hole, column, row);
                 }
+
             }
         }
-
     }
 
     /**

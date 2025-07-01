@@ -1,6 +1,7 @@
 package logic;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
 
@@ -15,6 +16,10 @@ public class Game {
 
 
     private Board board;
+
+    private MosaicTile tile;
+
+    private Rotation rotation;
 
     private final int rows;
 
@@ -39,7 +44,9 @@ public class Game {
      * Konstruktor für Testzwecke. Erzeugt ein befindliches Spiel mitten im Spielgeschehen.
      * Nimmt das Spielfeld in Form eines BoardCell-Arrays entgegen.
      *
-     * @param ongoingGame das laufende Spiel
+     * @param rows          die Anzahl an Reihen
+     * @param columns       die Anzahl an Spalten
+     * @param ongoingGame   das laufende Spiel
      */
     public Game(int rows, int columns, BoardCell[][] ongoingGame) {
         this.rows = rows;
@@ -75,8 +82,8 @@ public class Game {
         int rows = board.getRows();
         int columns = board.getColumns();
 
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
+        for (int row = 1; row < rows - 1; row++) {
+            for (int column = 1; column < columns - 1; column++) {
                 // Kann vllt später verwendet werden
                 // boolean isHole = board.getCell(row, column).isHole();
 
@@ -92,7 +99,11 @@ public class Game {
     public void cloneGameField() {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                ongoingGame[row][column] = board.getCell(row, column);
+                BoardCell cell = board.getCell(row, column);
+                MosaicTile tile = cell.getTile();
+                Rotation rotation = cell.getRotation();
+                boolean isHole = cell.isHole();
+                ongoingGame[row][column] = new BoardCell(tile, rotation, isHole);
             }
         }
     }
@@ -102,40 +113,41 @@ public class Game {
      * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
      */
     public void saveGame(File file) {
-        cloneGameField();
+        BoardCell[][] saveCells = new BoardCell[board.getRows()][board.getColumns()];
 
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getColumns(); col++) {
+                BoardCell cell = board.getCell(row, col);
+
+                saveCells[row][col] = new BoardCell(
+                        cell.getTile(),
+                        cell.getRotation(),
+                        cell.isHole()
+                );
+            }
+        }
         // Gson-Objekt erstellen
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // BoardCell Array in JSON-String umwandeln
-        String json = gson.toJson(ongoingGame);
+        String json = gson.toJson(saveCells);
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(json);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     /**
      * Lädt ein gespeichertes Spiel
      */
     public void loadGame(File file) {
-
-
         try (Reader reader = new FileReader(file)) {
             Gson gson = new Gson();
-            ongoingGame = gson.fromJson(reader, BoardCell[][].class);
+            BoardCell[][] savedCells = gson.fromJson(reader, BoardCell[][].class);
 
-            for (int row = 0; row < ongoingGame.length; row++) {
-                for (int col = 0; col < ongoingGame[0].length; col++) {
-                    BoardCell cell = ongoingGame[row][col];
-                    BoardCell boardCell = board.getCell(row, col);
-                    boardCell.placeTile(cell.getTile(), cell.getRotation());
-                    boardCell.setHole(cell.isHole());
-                }
-            }
+            this.board = new Board(rows, columns, savedCells);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

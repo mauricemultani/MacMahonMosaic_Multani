@@ -50,7 +50,11 @@ public enum MosaicTile {
     YYYY,
 
     HHHH,
-    NNNN;
+    NNNN,
+
+    GGGG_ohne_Linien,
+    RRRR_ohne_Linien,
+    YYYY_ohne_Linien;
 
     /**
      * Gibt den Pfad zur Bilddatei zurück, die dieses MosaikTile repräsentiert.
