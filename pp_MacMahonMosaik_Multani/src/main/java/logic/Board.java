@@ -217,8 +217,8 @@ public class Board {
      * @return      True, wenn das Mosaikteil an der Position passt, ansonsten false.
      */
     public boolean isPositionValid(Position pos) {
-        int row = pos.getRow();
-        int column = pos.getColumn();
+        int row = pos.row();
+        int column = pos.column();
 
         if (row < 0 || row >= rows || column < 0 || column >= columns) {
             return false;
@@ -246,8 +246,8 @@ public class Board {
         };
 
         for (int i = 0; i < 4; i++) {
-            int newRow = pos.getRow() + directions[i][0];
-            int newCol = pos.getColumn() + directions[i][1];
+            int newRow = pos.row() + directions[i][0];
+            int newCol = pos.column() + directions[i][1];
 
             // Überprüfung, ob Nachbar
             if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < columns) {
@@ -327,7 +327,7 @@ public class Board {
      * @param pos           die Position, wo das Mosaikteil platziert werden soll.
      */
     public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos) {
-        cells[pos.getRow()][pos.getColumn()].placeTile(mosaicTile, rotation);
+        cells[pos.row()][pos.column()].placeTile(mosaicTile, rotation);
     }
 
 }
