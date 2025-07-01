@@ -96,23 +96,7 @@ public class Game {
      * Klont das Spielfeld.
      * Wird für die Speicherung des Spielfelds verwendet.
      */
-    public void cloneGameField() {
-        for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                BoardCell cell = board.getCell(row, column);
-                MosaicTile tile = cell.getTile();
-                Rotation rotation = cell.getRotation();
-                boolean isHole = cell.isHole();
-                ongoingGame[row][column] = new BoardCell(tile, rotation, isHole);
-            }
-        }
-    }
-
-    /**
-     * Speichert das laufende Spiel.
-     * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
-     */
-    public void saveGame(File file) {
+    private BoardCell[][] saveCells() {
         BoardCell[][] saveCells = new BoardCell[board.getRows()][board.getColumns()];
 
         for (int row = 0; row < board.getRows(); row++) {
@@ -126,11 +110,22 @@ public class Game {
                 );
             }
         }
+
+        return saveCells;
+    }
+
+    /**
+     * Speichert das laufende Spiel.
+     * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
+     */
+    public void saveGame(File file) {
+        saveCells();
+
         // Gson-Objekt erstellen
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // BoardCell Array in JSON-String umwandeln
-        String json = gson.toJson(saveCells);
+        String json = gson.toJson(saveCells());
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(json);
