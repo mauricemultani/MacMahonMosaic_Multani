@@ -79,10 +79,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 8;
+        int rows = 7;
 
         // Anzahl an Spalten
-        int columns = 8;
+        int columns = 7;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.

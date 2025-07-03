@@ -85,7 +85,7 @@ public class Game {
         for (int row = 1; row < rows - 1; row++) {
             for (int column = 1; column < columns - 1; column++) {
                 // Kann vllt später verwendet werden
-                // boolean isHole = board.getCell(row, column).isHole();
+                // boolean isHole = board.getCell(column, row).isHole();
 
                 board.getCell(row, column).placeTile(null, Rotation.DEGREE_0);
             }
@@ -103,10 +103,16 @@ public class Game {
             for (int col = 0; col < board.getColumns(); col++) {
                 BoardCell cell = board.getCell(row, col);
 
+                    if (cell.isHole()) {
+                        saveCells[row][col] = new BoardCell(true);
+                    } else if (cell.getTile() != null) {
+                        saveCells[row][col] = new BoardCell(cell.getTile());
+                    } else {
+                        saveCells[row][col] = new BoardCell(null);
+                    }
+
                 saveCells[row][col] = new BoardCell(
-                        cell.getTile(),
-                        cell.getRotation(),
-                        cell.isHole()
+                        cell.getTile()
                 );
             }
         }
@@ -114,18 +120,39 @@ public class Game {
         return saveCells;
     }
 
+    private String[][] convertBoardToString(BoardCell[][] cells) {
+        int rows = board.getRows();
+        int columns = board.getColumns();
+        String[][] converted = new String[rows][columns];
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                BoardCell cell = cells[row][col];
+
+                if (cell.isHole()) {
+                    converted[row][col] = "HHHH";
+                } else if (cell.getTile() != null) {
+                    converted[row][col] = cell.getTile().name();
+                } else {
+                    converted[row][col] = "NNNN";
+                }
+            }
+        }
+        return converted;
+    }
+
     /**
      * Speichert das laufende Spiel.
-     * Zu beachten wäre, dass es speichert, wenn das Spiel schon einen Namen hat.
      */
     public void saveGame(File file) {
-        saveCells();
+        String[][] field = convertBoardToString(saveCells());
+        FieldWrapper wrapper = new FieldWrapper(field);
 
         // Gson-Objekt erstellen
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // BoardCell Array in JSON-String umwandeln
-        String json = gson.toJson(saveCells());
+        String json = gson.toJson(wrapper);
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(json);
@@ -136,6 +163,11 @@ public class Game {
 
     /**
      * Lädt ein gespeichertes Spiel
+     *
+     * Achten auf Fehlermeldungen
+     * Bsp.: falsche Zeilen/Spalten geladen
+     *       keine JSON datei
+     *
      */
     public void loadGame(File file) {
         try (Reader reader = new FileReader(file)) {
@@ -165,5 +197,13 @@ public class Game {
 
     }
 
+
+    public static class FieldWrapper {
+        public String[][] field;
+
+        public FieldWrapper(String[][] field) {
+            this.field = field;
+        }
+    }
 
 }

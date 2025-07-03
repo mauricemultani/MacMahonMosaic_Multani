@@ -54,7 +54,22 @@ public enum MosaicTile {
 
     GGGG_ohne_Linien,
     RRRR_ohne_Linien,
-    YYYY_ohne_Linien;
+    YYYY_ohne_Linien,
+
+    GNNN,
+    NGNN,
+    NNGN,
+    NNNG,
+
+    RNNN,
+    NRNN,
+    NNRN,
+    NNNR,
+
+    YNNN,
+    NYNN,
+    NNYN,
+    NNNY;
 
     /**
      * Gibt den Pfad zur Bilddatei zurück, die dieses MosaikTile repräsentiert.
@@ -81,6 +96,7 @@ public enum MosaicTile {
                 case 'Y' -> colors[i] = Color.YELLOW;
                 case 'R' -> colors[i] = Color.RED;
                 case 'G' -> colors[i] = Color.GREEN;
+                case 'H' -> colors[i] = Color.GRAY;
                 default -> throw new UnsupportedOperationException("Unknown Color:" + c);
             }
         }
@@ -93,6 +109,10 @@ public enum MosaicTile {
      * @return          Array von 4 Farben nach Rotation.
      */
     public Color[] getColors(Rotation rotation){
+        if (rotation == null) {
+            rotation = Rotation.DEGREE_0;
+        }
+
         Color[] original = this.getColors();
         Color[] rotated = new Color[4];
 

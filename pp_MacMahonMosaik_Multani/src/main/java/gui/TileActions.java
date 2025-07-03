@@ -27,12 +27,12 @@ public class TileActions {
      * @param tile          Das Mosaikteil
      * @param rotation      Die Rotation vom Mosaikteil
      */
-    public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile, Rotation rotation) {
+    public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
         dragTiles(gridPane, label, imageView, tile);
 
         rotateTile(gridPane, label, imageView);
 
-        fitBoardImageView(gridPane, imageView, rotation);
+        fitBoardImageView(gridPane, imageView);
     }
 
     /**
@@ -64,11 +64,11 @@ public class TileActions {
 
                //TODO: gedrehtes Bild übertragen und nicht das Standardbild.
                ImageView rotatedView = new ImageView(imageView.getImage());
-               Rotation rotation = (Rotation) label.getUserData();
+               // Rotation rotation = (Rotation) label.getUserData();
 
-               if (rotation == null) rotation = Rotation.DEGREE_0;
+               // if (rotation == null) rotation = Rotation.DEGREE_0;
 
-               rotatedView.setRotate(TileActions.getDegrees(rotation));
+               // rotatedView.setRotate(TileActions.getDegrees(rotation));
 
                rotatedView.setFitWidth(imageView.getFitWidth());
                rotatedView.setFitHeight(imageView.getFitHeight());
@@ -76,7 +76,8 @@ public class TileActions {
                ClipboardContent content = new ClipboardContent();
                content.putImage(imageView.getImage());
 
-               String data = tile.name() + '/' + rotation.name();
+               String data = tile.name();
+                       // + '/' + rotation.name();
 
                content.putString(data);
 
@@ -122,13 +123,16 @@ public class TileActions {
                     for (int row = 0; row < rowCount; row++) {
                         if (isCellEmpty(gridPane, column, row)) {
 
-                            String[] tileInfo = db.getString().split("/");
-                            MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                            Rotation rotation = Rotation.valueOf(tileInfo[1]);
+                            // String[] tileInfo = db.getString().split("/");
+                            // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                            // Rotation rotation = Rotation.valueOf(tileInfo[1]);
+
+                            String tileInfo = db.getString();
+                            MosaicTile tile = MosaicTile.valueOf(tileInfo);
 
                             ImageView imageView = new ImageView(db.getImage());
 
-                            imageView.setRotate(getDegrees(rotation));
+                            // imageView.setRotate(getDegrees(rotation));
 
                             imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
                             imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowCount));
@@ -137,7 +141,7 @@ public class TileActions {
                             Label droppedLabel = new Label();
 
                             droppedLabel.setGraphic(imageView);
-                            droppedLabel.setUserData(rotation);
+                            // droppedLabel.setUserData(rotation);
 
                             gridPane.add(droppedLabel, column, row);
                             dragTiles(gridPane, droppedLabel, imageView, tile);
@@ -174,7 +178,7 @@ public class TileActions {
                 }
                 // andernfalls geht sie zur nächsten rotierung rüber.
                 Rotation next = current.next();
-                fitBoardImageView(gridPane, imageView, next);
+                fitBoardImageView(gridPane, imageView);
 
                 // das imageView und auch das label werden auf die nächste Rotation gesetzt.
                 imageView.setRotate(getDegrees(next));
@@ -226,30 +230,39 @@ public class TileActions {
      * @param imageView das Bild vom Mosaikteil.
      * @param rotation  Rotation vom Bild.
      */
-    private static void fitBoardImageView(GridPane gridPane, ImageView imageView, Rotation rotation) {
+    private static void fitBoardImageView(GridPane gridPane, ImageView imageView) {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
         // Anpassen der Bilder anhand der Rotation
         // Methode getDegrees() verwendet
-        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
-            imageView.fitWidthProperty().bind(
-                    gridPane.widthProperty().divide(columnCount - 1).
-                            subtract(gridPane.getHgap())
-            );
-            imageView.fitHeightProperty().bind(
-                    gridPane.heightProperty().divide(rowsCount - 1).
-                            subtract(gridPane.getVgap())
-            );
-        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
-            imageView.fitWidthProperty().bind(
-                    gridPane.heightProperty().divide(rowsCount - 1).
-                            subtract(gridPane.getVgap())
-            );
-            imageView.fitHeightProperty().bind(
-                    gridPane.widthProperty().divide(columnCount - 1).
-                            subtract(gridPane.getHgap())
-            );
-        }
+//        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
+//            imageView.fitWidthProperty().bind(
+//                    gridPane.widthProperty().divide(columnCount - 1).
+//                            subtract(gridPane.getHgap())
+//            );
+//            imageView.fitHeightProperty().bind(
+//                    gridPane.heightProperty().divide(rowsCount - 1).
+//                            subtract(gridPane.getVgap())
+//            );
+//        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
+//            imageView.fitWidthProperty().bind(
+//                    gridPane.heightProperty().divide(rowsCount - 1).
+//                            subtract(gridPane.getVgap())
+//            );
+//            imageView.fitHeightProperty().bind(
+//                    gridPane.widthProperty().divide(columnCount - 1).
+//                            subtract(gridPane.getHgap())
+//            );
+//        }
+
+        imageView.fitWidthProperty().bind(
+                gridPane.widthProperty().divide(columnCount - 1).
+                        subtract(gridPane.getHgap())
+        );
+        imageView.fitHeightProperty().bind(
+                gridPane.heightProperty().divide(rowsCount - 1).
+                        subtract(gridPane.getVgap())
+        );
     }
 }

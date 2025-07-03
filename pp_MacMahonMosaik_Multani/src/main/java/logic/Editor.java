@@ -1,7 +1,5 @@
 package logic;
 
-import javafx.scene.layout.GridPane;
-
 /**
  * Der Editormodus. Der Spieler hat mit dem Editormodus die Möglichkeit sein eigenes Spiel zu erstellen.
  * Implementiert das Interface "Solve", welches Methoden zur Überprüfung der Lösbarkeit des Puzzles bereitstellt.
@@ -13,14 +11,14 @@ public class Editor {
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
-    private final GridPane gridPane;
+    private final Board board;
 
     /**
      * Konstruktor, welches ein GridPane initialisiert.
-     * @param gridPane das GridPane was initialisiert wird.
+     * @param board     Das Spielfeld.
      */
-    public Editor(GridPane gridPane) {
-        this.gridPane = gridPane;
+    public Editor(Board board) {
+        this.board = board;
     }
 
     /**
@@ -29,7 +27,16 @@ public class Editor {
      * Nimmt alle Teile vom Feld und lässt nur noch Rand und ggf. Löcher übrig.
      */
     public void switchToEditorMode(){
-        gridPane.getChildren().clear();
+        int rows = board.getRows();
+        int columns = board.getColumns();
+
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < columns - 1; col++) {
+                BoardCell cell = board.getCell(row, col);
+                if (!cell.isHole())
+                    cell.placeTile(MosaicTile.NNNN, Rotation.DEGREE_0);
+            }
+        }
     }
 
     /**
@@ -45,6 +52,7 @@ public class Editor {
      * Muss rechteckig, aber nicht quadratisch sein.
      */
     public void changeSizeOfGameField(){
+
     }
 
     /**

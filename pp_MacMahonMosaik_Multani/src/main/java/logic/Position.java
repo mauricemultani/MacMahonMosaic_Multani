@@ -4,17 +4,17 @@ package logic;
  * Klasse für die Position.
  * Wird verwendet, um Positionen zurückzugeben oder neue zu erstellen.
  *
- * @param column X-Koordinate
- * @param row    Y-Koordinate
+ * @param row X-Koordinate
+ * @param column    Y-Koordinate
  * @author Maurice Singh Multani
  */
-public record Position(int column, int row) {
+public record Position(int row, int column) {
 
     /**
-     * Erstellt eine neue Position mit den Koordinaten column und row.
+     * Erstellt eine neue Position mit den Koordinaten row und column.
      *
-     * @param column X-Koordinate
-     * @param row    Y-Koordinate
+     * @param row X-Koordinate
+     * @param column    Y-Koordinate
      */
     public Position {
     }
@@ -24,9 +24,8 @@ public record Position(int column, int row) {
      *
      * @return X-koordinate der Position
      */
-    @Override
-    public int column() {
-        return column;
+    public int row() {
+        return row;
     }
 
     /**
@@ -34,8 +33,7 @@ public record Position(int column, int row) {
      *
      * @return Y-koordinate der Position
      */
-    @Override
-    public int row() {
-        return row;
+    public int column() {
+        return column;
     }
 }

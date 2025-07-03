@@ -9,18 +9,22 @@ public class BoardCell {
     private Rotation rotation;
     private boolean hole;
 
-    public BoardCell(MosaicTile tile, Rotation rotation, boolean isHole) {
+    public BoardCell(MosaicTile tile) {
         this.tile = tile;
-        this.rotation = rotation;
+    }
+
+    public BoardCell(boolean isHole) {
         this.hole = isHole;
+        if (isHole) {
+            this.tile = MosaicTile.HHHH;
+        }
     }
 
     public MosaicTile getTile() {
-        if (tile == null) {
-            return MosaicTile.NNNN;
-        }
         return tile;
     }
+
+
 
     public void setTile(MosaicTile tile) {
         this.tile = tile;
@@ -38,8 +42,9 @@ public class BoardCell {
         return hole;
     }
 
-    public void setHole(boolean hole) {
-        this.hole = hole;
+    public void setHole() {
+        this.hole = true;
+        this.tile = MosaicTile.HHHH;
     }
 
     public Rotation rotate() {

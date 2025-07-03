@@ -17,6 +17,7 @@ import logic.Rotation;
 import java.util.Objects;
 
 import static gui.TileActions.getDegrees;
+import static gui.TileActions.isCellEmpty;
 
 /**
  * Steuerung des Spielfeldes.
@@ -177,7 +178,8 @@ public class BoardController {
     }
 
     /**
-     * Private Methode die Löcher generiert wenn es mehr als
+     * Private Methode die Löcher generiert,
+     * wenn das Spielfeld mehr als 24 belegbare Zellen hat.
      */
     private void generatingHoles() {
         Rotation rotation = Rotation.DEGREE_0;
@@ -290,19 +292,22 @@ public class BoardController {
                 }
 
                 if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
-                    String[] tileInfo = db.getString().split("/");
-                    MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                    Rotation rotation = Rotation.valueOf(tileInfo[1]);
+                    // String[] tileInfo = db.getString().split("/");
+                    // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                    // Rotation rotation = Rotation.valueOf(tileInfo[1]);
+
+                    String tileInfo = db.getString();
+                    MosaicTile tile = MosaicTile.valueOf(tileInfo);
 
                     ImageView imageView = new ImageView(db.getImage());
-                    imageView.setRotate(getDegrees(rotation));
+                    // imageView.setRotate(getDegrees(rotation));
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
-                    droppedLabel.setUserData(rotation);
+                    // droppedLabel.setUserData(rotation);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
-                    TileActions.boardActions(gridPane, droppedLabel, imageView, tile, rotation);
+                    TileActions.boardActions(gridPane, droppedLabel, imageView, tile);
                 }
             }
             dragEvent.setDropCompleted(true);
@@ -372,6 +377,23 @@ public class BoardController {
                     multiply(middleColWidthPercentage / 100));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     multiply(borderRowHeightPercentage / 100));
+        }
+    }
+
+    /**
+     * Die Methode soll bei einem Switch in den Editor-Modus alles
+     * außer den Rändern und Löchern leeren.
+     */
+    private void switchingToEditorMode() {
+        int rows = board.getRows();
+        int columns = board.getColumns();
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                if (!isCellEmpty(gridPane, col, row)) {
+                    gridPane.getChildren().clear();
+                }
+            }
         }
     }
 }

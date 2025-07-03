@@ -5,7 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import logic.MosaicTile;
-import logic.Rotation;
 
 import java.util.Objects;
 
@@ -53,7 +52,6 @@ public class GridBottomController {
 
                 Label tile = new Label();
                 tile.setGraphic(imageView);
-                tile.setUserData(Rotation.DEGREE_0);
 
                 // Drag starten
                 TileActions.gridBottomActions(gridPane, tile, imageView, tileValue);

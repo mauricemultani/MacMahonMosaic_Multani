@@ -39,16 +39,20 @@ public class Board {
 
         boolean[][] holes = generateHoles(getRows(), getColumns());
         for (int row = 0; row < rows; row++) {
-            for (int column = 0; column < columns; column++) {
-                boolean isHole = holes[row][column];
-                this.cells[row][column] = new BoardCell(tile, Rotation.DEGREE_0, isHole);
+            for (int col = 0; col < columns; col++) {
+                if (holes[row][col]) {
+                    this.cells[row][col] = new BoardCell(true);
+                } else {
+                    this.cells[row][col] = new BoardCell(null);
+                }
+
             }
         }
 
-        this.topBorderColors = initRandomColors(columns, borderImages, random);
-        this.bottomBorderColors = initRandomColors(columns, borderImages, random);
-        this.leftBorderColors = initRandomColors(rows, borderImages, random);
-        this.rightBorderColors = initRandomColors(rows, borderImages, random);
+        this.topBorderColors = initRandomColors(columns, topBorderImages, random);
+        this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
+        this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
+        this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
     }
 
     public Board(int rows, int columns, BoardCell[][] saveCells) {
@@ -60,17 +64,15 @@ public class Board {
             for (int column = 0; column < columns; column++) {
                 BoardCell savedCell = saveCells[row][column];
                 this.cells[row][column] = new BoardCell(
-                        savedCell.getTile(),
-                        savedCell.getRotation(),
-                        savedCell.isHole()
+                        savedCell.getTile()
                 );
             }
         }
 
-        this.topBorderColors = initRandomColors(columns, borderImages, random);
-        this.bottomBorderColors = initRandomColors(columns, borderImages, random);
-        this.leftBorderColors = initRandomColors(rows, borderImages, random);
-        this.rightBorderColors = initRandomColors(rows, borderImages, random);
+        this.topBorderColors = initRandomColors(columns, topBorderImages, random);
+        this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
+        this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
+        this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
     }
 
     /**
@@ -139,14 +141,37 @@ public class Board {
     }
 
     /**
-     * String welches die Randbilder enthält.
+     * Strings welche die Randbilder für die Ränder enthält.
      * Werden verwendet, um die Ränder vom Bild darzustellen.
+     * Anhand des Methodennamens wird klar, für welchen Rand die Bilder verwendet werden.
      */
-    String[] borderImages = {
-            "/gui/tiles/GGGG_ohne_Linien.png",
-            "/gui/tiles/RRRR_ohne_Linien.png",
-            "/gui/tiles/YYYY_ohne_Linien.png"
+    String[] topBorderImages = {
+            "/gui/tiles/NNGN.png",
+            "/gui/tiles/NNRN.png",
+            "/gui/tiles/NNYN.png"
     };
+
+    String[] bottomBorderImages = {
+            "/gui/tiles/GNNN.png",
+            "/gui/tiles/RNNN.png",
+            "/gui/tiles/YNNN.png"
+    };
+
+    String[] leftBorderImages = {
+            "/gui/tiles/NGNN.png",
+            "/gui/tiles/NRNN.png",
+            "/gui/tiles/NYNN.png"
+    };
+
+    String[] rightBorderImages = {
+            "/gui/tiles/NNNG.png",
+            "/gui/tiles/NNNR.png",
+            "/gui/tiles/NNNY.png"
+    };
+
+
+
+
 
     /**
      * Für Testzwecke gedacht. Erstellt ein mitten im Spielgeschehen befindliches Spiel
@@ -224,7 +249,7 @@ public class Board {
             return false;
         }
 
-        return cells[row][column].isHole();
+        return !cells[row][column].isHole() && !cells[row][column].isPlaced();
     }
 
     /**
@@ -257,7 +282,7 @@ public class Board {
                     Color[] neighbourColors = neighbourCell.getTile().getColors(neighbourCell.getRotation());
                     int oppositeSide = (i + 2) % 4;
 
-                    if (!tileColors[i].equals(neighbourColors[oppositeSide])) {
+                    if (!tileColors[i].equals(neighbourColors[oppositeSide]) && neighbourColors[oppositeSide] != Color.GRAY) {
                         return false;
                     }
                 }
