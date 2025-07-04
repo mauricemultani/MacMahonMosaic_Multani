@@ -270,6 +270,10 @@ public class Board {
                 {0, 1}   // rechter Nachbar
         };
 
+        //
+        int[] tileSide = {0, 2, 3, 1};
+        int[] oppositeSides = {2, 0, 1, 3};
+
         for (int i = 0; i < 4; i++) {
             int newRow = pos.row() + directions[i][0];
             int newCol = pos.column() + directions[i][1];
@@ -280,9 +284,11 @@ public class Board {
 
                 if (neighbourCell.isPlaced()) {
                     Color[] neighbourColors = neighbourCell.getTile().getColors(neighbourCell.getRotation());
-                    int oppositeSide = (i + 2) % 4;
+                    int tileIndex = tileSide[i];
+                    int neighbourIndex = oppositeSides[i];
 
-                    if (!tileColors[i].equals(neighbourColors[oppositeSide]) && neighbourColors[oppositeSide] != Color.GRAY) {
+                    if (neighbourColors[neighbourIndex] != Color.GRAY && !tileColors[tileIndex].equals(neighbourColors[neighbourIndex])) {
+                        System.out.println("i: " + i + ", tileColors[i]: " + tileColors[i] + ", neighbourColors[oppositeSide]: " + neighbourColors[neighbourIndex]);
                         return false;
                     }
                 }

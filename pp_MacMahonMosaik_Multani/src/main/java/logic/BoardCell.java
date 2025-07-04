@@ -55,12 +55,15 @@ public class BoardCell {
     public void placeTile(MosaicTile tile, Rotation rotation) {
         if (!hole) {
             this.tile = tile;
+            if (rotation == null){
+                rotation = Rotation.DEGREE_0;
+            }
             this.rotation = rotation;
         }
     }
 
     public boolean isPlaced() {
-        return tile != null;
+        return tile != null && !hole;
     }
 
 }

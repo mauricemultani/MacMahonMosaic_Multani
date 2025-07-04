@@ -52,10 +52,6 @@ public enum MosaicTile {
     HHHH,
     NNNN,
 
-    GGGG_ohne_Linien,
-    RRRR_ohne_Linien,
-    YYYY_ohne_Linien,
-
     GNNN,
     NGNN,
     NNGN,
@@ -96,7 +92,7 @@ public enum MosaicTile {
                 case 'Y' -> colors[i] = Color.YELLOW;
                 case 'R' -> colors[i] = Color.RED;
                 case 'G' -> colors[i] = Color.GREEN;
-                case 'H' -> colors[i] = Color.GRAY;
+                case 'H', 'N' -> colors[i] = Color.GRAY;
                 default -> throw new UnsupportedOperationException("Unknown Color:" + c);
             }
         }
