@@ -33,11 +33,22 @@ public class Game {
     /**
      * Konstruktor für ein neues Spiel.
      */
-    public Game(int rows, int columns) {
-        this.rows = rows;
-        this.columns = columns;
+//    public Game(int rows, int columns) {
+//        this.rows = rows;
+//        this.columns = columns;
+//
+//        initializeGame();
+//    }
 
-        initializeGame();
+    /**
+     * Konstruktor welches das Spielfeld von Board übernimmt.
+     * @param board     das Spielfeld, was schon initialisiert, wurde.
+     */
+    public Game(Board board) {
+        this.board = board;
+        this.rows = board.getRows();
+        this.columns = board.getColumns();
+        this.ongoingGame = new BoardCell[rows][columns];
     }
 
     /**
@@ -110,10 +121,6 @@ public class Game {
                     } else {
                         saveCells[row][col] = new BoardCell(null);
                     }
-
-                saveCells[row][col] = new BoardCell(
-                        cell.getTile()
-                );
             }
         }
 

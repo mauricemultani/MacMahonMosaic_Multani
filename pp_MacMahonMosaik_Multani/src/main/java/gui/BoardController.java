@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import logic.Board;
 import logic.MosaicTile;
+import logic.Position;
 import logic.Rotation;
 
 import java.util.Objects;
@@ -305,6 +306,8 @@ public class BoardController {
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
                     // droppedLabel.setUserData(rotation);
+
+                    board.placeTileAt(tile, Rotation.DEGREE_0, new Position(row + 1, column + 1));
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
                     TileActions.boardActions(gridPane, droppedLabel, imageView, tile);

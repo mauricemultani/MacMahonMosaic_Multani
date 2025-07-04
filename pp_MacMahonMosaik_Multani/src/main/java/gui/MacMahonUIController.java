@@ -79,10 +79,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 7;
+        int rows = 8;
 
         // Anzahl an Spalten
-        int columns = 7;
+        int columns = 8;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
@@ -96,7 +96,7 @@ public class MacMahonUIController {
         boardController.initializeBoard();
 
         // Erstellung eines neuen Spiels
-        game = new Game(rows, columns);
+        game = new Game(board);
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.

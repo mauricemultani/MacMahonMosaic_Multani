@@ -25,7 +25,6 @@ public class TileActions {
      * @param label         Das Label, das verschoben werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
      * @param tile          Das Mosaikteil
-     * @param rotation      Die Rotation vom Mosaikteil
      */
     public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
         dragTiles(gridPane, label, imageView, tile);
