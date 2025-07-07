@@ -2,14 +2,17 @@ package gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import logic.*;
+import javafx.stage.Stage;
+import logic.Board;
+import logic.Game;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 /**
  * Main class for the user interface.
@@ -26,17 +29,11 @@ public class MacMahonUIController {
 
     private BoardController boardController;
 
-    private MosaicTile tile;
-
-    private Rotation rotation;
-
     private boolean success;
 
-    private BoardCell[][] ongoingGame;
-
     /**
-     * das Spielfeld, die zugehörige Pane dazu
-     * und die Anzeige der benutzbaren Bilder via einer GridPane darunter.
+     * das Spielfeld, die zugehörige Pane und
+     * die Anzeige der benutzbaren Bilder via einer GridPane darunter.
      */
     @FXML
     private GridPane gameField;
@@ -46,45 +43,15 @@ public class MacMahonUIController {
     private GridPane gridBottom;
 
     /**
-     * MenuItems, welche die Datei speichern, speichern unter und schließen
-     */
-    @FXML
-    private MenuItem menuFileSave;
-    @FXML
-    private MenuItem menuFileLoad;
-    @FXML
-    private MenuItem menuFileClose;
-
-    /**
-     * MenuItems, welche den Editor aktivieren, bei Aktivierung
-     * die Größe des Feldes ändern lassen und deaktivieren.
-     */
-    @FXML
-    private MenuItem menuEditorActivate;
-    @FXML
-    private MenuItem menuEditorChangeSize;
-
-    /**
-     * MenuItems, welche das Spiel einreichen, neu starten
-     * und dem Spieler ein Hinweis geben
-     */
-    @FXML
-    private MenuItem menuGameSolution;
-    @FXML
-    private MenuItem menuGameRestart;
-    @FXML
-    private MenuItem menuGameHelp;
-
-    /**
      * This is where you need to add code that should happen during
      * initialization and then change the java doc comment.
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 8;
+        int rows = 7;
 
         // Anzahl an Spalten
-        int columns = 8;
+        int columns = 7;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
@@ -103,6 +70,8 @@ public class MacMahonUIController {
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
         gridBottomController.initImages();
+
+        closeGameViaStage();
     }
 
     /**
@@ -120,9 +89,9 @@ public class MacMahonUIController {
         if (file != null) {
             game.saveGame(file);
             success = true;
-            gui.showSuccess();
+            gui.showSuccessSave();
         } else if (!success){
-            gui.showFail();
+            gui.showFailSave();
         }
     }
 
@@ -142,9 +111,9 @@ public class MacMahonUIController {
             boardController.setBoardAndUpdate(game.getBoard());
 
             success = true;
-            gui.showSuccess();
+            gui.showSuccessLoad();
         } else if (!success) {
-            gui.showFail();
+            gui.showFailLoad();
         }
     }
 
@@ -181,7 +150,19 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleClose() {
+        Stage stage = (Stage) gameField.getScene().getWindow();
+        Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
+        if (result.isPresent()) {
+            if (result.get() == gui.buttonSave) {
+                handleSave();
+                stage.close();
+            } else if (result.get() == gui.buttonClose) {
+                stage.close();
+            } else {
+                result.get();
+            }
+        }
     }
 
     /**
@@ -243,25 +224,32 @@ public class MacMahonUIController {
 
     }
 
-//    /**
-//     * Reagiert auf Änderungen des Berechnungstyps vom Nutzer.
-//     * Wenn der Benutzer einen anderen Berechnungstyp auswählt oder direkt eine neue Runde startet,
-//     * wird eine neue Runde gestartet.
-//     */
-//    @FXML
-//    private void handleCalcTypeChanged() {
-//        RadioMenuItem selectedMenu = (RadioMenuItem) tglGrpCalcType.getSelectedToggle();
-//        CalculationType selectedType = CalculationType.valueOf(selectedMenu.getText().toUpperCase());
-//
-//        MathProblem.operator = selectedType;
-//
-//        this.logic = new Logic(new JavaFXGUI(this.lblProgress, this.lblProblem, this.lblPrevProblems), selectedType);
-//
-//        lblPrevProblems.setText("");
-//        lblProgress.setText("");
-//        txtFldProblem.clear();
-//        hBxProblem.setDisable(false);
-//
-//        this.logic.solve(null);
-//    }
+    /**
+     * Die Methode soll darauf reagieren, wenn der Benutzer
+     * das Spiel mit dem 'X' oben rechts am Fenster schließen will.
+     */
+    private void closeGameViaStage() {
+        gameField.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
+            if (newScene != null) {
+                Stage stage = (Stage) newScene.getWindow();
+
+                stage.setOnCloseRequest(windowEvent -> {
+                    Optional<ButtonType> result = gui.showSignWhenHandleClose();
+
+                    if (result.isPresent()) {
+                        if (result.get() == gui.buttonSave) {
+                            handleSave();
+                            stage.close();
+                        } else if (result.get() == gui.buttonClose) {
+                            stage.close();
+                        } else {
+                            windowEvent.consume();
+                        }
+                    } else {
+                        windowEvent.consume();
+                    }
+                });
+            }
+        }));
+    }
 }

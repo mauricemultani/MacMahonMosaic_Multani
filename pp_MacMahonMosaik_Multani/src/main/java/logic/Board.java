@@ -444,7 +444,9 @@ public class Board {
      * @param pos           die Position, wo das Mosaikteil platziert werden soll.
      */
     public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos) {
-        cells[pos.row()][pos.column()].placeTile(mosaicTile, rotation);
+        if (isPositionValid(pos)) {
+            cells[pos.row()][pos.column()].placeTile(mosaicTile, rotation);
+        }
     }
 
     /**

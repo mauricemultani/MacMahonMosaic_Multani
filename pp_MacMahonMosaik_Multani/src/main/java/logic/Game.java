@@ -65,11 +65,32 @@ public class Game {
 
     /**
      * Hier findet der Prozess vom Spiel statt.
+     * Der Spieler wird erst dann benachrichtigt,
+     * wenn alle Zellen belegt und die Farbregeln nicht verletzt werden.
      */
-    public void macMahonGame(MosaicTile tile, Rotation rotation, Position pos, BoardCell cell) {
-        if (cell.isPlaced() && board.isPositionValid(pos)) {
-            board.placeTileAt(tile, rotation, pos);
+    public boolean winningGame() {
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < columns; col++) {
+                // Spielzelle mit der Position von Reihe und Spalte
+                BoardCell cell = board.getCell(row, col);
+
+                // if-Überprüfung, ob alle Zellen belegt sind
+                if (!cell.isHole() && !cell.isPlaced()) {
+                    return false;
+                }
+
+                // Farben der Nachbarn bei einer
+                // belegten Zelle überprüfen
+                if (cell.isPlaced()) {
+                    Position pos = new Position(row, col);
+                    if (!board.fitsNeighbours(cell.getTile(), cell.getRotation(), pos)) {
+                        return false;
+                    }
+
+                }
+            }
         }
+        return true;
     }
 
     /**
@@ -204,14 +225,6 @@ public class Game {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Benachrichtigt dem Spieler, dass er das Spiel gewonnen hat.
-     * Der Spieler wird erst dann benachrichtigt, wenn alle Zellen belegt und die Farb-Regel nicht verletzt wird.
-     */
-    public void winningGame() {
-
     }
 
     /**

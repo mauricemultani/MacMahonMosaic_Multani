@@ -1,5 +1,9 @@
 package logic;
 
+import javafx.scene.control.ButtonType;
+
+import java.util.Optional;
+
 /**
  * Die Verbindung von Logik zur GUI.
  *
@@ -14,5 +18,16 @@ public interface GUIConnector {
     void gameEnded(boolean gameFinished);
 
 
+    /**
+     * Soll bei erfolgreicher Speicherung, dies dem Spieler auch mitteilen.
+     */
+    void showSuccessSave();
 
+    void showFailSave();
+
+    void showSuccessLoad();
+
+    void showFailLoad();
+
+    Optional<ButtonType> showSignWhenHandleClose();
 }
