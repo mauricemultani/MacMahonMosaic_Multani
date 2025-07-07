@@ -55,24 +55,41 @@ public class Board {
         this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
     }
 
-    public Board(int rows, int columns, BoardCell[][] saveCells) {
+    /**
+     * Konstruktor um ein gespeichertes Spiel zu laden.
+     *
+     * @param rows          die Anzahl an Reihen
+     * @param columns       die Anzahl an Spalten
+     * @param field         das Spielfeld
+     */
+    public Board(int rows, int columns, String[][] field) {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
 
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                BoardCell savedCell = saveCells[row][column];
-                this.cells[row][column] = new BoardCell(
-                        savedCell.getTile()
-                );
+                String tileName = field[row][column];
+                if ("HHHH".equals(tileName)) {
+                    this.cells[row][column] = new BoardCell(true);
+                } else if ("NNNN".equals(tileName)) {
+                    this.cells[row][column] = new BoardCell(null);
+                } else {
+                    try {
+                        MosaicTile tile = MosaicTile.valueOf(tileName);
+                        this.cells[row][column] = new BoardCell(tile);
+                        this.cells[row][column].setRotation(Rotation.DEGREE_0);
+                    } catch (IllegalArgumentException e) {
+                        this.cells[row][column] = new BoardCell(null);
+                    }
+                }
             }
         }
 
-        this.topBorderColors = initRandomColors(columns, topBorderImages, random);
-        this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
-        this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
-        this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
+        this.topBorderColors = initSavedColors(extractTopBorderTiles(field));
+        this.bottomBorderColors = initSavedColors(extractBottomBorderTiles(field));
+        this.leftBorderColors = initSavedColors(extractLeftBorderTiles(field));
+        this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
     }
 
     /**
@@ -169,9 +186,75 @@ public class Board {
             "/gui/tiles/NNNY.png"
     };
 
+    /**
+     * Gibt die Randfarben als Mosaikteile zurück.
+     * Sie trennt den Bildpfad so, dass nur noch das Mosaikteil übrig bleibt.
+     *
+     * @param borderTiles   Array mit Bildpfad vom Rand
+     * @return              Array, welches nur noch die Mosaikteile hat.
+     */
+    private String[] getBorderTiles(String[] borderTiles) {
+        String[] tiles = new String[borderTiles.length];
 
+        for (int i = 0; i < borderTiles.length; i++) {
+            String filename = borderTiles[i].substring(borderTiles[i].lastIndexOf("/") + 1);
+            tiles[i] = filename.replace(".png", "");
+        }
+        return tiles;
+    }
 
+    /**
+     * Gibt die Randfarben als Mosaikteile zurück.
+     * Die Namen der Methoden geben an zu welchen Rändern die Randfarben gehören.
+     *
+     * @return  Ein Array von den Mosaikteilen, die von ihren Bildpfaden getrennt wurden.
+     */
+    public String[] getTopBorderTiles() {
+        return getBorderTiles(topBorderColors);
+    }
 
+    public String[] getBottomBorderTiles() {
+        return getBorderTiles(bottomBorderColors);
+    }
+
+    public String[] getLeftBorderTiles() {
+        return getBorderTiles(leftBorderColors);
+    }
+
+    public String[] getRightBorderTiles() {
+        return getBorderTiles(rightBorderColors);
+    }
+
+    /**
+     *  Hilfsmethoden, welche zum Extrahieren der Randbilder verwendet werden.
+     *  Die Namen der Methoden geben an zu welchen Rändern die Randfarben gehören.
+     *
+     * @param field     das Spielfeld
+     * @return          die jeweiligen Ränder
+     */
+    private String[] extractTopBorderTiles(String[][] field) {
+        return field[0];
+    }
+
+    private String[] extractBottomBorderTiles(String[][] field) {
+        return field[rows - 1];
+    }
+
+    private String[] extractLeftBorderTiles(String[][] field) {
+        String[] leftBorder = new String[rows];
+        for (int i = 0; i < rows; i++) {
+            leftBorder[i] = field[i][0];
+        }
+        return leftBorder;
+    }
+
+    private String[] extractRightBorderTiles(String[][] field) {
+        String[] rightBorder = new String[rows];
+        for (int i = 0; i < rows; i++) {
+            rightBorder[i] = field[i][columns - 1];
+        }
+        return rightBorder;
+    }
 
     /**
      * Für Testzwecke gedacht. Erstellt ein mitten im Spielgeschehen befindliches Spiel
@@ -316,14 +399,17 @@ public class Board {
 
     /**
      * Methode, welche bei einer gespeicherten Datei
-     * die richtigen Randfarben wiedergeben soll.
+     * die richtigen Randfarben initialisieren soll.
      *
-     * @return ein String aus den gespeicherten Randfarben.
-     *
-     * // TODO Beenden.
+     * @param tiles     Array mit Randfarben
+     * @return          ein String aus den gespeicherten Randfarben.
      */
-    private String[] initSavedColors() {
-        return initSavedColors();
+    private String[] initSavedColors(String[] tiles) {
+        String[] paths = new String[tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            paths[i] = "/gui/tiles/" + tiles[i] + ".png";
+        }
+        return paths;
     }
 
     /**
@@ -359,6 +445,15 @@ public class Board {
      */
     public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos) {
         cells[pos.row()][pos.column()].placeTile(mosaicTile, rotation);
+    }
+
+    /**
+     * Entfernt ein Mosaikteil von einer Position.
+     *
+     * @param pos die Position, von der das Mosaikteil entfernt werden soll.
+     */
+    public void removeTileAt(Position pos) {
+        cells[pos.row()][pos.column()].placeTile(null, Rotation.DEGREE_0);
     }
 
 }

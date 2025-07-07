@@ -10,10 +10,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
-import logic.Board;
-import logic.MosaicTile;
-import logic.Position;
-import logic.Rotation;
+import logic.*;
 
 import java.util.Objects;
 
@@ -84,6 +81,55 @@ public class BoardController {
 
         // Erstellt Löcher auf dem Spielfeld, wenn es mehr als 24 belegbare Zellen gibt.
         generatingHoles();
+
+        gridPane.setGridLinesVisible(false);
+        gridPane.setGridLinesVisible(true);
+    }
+
+    /**
+     * Methode, welche das Board aktualisieren soll,
+     * wenn eine gespeicherte Datei geladen werden soll.
+     */
+    public void updateBoardWhenLoading() {
+        gridPane.getChildren().clear();
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+
+        // Überschreiben von Zeilen und Spalten des GridPanes.
+        createBoard();
+
+        // Anpassung Zeilen und Spalten des Spielfelds
+        adjustRowsAndColumns();
+        adjustGameField(board.getColumns(), board.getRows());
+
+        // Anpassung des Spielfeldes bei Größenveränderung
+        // Spielfeld bleibt quadratisch
+        gameFieldPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(newVal.doubleValue(), gameFieldPane.getHeight());
+        });
+        gameFieldPane.heightProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(gameFieldPane.getWidth(), newVal.doubleValue());
+        });
+
+        // setzt eine Mindestgröße beim Spielfeld
+        gridPane.setMinSize(450, 450);
+
+        // Initialisiert die Bilder an den Grenzen des Spielfeldes
+        initImagesBorderBoard();
+
+        // stellt die gespeicherten Mosaikteile (Ränder mit inbegriffen) dar
+        displaySavedTiles();
+
+        // Ermöglicht das droppen der Mosaikteile
+        dropTiles();
+
+        // Erstellt die Löcher auf dem Spielfeld.
+        // geschieht nur, wenn es mehr als 24 belegbare Zellen gibt.
+        generatingHoles();
+
+        // setzt die GridLines auf sichtbar
+        gridPane.setGridLinesVisible(false);
+        gridPane.setGridLinesVisible(true);
     }
 
     /**
@@ -126,11 +172,39 @@ public class BoardController {
     }
 
     /**
-     * Setzt das Board.
-     * @param board
+     *
      */
-    public void setBoard(Board board) {
-        this.board = board;
+    public void setBoardAndUpdate(Board newBoard) {
+        this.board = newBoard;
+        updateBoardWhenLoading();
+    }
+
+    private void displaySavedTiles() {
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                BoardCell cell = board.getCell(row, col);
+
+                if (cell.isPlaced() && !cell.isHole()) {
+                    MosaicTile tile = cell.getTile();
+                    Rotation rotation = cell.getRotation();
+
+                    Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
+                    ImageView imageView = new ImageView(img);
+
+                    imageView.setRotate(getDegrees(rotation));
+                    fitFieldImageView(imageView, rotation);
+
+                    Label label = new Label();
+                    label.setGraphic(imageView);
+                    label.setUserData(rotation);
+
+                    gridPane.add(label, col, row);
+
+                    Position pos = new Position(row, col);
+                    TileActions.boardActions(gridPane, board, label, imageView, pos, tile);
+                }
+            }
+        }
     }
 
     /**
@@ -176,6 +250,74 @@ public class BoardController {
             double gridCellSize = Math.min(width / outerColumn, height / outerRows);
             gridPane.setPrefSize(gridCellSize * outerColumn, gridCellSize * outerRows);
         }
+    }
+
+    /**
+     * Methode zum droppen der Mosaikteile. Speziell für Board
+     * wegen Berechnungen der Zellen.
+     */
+    private void dropTiles() {
+        gridPane.setOnDragOver(dragEvent -> {
+            if (dragEvent.getDragboard().hasString()) {
+                dragEvent.acceptTransferModes(TransferMode.MOVE);
+
+            }
+            dragEvent.consume();
+        });
+
+        gridPane.setOnDragDropped(dragEvent -> {
+            Dragboard db = dragEvent.getDragboard();
+            if (db.hasString()) {
+
+                double totalWidth = gridPane.getWidth();
+                double totalHeight = gridPane.getHeight();
+
+                int middleCols = gridPane.getColumnCount() - 2;
+                int middleRows = gridPane.getRowCount() - 2;
+
+                double cellWidth = totalWidth / (middleCols + 0.5);
+                double cellHeight = totalHeight / (middleRows + 0.5);
+
+                double x = dragEvent.getX();
+                double y = dragEvent.getY();
+
+                double borderWidth = cellWidth * 0.25;
+                double borderHeight = cellHeight * 0.25;
+
+                int column = (int) ((x - borderWidth) / cellWidth);
+                int row = (int) ((y - borderHeight) / cellHeight);
+
+                if (!TileActions.isCellEmpty(gridPane, column + 1, row + 1)) {
+                    dragEvent.setDropCompleted(false);
+                    dragEvent.consume();
+                    return;
+                }
+
+                if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
+                    // String[] tileInfo = db.getString().split("/");
+                    // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                    // Rotation rotation = Rotation.valueOf(tileInfo[1]);
+
+                    String tileInfo = db.getString();
+                    MosaicTile tile = MosaicTile.valueOf(tileInfo);
+
+                    ImageView imageView = new ImageView(db.getImage());
+                    // imageView.setRotate(getDegrees(rotation));
+
+                    Label droppedLabel = new Label();
+                    droppedLabel.setGraphic(imageView);
+                    // droppedLabel.setUserData(rotation);
+
+                    Position position = new Position(row + 1, column + 1);
+                    board.placeTileAt(tile, Rotation.DEGREE_0, position);
+
+                    gridPane.add(droppedLabel, column + 1, row + 1);
+                    TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile);
+                }
+            }
+            dragEvent.setDropCompleted(true);
+            dragEvent.consume();
+        });
     }
 
     /**
@@ -249,73 +391,6 @@ public class BoardController {
                 gridPane.add(bottomBorderImages, columns, board.getRows() - 1);
                 fitBorderImageView(bottomBorderImages, false);
             }
-    }
-
-    /**
-     * Methode zum droppen der Mosaikteile. Speziell für Board
-     * wegen Berechnungen der Zellen.
-     */
-    private void dropTiles() {
-        gridPane.setOnDragOver(dragEvent -> {
-            if (dragEvent.getDragboard().hasString()) {
-                dragEvent.acceptTransferModes(TransferMode.MOVE);
-
-            }
-            dragEvent.consume();
-        });
-
-        gridPane.setOnDragDropped(dragEvent -> {
-            Dragboard db = dragEvent.getDragboard();
-            if (db.hasString()) {
-
-                double totalWidth = gridPane.getWidth();
-                double totalHeight = gridPane.getHeight();
-
-                int middleCols = gridPane.getColumnCount() - 2;
-                int middleRows = gridPane.getRowCount() - 2;
-
-                double cellWidth = totalWidth / (middleCols + 0.5);
-                double cellHeight = totalHeight / (middleRows + 0.5);
-
-                double x = dragEvent.getX();
-                double y = dragEvent.getY();
-
-                double borderWidth = cellWidth * 0.25;
-                double borderHeight = cellHeight * 0.25;
-
-                int column = (int) ((x - borderWidth) / cellWidth);
-                int row = (int) ((y - borderHeight) / cellHeight);
-
-                if (!TileActions.isCellEmpty(gridPane, column + 1, row + 1)) {
-                    dragEvent.setDropCompleted(false);
-                    dragEvent.consume();
-                    return;
-                }
-
-                if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
-                    // String[] tileInfo = db.getString().split("/");
-                    // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                    // Rotation rotation = Rotation.valueOf(tileInfo[1]);
-
-                    String tileInfo = db.getString();
-                    MosaicTile tile = MosaicTile.valueOf(tileInfo);
-
-                    ImageView imageView = new ImageView(db.getImage());
-                    // imageView.setRotate(getDegrees(rotation));
-
-                    Label droppedLabel = new Label();
-                    droppedLabel.setGraphic(imageView);
-                    // droppedLabel.setUserData(rotation);
-
-                    board.placeTileAt(tile, Rotation.DEGREE_0, new Position(row + 1, column + 1));
-
-                    gridPane.add(droppedLabel, column + 1, row + 1);
-                    TileActions.boardActions(gridPane, droppedLabel, imageView, tile);
-                }
-            }
-            dragEvent.setDropCompleted(true);
-            dragEvent.consume();
-        });
     }
 
     /**

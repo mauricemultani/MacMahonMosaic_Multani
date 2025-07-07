@@ -31,16 +31,6 @@ public class Game {
     private BoardCell[][] ongoingGame;
 
     /**
-     * Konstruktor für ein neues Spiel.
-     */
-//    public Game(int rows, int columns) {
-//        this.rows = rows;
-//        this.columns = columns;
-//
-//        initializeGame();
-//    }
-
-    /**
      * Konstruktor welches das Spielfeld von Board übernimmt.
      * @param board     das Spielfeld, was schon initialisiert, wurde.
      */
@@ -63,6 +53,14 @@ public class Game {
         this.rows = rows;
         this.columns = columns;
         this.ongoingGame = ongoingGame;
+    }
+
+    /**
+     * Gibt das Spielfeld zurück.
+     * @return      das Spielfeld.
+     */
+    public Board getBoard() {
+        return board;
     }
 
     /**
@@ -116,7 +114,7 @@ public class Game {
 
                     if (cell.isHole()) {
                         saveCells[row][col] = new BoardCell(true);
-                    } else if (cell.getTile() != null) {
+                    } else if (cell.isPlaced()) {
                         saveCells[row][col] = new BoardCell(cell.getTile());
                     } else {
                         saveCells[row][col] = new BoardCell(null);
@@ -127,21 +125,36 @@ public class Game {
         return saveCells;
     }
 
-    private String[][] convertBoardToString(BoardCell[][] cells) {
+    /**
+     * Konvertiert das Spielfeld zu einem String-Array.
+     *
+     * @return  Spielfeld als String-Array
+     */
+    private String[][] convertBoardToString() {
         int rows = board.getRows();
         int columns = board.getColumns();
         String[][] converted = new String[rows][columns];
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < columns; col++) {
-                BoardCell cell = cells[row][col];
+                BoardCell cell = board.getCell(row, col);
 
                 if (cell.isHole()) {
                     converted[row][col] = "HHHH";
-                } else if (cell.getTile() != null) {
+                } else if (cell.isPlaced()) {
                     converted[row][col] = cell.getTile().name();
                 } else {
-                    converted[row][col] = "NNNN";
+                    if (row == 0) {
+                        converted[row][col] = board.getTopBorderTiles()[col];
+                    } else if (row == rows - 1) {
+                        converted[row][col] = board.getBottomBorderTiles()[col];
+                    } else if (col == 0) {
+                        converted[row][col] = board.getLeftBorderTiles()[row];
+                    } else if (col == columns - 1) {
+                        converted[row][col] = board.getRightBorderTiles()[row];
+                    } else {
+                        converted[row][col] = "NNNN";
+                    }
                 }
             }
         }
@@ -152,7 +165,7 @@ public class Game {
      * Speichert das laufende Spiel.
      */
     public void saveGame(File file) {
-        String[][] field = convertBoardToString(saveCells());
+        String[][] field = convertBoardToString();
         FieldWrapper wrapper = new FieldWrapper(field);
 
         // Gson-Objekt erstellen
@@ -179,9 +192,14 @@ public class Game {
     public void loadGame(File file) {
         try (Reader reader = new FileReader(file)) {
             Gson gson = new Gson();
-            BoardCell[][] savedCells = gson.fromJson(reader, BoardCell[][].class);
+            FieldWrapper wrapper = gson.fromJson(reader, FieldWrapper.class);
 
-            this.board = new Board(rows, columns, savedCells);
+            String[][] field = wrapper.field;
+
+            int rows = field.length;
+            int cols = field[0].length;
+
+            this.board = new Board(rows, cols, field);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -205,6 +223,11 @@ public class Game {
     }
 
 
+    /**
+     * Eine extra Klasse in Game. Diese ist dafür gedacht, dass bei einer Speicherung das Spielfeld formatierter aussieht.
+     *
+     * @author Maurice Singh Multani
+     */
     public static class FieldWrapper {
         public String[][] field;
 

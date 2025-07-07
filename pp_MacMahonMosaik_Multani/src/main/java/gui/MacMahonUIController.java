@@ -24,6 +24,8 @@ public class MacMahonUIController {
 
     private Game game;
 
+    private BoardController boardController;
+
     private MosaicTile tile;
 
     private Rotation rotation;
@@ -89,7 +91,7 @@ public class MacMahonUIController {
         Board board = new Board(rows, columns);
 
         // Initialisierung der Controller für Spielfeld und GridPanes
-        BoardController boardController = new BoardController(gameField, board, gameFieldPane);
+        this.boardController = new BoardController(gameField, board, gameFieldPane);
         GridBottomController gridBottomController = new GridBottomController(gridBottom);
 
         // Initialisiert das Spielfeld
@@ -136,7 +138,11 @@ public class MacMahonUIController {
 
         if (file != null) {
             game.loadGame(file);
+
+            boardController.setBoardAndUpdate(game.getBoard());
+
             success = true;
+            gui.showSuccess();
         } else if (!success) {
             gui.showFail();
         }

@@ -8,7 +8,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import logic.Board;
 import logic.MosaicTile;
+import logic.Position;
 import logic.Rotation;
 
 /**
@@ -26,8 +28,10 @@ public class TileActions {
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
      * @param tile          Das Mosaikteil
      */
-    public static void boardActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
-        dragTiles(gridPane, label, imageView, tile);
+    public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile) {
+        dragTiles(label, imageView, tile);
+
+        boardOnDragDone(gridPane, board, label, pos);
 
         rotateTile(gridPane, label, imageView);
 
@@ -41,8 +45,10 @@ public class TileActions {
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
      * @param tile          Das Mosaikteil
      */
-    public static void gridBottomActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
-        dragTiles(gridPane, label, imageView, tile);
+    public static void gridBottomActions(GridPane gridPane,Label label, ImageView imageView, MosaicTile tile) {
+        dragTiles(label, imageView, tile);
+
+        gridBottomOnDragDone(gridPane, label);
 
         dropTiles(gridPane);
     }
@@ -51,12 +57,11 @@ public class TileActions {
      * Methode, welche das Drag-Verhalten für ein Label
      * mit einem Bild aktiviert.
      *
-     * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
      * @param label         Das Label, das verschoben werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
      * @param tile          Das Mosaikteil
      */
-    private static void dragTiles(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile){
+    private static void dragTiles(Label label, ImageView imageView, MosaicTile tile){
         label.setOnDragDetected(mouseEvent -> {
            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
@@ -84,13 +89,24 @@ public class TileActions {
                mouseEvent.consume();
            }
         });
+    }
 
+    private static void boardOnDragDone(GridPane gridPane, Board board, Label label, Position pos) {
+        label.setOnDragDone(dragEvent -> {
+            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
+                gridPane.getChildren().remove(label);
+
+                board.removeTileAt(pos);
+            }
+        });
+    }
+
+    private static void gridBottomOnDragDone(GridPane gridPane, Label label) {
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
             }
         });
-
     }
 
     /**
@@ -143,7 +159,8 @@ public class TileActions {
                             // droppedLabel.setUserData(rotation);
 
                             gridPane.add(droppedLabel, column, row);
-                            dragTiles(gridPane, droppedLabel, imageView, tile);
+
+                            gridBottomActions(gridPane, droppedLabel, imageView, tile);
                         }
                         else if (!isCellEmpty(gridPane, column, row)) {
                             dragEvent.setDropCompleted(false);
