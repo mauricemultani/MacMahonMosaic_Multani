@@ -1,8 +1,8 @@
 package gui;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -29,6 +29,10 @@ public class MacMahonUIController {
 
     private BoardController boardController;
 
+    private GridBottomController gridBottomController;
+
+    private EditorController editorController;
+
     private boolean success;
 
     /**
@@ -41,6 +45,8 @@ public class MacMahonUIController {
     private Pane gameFieldPane;
     @FXML
     private GridPane gridBottom;
+    @FXML
+    private CheckMenuItem menuEditorMode;
 
     /**
      * This is where you need to add code that should happen during
@@ -55,17 +61,24 @@ public class MacMahonUIController {
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
-        Board board = new Board(rows, columns);
+        Board board = new Board(rows, columns, true);
 
-        // Initialisierung der Controller für Spielfeld und GridPanes
+        // Initialisierung der Controller für Spielfeld und gridBottom
         this.boardController = new BoardController(gameField, board, gameFieldPane);
-        GridBottomController gridBottomController = new GridBottomController(gridBottom);
+        this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld
         boardController.initializeBoard();
 
         // Erstellung eines neuen Spiels
         game = new Game(board);
+
+        // Initialisierung des Controllers für den Editor Modus
+        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController);
+        menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
+            handleEditorMode();
+        });
+
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
@@ -109,6 +122,8 @@ public class MacMahonUIController {
             game.loadGame(file);
 
             boardController.setBoardAndUpdate(game.getBoard());
+            gridBottomController.setBoard(game.getBoard());
+            gridBottomController.checkExistentMosaikTiles();
 
             success = true;
             gui.showSuccessLoad();
@@ -166,27 +181,35 @@ public class MacMahonUIController {
     }
 
     /**
-     * Startet den Editor-Modus.
+     * Startet und schließt den Editor-Modus.
      * <p>
      * Mögliche Dinge die zu beachten sind:
      * Wenn laufendes Spiel keinen Namen hat, ob dieser unter einem Namen gespeichert werden soll.
-     */
-    @FXML
-    private void handleEditorActivate() {
-
-    }
-
-    /**
-     * Schließt den Editor-Modus.
-     * <p>
-     * Mögliche Dinge die zu beachten sind:
+     *
      * 1. Wenn laufendes Spiel keinen Namen hat, ob dieser unter einem Namen gespeichert werden soll.
      * 2. Editor-Modus kann nur geschlossen werden, wenn das Puzzle gespielt werden kann
      * (siehe Editor-class, die Methode switchBackToGameMode())
      */
     @FXML
-    private void handleEditorDeactivate() {
+    private void handleEditorMode() {
+        if (menuEditorMode.isSelected()) {
+                editorController.initializeEditorMode();
+            } else {
+                if (editorController.canSwitchBackToGameMode()) {
+                    editorController.switchBackToGameMode();
+                } else {
+                    menuEditorMode.setSelected(true);
+                }
+            }
+    }
 
+    @FXML
+    private void handleChangeSizeOfField() {
+        if (menuEditorMode.isSelected()) {
+            editorController.changeSizeOfGameField();
+        } else {
+            gui.showEditorNotActive();
+        }
     }
 
     /**
@@ -219,11 +242,6 @@ public class MacMahonUIController {
 
     }
 
-    @FXML
-    private void handleRotateButton(ActionEvent actionEvent) {
-
-    }
-
     /**
      * Die Methode soll darauf reagieren, wenn der Benutzer
      * das Spiel mit dem 'X' oben rechts am Fenster schließen will.
@@ -231,22 +249,25 @@ public class MacMahonUIController {
     private void closeGameViaStage() {
         gameField.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
             if (newScene != null) {
-                Stage stage = (Stage) newScene.getWindow();
+                newScene.windowProperty().addListener((obs, oldWindow, newWindow) -> {
+                    if (newWindow != null) {
+                        Stage stage = (Stage) newWindow;
+                        stage.setOnCloseRequest(windowEvent -> {
+                            Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
-                stage.setOnCloseRequest(windowEvent -> {
-                    Optional<ButtonType> result = gui.showSignWhenHandleClose();
-
-                    if (result.isPresent()) {
-                        if (result.get() == gui.buttonSave) {
-                            handleSave();
-                            stage.close();
-                        } else if (result.get() == gui.buttonClose) {
-                            stage.close();
-                        } else {
-                            windowEvent.consume();
-                        }
-                    } else {
-                        windowEvent.consume();
+                            if (result.isPresent()) {
+                                if (result.get() == gui.buttonSave) {
+                                    handleSave();
+                                    stage.close();
+                                } else if (result.get() == gui.buttonClose) {
+                                    stage.close();
+                                } else {
+                                    windowEvent.consume();
+                                }
+                            } else {
+                                windowEvent.consume();
+                            }
+                        });
                     }
                 });
             }

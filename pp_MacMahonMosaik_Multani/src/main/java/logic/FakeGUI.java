@@ -1,5 +1,10 @@
 package logic;
 
+import javafx.scene.control.ButtonType;
+import javafx.util.Pair;
+
+import java.util.Optional;
+
 /**
  * Wird zum Testen verwendet.
  *
@@ -11,4 +16,65 @@ public class FakeGUI implements GUIConnector{
     public void gameEnded(boolean gameFinished) {
 
     }
+
+    @Override
+    public void showSuccessSave() {
+
+    }
+
+    @Override
+    public void showFailSave() {
+
+    }
+
+    @Override
+    public void showSuccessLoad() {
+
+    }
+
+    @Override
+    public void showFailLoad() {
+
+    }
+
+    @Override
+    public Optional<ButtonType> showSignWhenHandleClose() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void showFieldTooSmall() {
+
+    }
+
+    @Override
+    public void showFieldTooBig() {
+
+    }
+
+    @Override
+    public void showEditorNotActive() {
+
+    }
+
+    @Override
+    public void showHolesToBePlaced(int numHoles) {
+
+    }
+
+    @Override
+    public void showAllHolesPlaced() {
+
+    }
+
+    @Override
+    public void showOnlyOneHoleToPlace() {
+
+    }
+
 }

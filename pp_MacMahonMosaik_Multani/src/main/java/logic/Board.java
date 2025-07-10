@@ -15,7 +15,6 @@ public class Board {
     private final int rows;
     private final int columns;
     private final BoardCell[][] cells;
-    private MosaicTile tile;
 
     private final String[] topBorderColors;
     private final String[] bottomBorderColors;
@@ -32,27 +31,41 @@ public class Board {
      * @param rows    die Anzahl an Reihen im Spielfeld.
      * @param columns die Anzahl an Spalten im Spielfeld.
      */
-    public Board(int rows, int columns) {
+    public Board(int rows, int columns, boolean withHoles) {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
 
-        boolean[][] holes = generateHoles(getRows(), getColumns());
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                if (holes[row][col]) {
-                    this.cells[row][col] = new BoardCell(true);
-                } else {
+        if (withHoles) {
+            boolean[][] holes = generateHoles(getRows(), getColumns());
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
+                    if (holes[row][col]) {
+                        this.cells[row][col] = new BoardCell(true);
+                    } else {
+                        this.cells[row][col] = new BoardCell(null);
+                    }
+
+                }
+            }
+
+            this.topBorderColors = initRandomColors(columns, topBorderImages, random);
+            this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
+            this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
+            this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
+
+        } else {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
                     this.cells[row][col] = new BoardCell(null);
                 }
-
             }
-        }
 
-        this.topBorderColors = initRandomColors(columns, topBorderImages, random);
-        this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
-        this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
-        this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
+            this.topBorderColors = initRandomColors(columns, topBorderImages, random);
+            this.bottomBorderColors = initRandomColors(columns, bottomBorderImages, random);
+            this.leftBorderColors = initRandomColors(rows, leftBorderImages, random);
+            this.rightBorderColors = initRandomColors(rows, rightBorderImages, random);
+        }
     }
 
     /**

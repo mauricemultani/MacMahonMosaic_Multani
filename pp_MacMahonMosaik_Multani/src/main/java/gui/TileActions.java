@@ -159,8 +159,6 @@ public class TileActions {
                             // droppedLabel.setUserData(rotation);
 
                             gridPane.add(droppedLabel, column, row);
-
-                            gridBottomActions(gridPane, droppedLabel, imageView, tile);
                         }
                         else if (!isCellEmpty(gridPane, column, row)) {
                             dragEvent.setDropCompleted(false);
@@ -244,7 +242,6 @@ public class TileActions {
      *
      * @param gridPane  das GridPane, in dass das Mosaikteil platziert werden darf.
      * @param imageView das Bild vom Mosaikteil.
-     * @param rotation  Rotation vom Bild.
      */
     private static void fitBoardImageView(GridPane gridPane, ImageView imageView) {
         int columnCount = gridPane.getColumnCount();

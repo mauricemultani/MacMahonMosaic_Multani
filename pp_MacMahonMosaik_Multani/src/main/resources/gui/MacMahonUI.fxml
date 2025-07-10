@@ -17,15 +17,15 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Editor">
                   <items>
-                        <CheckMenuItem fx:id="menuEditorActivate" mnemonicParsing="false" text="Activate Editor" />
-                        <MenuItem fx:id="menuEditorChangeSize" mnemonicParsing="false" text="Change Size of Field" />
+                        <CheckMenuItem fx:id="menuEditorMode" mnemonicParsing="false" onAction="#handleEditorMode" text="Activate Editor" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleChangeSizeOfField" text="Change Size of Field" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Game">
                      <items>
-                      <MenuItem fx:id="menuGameSolution" mnemonicParsing="false" text="Solution Help" />
-                      <MenuItem fx:id="menuGameRestart" mnemonicParsing="false" text="Restart Game" />
-                      <MenuItem fx:id="menuGameHelp" mnemonicParsing="false" text="Help" />
+                      <MenuItem mnemonicParsing="false" text="Solution Help" />
+                      <MenuItem mnemonicParsing="false" text="Restart Game" />
+                      <MenuItem mnemonicParsing="false" text="Help" />
                      </items>
                   </Menu>
               </menus>

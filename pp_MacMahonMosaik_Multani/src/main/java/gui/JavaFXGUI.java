@@ -1,8 +1,8 @@
 package gui;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 import logic.GUIConnector;
 
 import java.util.Optional;
@@ -22,6 +22,7 @@ public class JavaFXGUI implements GUIConnector {
     public final ButtonType buttonSave = new ButtonType("Save");
     public final ButtonType buttonClose = new ButtonType("Close the Game");
     public final ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+    public final ButtonType buttonAdjust = new ButtonType("Adjust");
 
     @Override
     public void gameEnded(boolean gameFinished) {
@@ -90,4 +91,119 @@ public class JavaFXGUI implements GUIConnector {
         return alert.showAndWait();
     }
 
+    /**
+     * Mitteilung, wenn der Spieler im Editor-Modus sein Board verändern will.
+     */
+    @Override
+    public Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField() {
+        Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
+        dialog.setTitle("Changing the Size of your Game field!");
+        dialog.setHeaderText("Enter the amount of Columns and Rows your Game field should have");
+
+        dialog.getDialogPane().getButtonTypes().addAll(buttonAdjust, buttonCancel);
+
+        GridPane field = new GridPane();
+
+        TextField rowsTextField = new TextField();
+        rowsTextField.setPromptText("Amount of Rows");
+
+        TextField colTextField = new TextField();
+        colTextField.setPromptText("Amount of Columns");
+
+        field.add(new Label("Rows: "), 0, 0);
+        field.add(rowsTextField, 1, 0);
+
+        field.add(new Label("Columns: "), 0, 1);
+        field.add(colTextField, 1, 1);
+
+        dialog.getDialogPane().setContent(field);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == buttonAdjust) {
+                try {
+                    int rows = Integer.parseInt(rowsTextField.getText());
+                    int cols = Integer.parseInt(colTextField.getText());
+                    return new Pair<>(rows, cols);
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn das Spielfeld zu klein ist.
+     */
+    @Override
+    public void showFieldTooSmall() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information!");
+        alert.setHeaderText("The Field must contain a minimum amount of 4 Rows and Columns");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn das Spielfeld zu groß ist.
+     */
+    @Override
+    public void showFieldTooBig() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information!");
+        alert.setHeaderText("The Maximum Amount of Rows and Columns is 8");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn der Editor nicht aktiviert ist.
+     */
+     @Override
+    public void showEditorNotActive() {
+         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+         alert.setTitle("Information!");
+         alert.setHeaderText("The Editor is not set active!");
+         alert.setContentText("Activate the Editor Mode to use the functions!");
+         alert.showAndWait();
+    }
+
+
+    /**
+     * Mitteilung, wenn Löcher zu platzieren sind.
+     */
+    @Override
+    public void showHolesToBePlaced(int numHoles) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("There are more than 24 cells on the field!");
+        alert.setContentText("Place " + numHoles + " holes on the field\n"
+        + "After placing the holes you will be able to continue the Game");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn alle Löcher platziert sind.
+     */
+    @Override
+    public void showAllHolesPlaced() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("All Holes are placed\n"
+        + "you can continue with the Game");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn nur ein Loch zu platzieren ist.
+     */
+    @Override
+    public void showOnlyOneHoleToPlace() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("There are more than 24 cells on the field!\n"
+                + "Place one Hole.");
+        alert.setContentText("After placing this Hole you will be able to continue the Game.");
+        alert.showAndWait();
+    }
 }

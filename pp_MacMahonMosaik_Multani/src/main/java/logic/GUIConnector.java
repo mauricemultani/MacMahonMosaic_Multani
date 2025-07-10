@@ -1,6 +1,7 @@
 package logic;
 
 import javafx.scene.control.ButtonType;
+import javafx.util.Pair;
 
 import java.util.Optional;
 
@@ -30,4 +31,18 @@ public interface GUIConnector {
     void showFailLoad();
 
     Optional<ButtonType> showSignWhenHandleClose();
+
+    Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField();
+
+    void showFieldTooSmall();
+
+    void showFieldTooBig();
+
+    void showEditorNotActive();
+
+    void showHolesToBePlaced(int numHoles);
+
+    void showAllHolesPlaced();
+
+    void showOnlyOneHoleToPlace();
 }

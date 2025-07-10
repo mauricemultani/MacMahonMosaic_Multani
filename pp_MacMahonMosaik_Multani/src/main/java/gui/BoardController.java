@@ -15,7 +15,6 @@ import logic.*;
 import java.util.Objects;
 
 import static gui.TileActions.getDegrees;
-import static gui.TileActions.isCellEmpty;
 
 /**
  * Steuerung des Spielfeldes.
@@ -44,6 +43,8 @@ public class BoardController {
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
+     * @param board             das Spielfeld
+     * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
     public BoardController(GridPane gridPane, Board board, Pane gameFieldPane){
         this.gridPane = gridPane;
@@ -143,13 +144,14 @@ public class BoardController {
             throw new IllegalArgumentException("Column or Row is Empty");
         }
 
-        // Exception, falls das Board
+        // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
         if (board.getRows() < 4 || board.getColumns() < 4) {
-            throw new IllegalArgumentException("Das Spielfeld muss mindestens 4 Zeilen und Spalten haben");
+            throw new IllegalArgumentException("Das Feld muss mindestens 4 Zeilen und Spalten haben");
         }
 
+        // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
         if (board.getRows() > 8 || board.getColumns() > 8) {
-            throw new IllegalArgumentException("Das Spielfeld darf maximal 8 Zeilen und Spalten haben");
+            throw new IllegalArgumentException("Das Feld darf maximal 8 Zeilen und Spalten haben");
         }
 
         // löscht die vorhanden Reihen und Spalten Constraints
@@ -172,13 +174,17 @@ public class BoardController {
     }
 
     /**
-     *
+     *  Mit dieser Methode soll, bei einem Spielstand was geladen wird, das Spiel erneuert werden.
      */
     public void setBoardAndUpdate(Board newBoard) {
         this.board = newBoard;
         updateBoardWhenLoading();
     }
 
+    /**
+     * Die Methode lädt eine gespeicherte Datei (jeweils belegte Zellen, als auch die Ränder)
+     * auf dem Spielfeld.
+     */
     private void displaySavedTiles() {
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
@@ -239,7 +245,7 @@ public class BoardController {
      * @param width  Die Breite der Pane
      * @param height Die Höhe der Pane
      */
-    private void adjustGameField(double width, double height) {
+    void adjustGameField(double width, double height) {
         final int middleRows = board.getRows() - 2;
         final int middleColumns = board.getColumns() - 2;
 
@@ -455,23 +461,6 @@ public class BoardController {
                     multiply(middleColWidthPercentage / 100));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     multiply(borderRowHeightPercentage / 100));
-        }
-    }
-
-    /**
-     * Die Methode soll bei einem Switch in den Editor-Modus alles
-     * außer den Rändern und Löchern leeren.
-     */
-    private void switchingToEditorMode() {
-        int rows = board.getRows();
-        int columns = board.getColumns();
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                if (!isCellEmpty(gridPane, col, row)) {
-                    gridPane.getChildren().clear();
-                }
-            }
         }
     }
 }

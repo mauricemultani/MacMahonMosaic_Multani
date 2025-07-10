@@ -4,9 +4,14 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import logic.Board;
+import logic.BoardCell;
 import logic.MosaicTile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Steuerung des GridPanes in "<BorderPane> <bottom>".
@@ -18,15 +23,30 @@ public class GridBottomController {
     /**
      * Das entsprechende GridPane, das für die Darstellung verwendet wird.
      */
-    private static GridPane gridPane;
+    private final GridPane gridPane;
+
+    private Board board;
 
     /**
      *  Konstruktor zur Zuweisung des GridPanes.
      * @param gridPane Das GridPane, was vom Controller verwaltet wird.
      */
-    public GridBottomController(GridPane gridPane) {
-        GridBottomController.gridPane = gridPane;
+    public GridBottomController(GridPane gridPane, Board board) {
+        this.gridPane = gridPane;
+        this.board = board;
     }
+
+    private static final Set<MosaicTile> USABLE_TILES = Set.of(
+            MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
+            MosaicTile.GRYG, MosaicTile.GRYR, MosaicTile.GYRG, MosaicTile.GYYY,
+
+            MosaicTile.RGGG, MosaicTile.RGYG, MosaicTile.RGYR, MosaicTile.RRRR,
+            MosaicTile.RRYY, MosaicTile.RYGR, MosaicTile.RYGY, MosaicTile.RYYY,
+
+            MosaicTile.YGGG, MosaicTile.YGRY, MosaicTile.YGYG, MosaicTile.YRGY,
+            MosaicTile.YRRR, MosaicTile.YRYR, MosaicTile.YYGG, MosaicTile.YYYY
+
+    );
 
     /**
      * Initialisierung der Bilder auf das GridPane.
@@ -75,4 +95,55 @@ public class GridBottomController {
         imageView.setPreserveRatio(true);
     }
 
+    /**
+     * Vergleicht gespeicherte Mosaikteile mit den anderen Mosaikteilen, damit diese übersprungen werden.
+     * Soll mehrfache Verwendung gleicher Mosaikteile verhindern
+     */
+    public void checkExistentMosaikTiles() {
+        final int columnCount = gridPane.getColumnCount();
+
+        gridPane.getChildren().clear();
+
+        List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
+
+        int rows = board.getRows();
+        int cols = board.getColumns();
+
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < cols - 1; col++) {
+                BoardCell cell = board.getCell(row, col);
+                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
+                    usableTiles.remove(cell.getTile());
+                }
+            }
+        }
+
+        int imageIndex = 0;
+        for (MosaicTile tileValue : usableTiles) {
+            int row = imageIndex / columnCount;
+            int col = imageIndex % columnCount;
+
+
+            String path = tileValue.getImagePath();
+            Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(path)));
+            ImageView imageView = new ImageView(img);
+
+            fitFieldImageView(imageView);
+
+            Label tile = new Label();
+            tile.setGraphic(imageView);
+
+            TileActions.gridBottomActions(gridPane, tile, imageView, tileValue);
+
+            gridPane.add(tile, col, row);
+            imageIndex++;
+        }
+
+        gridPane.setGridLinesVisible(false);
+        gridPane.setGridLinesVisible(true);
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
 }

@@ -64,6 +64,14 @@ public class Game {
     }
 
     /**
+     * Setzt das Spielfeld.
+     * @param board     das neue Spielfeld.
+     */
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    /**
      * Hier findet der Prozess vom Spiel statt.
      * Der Spieler wird erst dann benachrichtigt,
      * wenn alle Zellen belegt und die Farbregeln nicht verletzt werden.
@@ -98,7 +106,7 @@ public class Game {
      * Löscht alle Zellen und setzt das Spielfeld zurück.
      */
     public void initializeGame() {
-        this.board = new Board(rows, columns);
+        this.board = new Board(rows, columns, true);
 
         this.ongoingGame = new BoardCell[rows][columns];
 

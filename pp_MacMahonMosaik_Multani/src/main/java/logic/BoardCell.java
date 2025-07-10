@@ -24,8 +24,6 @@ public class BoardCell {
         return tile;
     }
 
-
-
     public void setTile(MosaicTile tile) {
         this.tile = tile;
     }
@@ -45,6 +43,10 @@ public class BoardCell {
     public void setHole() {
         this.hole = true;
         this.tile = MosaicTile.HHHH;
+    }
+
+    public void setEmptyTile() {
+        this.tile = MosaicTile.NNNN;
     }
 
     public Rotation rotate() {
