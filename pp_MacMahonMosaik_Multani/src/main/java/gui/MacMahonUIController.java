@@ -1,5 +1,8 @@
 package gui;
 
+import gui.controller.BoardController;
+import gui.controller.EditorController;
+import gui.controller.GridBottomController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
@@ -8,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import logic.Board;
+import logic.GUIConnector;
 import logic.Game;
 
 import java.io.File;
@@ -23,7 +27,7 @@ import java.util.Optional;
  */
 public class MacMahonUIController {
 
-    private final JavaFXGUI gui = new JavaFXGUI();
+    private final GUIConnector gui = new JavaFXGUI();
 
     private Game game;
 
@@ -78,7 +82,6 @@ public class MacMahonUIController {
         menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
             handleEditorMode();
         });
-
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
@@ -169,13 +172,11 @@ public class MacMahonUIController {
         Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
         if (result.isPresent()) {
-            if (result.get() == gui.buttonSave) {
+            if (result.get().getText().equals("Save")) {
                 handleSave();
                 stage.close();
-            } else if (result.get() == gui.buttonClose) {
+            } else if (result.get().getText().equals("Close the Game")) {
                 stage.close();
-            } else {
-                result.get();
             }
         }
     }
@@ -203,6 +204,9 @@ public class MacMahonUIController {
             }
     }
 
+    /**
+     * Mit diesem handle kann die Größe des Spielfeldes verändert werden.
+     */
     @FXML
     private void handleChangeSizeOfField() {
         if (menuEditorMode.isSelected()) {
@@ -256,10 +260,10 @@ public class MacMahonUIController {
                             Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
                             if (result.isPresent()) {
-                                if (result.get() == gui.buttonSave) {
+                                if (result.get().getText().equals("Save")) {
                                     handleSave();
                                     stage.close();
-                                } else if (result.get() == gui.buttonClose) {
+                                } else if (result.get().getText().equals("Close the Game")) {
                                     stage.close();
                                 } else {
                                     windowEvent.consume();

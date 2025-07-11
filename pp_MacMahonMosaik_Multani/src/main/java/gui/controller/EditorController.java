@@ -1,4 +1,4 @@
-package gui;
+package gui.controller;
 
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -13,8 +13,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.util.Pair;
 import logic.*;
 
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Eine Editor-Kontroller Class.
@@ -42,17 +41,51 @@ public class EditorController {
     private final Pane gameFieldPane;
 
     /**
-     *
+     *  Zugriff auf die BoardController Class
      */
     private final BoardController boardController;
 
-    private final JavaFXGUI gui;
+    /**
+     * Zugriff auf die JavaFXGUI
+     */
+    private final GUIConnector gui;
 
+    /**
+     * Zugriff auf die Game Class
+     */
     private final Game game;
 
+    /**
+     * Zugriff auf die GridBottomController Class.
+     */
     private final GridBottomController gridBottomController;
 
+    /**
+     * private boolescher Wert der mit der Initialisierung
+     * der Bilder in meinem gridBottom gridPane zusammenarbeitet.
+     */
     private boolean gridBottomInitialized = false;
+
+    /**
+     * Ein Set aus den Mosaikteilen, die für die jeweiligen Ränder erlaubt sind.
+     * Anhand der Namen erkennt man für welchen Rand die Sets sind.
+     */
+    private static final Set<MosaicTile> LEFT_BORDER_TILES = Set.of(
+            MosaicTile.NYNN, MosaicTile.NRNN, MosaicTile.NGNN
+    );
+
+    private static final Set<MosaicTile> RIGHT_BORDER_TILES = Set.of(
+            MosaicTile.NNNY, MosaicTile.NNNR, MosaicTile.NNNG
+    );
+
+    private static final Set<MosaicTile> TOP_BORDER_TILES = Set.of(
+            MosaicTile.NNYN, MosaicTile.NNRN, MosaicTile.NNGN
+    );
+
+    private static final Set<MosaicTile> BOTTOM_BORDER_TILES = Set.of(
+            MosaicTile.YNNN, MosaicTile.RNNN, MosaicTile.GNNN
+    );
+
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -60,7 +93,7 @@ public class EditorController {
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
-    public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController, JavaFXGUI gui, Game game, GridBottomController gridBottomController){
+    public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController, GUIConnector gui, Game game, GridBottomController gridBottomController){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
@@ -102,6 +135,8 @@ public class EditorController {
                 gridPane.add(label, col, row);
             }
         }
+
+        adjustBorderColors();
     }
 
     /**
@@ -127,7 +162,71 @@ public class EditorController {
      * Die Methode soll den Spieler die Möglichkeit geben die Farben der Ränder anzupassen.
      */
     public void adjustBorderColors() {
+        adjustColumnBorderColors();
+        adjustRowBorderColors();
+    }
 
+    private void adjustColumnBorderColors() {
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            Node leftNode = getNode(gridPane, 0, row);
+            Node rightNode = getNode(gridPane, board.getColumns() - 1, row);
+
+            List<MosaicTile> leftBorderTiles = new ArrayList<>(LEFT_BORDER_TILES);
+            List<MosaicTile> rightBorderTiles = new ArrayList<>(RIGHT_BORDER_TILES);
+
+            getNextImage(leftNode, leftBorderTiles, row, board.getLeftBorderColors());
+            getNextImage(rightNode, rightBorderTiles, row, board.getRightBorderColors());
+        }
+    }
+
+    private void adjustRowBorderColors() {
+        for (int col = 1; col < board.getColumns(); col++) {
+            Node topNode = getNode(gridPane, col, 0);
+            Node bottomNode = getNode(gridPane, col, board.getRows() - 1);
+
+            List<MosaicTile> topBorderTiles = new ArrayList<>(TOP_BORDER_TILES);
+            List<MosaicTile> bottomBorderTiles = new ArrayList<>(BOTTOM_BORDER_TILES);
+
+            getNextImage(topNode, topBorderTiles, col, board.getTopBorderColors());
+            getNextImage(bottomNode, bottomBorderTiles, col, board.getBottomBorderColors());
+        }
+    }
+
+    /**
+     * Die Methode ist da um redundanten Code verringern.
+     * Bei einem Klick auf eines der Randbilder wird das Bild gewechselt
+     * und rüber zum nächsten Bild gegangen.
+     * @param node          das Node
+     * @param tileList      die ArrayList von den Randbildern
+     * @param index         der Index vom
+     * @param borderArray   die Farben vom jeweiligen Rand.
+     */
+    private void getNextImage(Node node, List<MosaicTile> tileList, int index, String[] borderArray) {
+        if (node == null) {
+            return;
+        }
+
+        node.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                // holt sich das Randbild mit dem jeweiligen Index
+                String currentPath = borderArray[index];
+                // konvertiert den Bildpfad zurück zu einem Enum
+                MosaicTile currentTile = MosaicTile.convertImagePathToEnum(currentPath);
+
+                int idx = tileList.indexOf(currentTile);
+                int nextIdx = (idx + 1) % tileList.size();
+                MosaicTile nextTile = tileList.get(nextIdx);
+
+                borderArray[index] = nextTile.getImagePath();
+
+
+                if (node instanceof ImageView imageView) {
+                    Image image = new Image(nextTile.getImagePath());
+                    imageView.setImage(image);
+                }
+            }
+        });
+        node.setCursor(Cursor.HAND);
     }
 
     /**
@@ -137,6 +236,10 @@ public class EditorController {
      */
     public void changeSizeOfGameField() {
         Optional<Pair<Integer, Integer>> result = gui.whenChangeSizeOfGameField();
+
+        if (result.isEmpty()) {
+            gui.showMissingNumbersForField();
+        }
 
         result.ifPresent(pair -> {
             int rows = pair.getKey();
@@ -190,6 +293,8 @@ public class EditorController {
                 choosePositionsOfHoles();
             }
         });
+
+        adjustBorderColors();
     }
 
     /**
@@ -271,11 +376,12 @@ public class EditorController {
     }
 
     /**
-     * Geht die Zellen durch und schaut sich an
-     * @param gridPane
-     * @param column
-     * @param row
-     * @return
+     * Diese Methode geht die Zellen durch und
+     * gibt den Node einer bestimmten Position zurück.
+     * @param gridPane  das GridPane auf der Schleife durchgegangen wird.
+     * @param column    die Anzahl an Spalten
+     * @param row       die Anzahl an Reihen
+     * @return          Entweder das Node was gefunden wird, oder null.
      */
     private Node getNode(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {

@@ -2,12 +2,14 @@ package gui;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import logic.Board;
 import logic.MosaicTile;
 import logic.Position;
@@ -247,28 +249,6 @@ public class TileActions {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
-        // Anpassen der Bilder anhand der Rotation
-        // Methode getDegrees() verwendet
-//        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
-//            imageView.fitWidthProperty().bind(
-//                    gridPane.widthProperty().divide(columnCount - 1).
-//                            subtract(gridPane.getHgap())
-//            );
-//            imageView.fitHeightProperty().bind(
-//                    gridPane.heightProperty().divide(rowsCount - 1).
-//                            subtract(gridPane.getVgap())
-//            );
-//        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
-//            imageView.fitWidthProperty().bind(
-//                    gridPane.heightProperty().divide(rowsCount - 1).
-//                            subtract(gridPane.getVgap())
-//            );
-//            imageView.fitHeightProperty().bind(
-//                    gridPane.widthProperty().divide(columnCount - 1).
-//                            subtract(gridPane.getHgap())
-//            );
-//        }
-
         imageView.fitWidthProperty().bind(
                 gridPane.widthProperty().divide(columnCount - 1).
                         subtract(gridPane.getHgap())
@@ -277,5 +257,59 @@ public class TileActions {
                 gridPane.heightProperty().divide(rowsCount - 1).
                         subtract(gridPane.getVgap())
         );
+    }
+
+    /**
+     * Erstellt ein ImageView für ein darzustellendes Bild und fügt
+     * es der GridPane zu. Um einen JavaFX-Bug bei der Rotation zu kompensieren,
+     * wird das ImageView einer StackPane zugefügt, die das Bild zentriert, und die
+     * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
+     * Rotation überschreibt.
+     *
+     * @param imageViewWidth - initiale Breite des ImageViews
+     * @param imageViewHeight - initiale Höhe des ImageViews
+     * @param x - Spalte, in die das Bild eingefügt wird
+     * @param y - Reihe, in die das Bild eingefügt wird
+     * @param grdPn - GridPane, der das Bild zugefügt wird
+     * @return das eingebettete ImageView
+     */
+    private static void createRotatableImageView(GridPane gridPane, Image image, int x, int y){
+        // neues ImageView
+        ImageView imageView = new ImageView();
+
+        // Bild soll an die Zelle angepasst sein und Ratio nicht behalten
+        imageView.setPreserveRatio(false);
+        imageView.setSmooth(true);
+
+        // Neues StackPane, um das Bild zu zentrieren
+        StackPane stackpane = new StackPane(imageView);
+
+        // ImageView Maße werden an StackPane Maße gebunden
+        imageView.fitWidthProperty().bind(stackpane.widthProperty());
+        imageView.fitHeightProperty().bind(stackpane.heightProperty());
+
+        RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackpane);
+
+        gridPane.add(rotatableContainer, x, y);
+
+        rotatableContainer.setUserData(Rotation.DEGREE_0);
+
+        rotatableContainer.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                // holt sich den derzeitigen Rotierungsgrad
+                Rotation current = (Rotation) rotatableContainer.getUserData();
+
+                // Wenn die derzeitige Rotierung == null ist,
+                // dann wird sie auf 0-Grad gesetzt.
+                if (current == null){
+                    current = Rotation.DEGREE_0;
+                }
+                // andernfalls geht sie zur nächsten rotierung rüber.
+                Rotation next = current.next();
+
+                rotatableContainer.setRotate(getDegrees(next));
+                rotatableContainer.setUserData(next);
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
-package gui;
+package gui.controller;
 
+import gui.TileActions;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

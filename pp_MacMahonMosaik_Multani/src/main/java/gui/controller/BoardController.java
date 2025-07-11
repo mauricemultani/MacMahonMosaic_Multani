@@ -1,15 +1,14 @@
-package gui;
+package gui.controller;
 
+import gui.RotatablePaneLayouter;
+import gui.TileActions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import logic.*;
 
 import java.util.Objects;
@@ -198,7 +197,7 @@ public class BoardController {
                     ImageView imageView = new ImageView(img);
 
                     imageView.setRotate(getDegrees(rotation));
-                    fitFieldImageView(imageView, rotation);
+                    fitFieldImageView(imageView);
 
                     Label label = new Label();
                     label.setGraphic(imageView);
@@ -331,7 +330,6 @@ public class BoardController {
      * wenn das Spielfeld mehr als 24 belegbare Zellen hat.
      */
     private void generatingHoles() {
-        Rotation rotation = Rotation.DEGREE_0;
         boolean[][] holes = board.getHoles();
 
         for (int row = 1; row < board.getRows() - 1; row++) {
@@ -340,7 +338,7 @@ public class BoardController {
                     Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
                     ImageView imageView = new ImageView(img);
 
-                    fitFieldImageView(imageView, rotation);
+                    fitFieldImageView(imageView);
 
                     Label hole = new Label();
                     hole.setGraphic(imageView);
@@ -405,31 +403,56 @@ public class BoardController {
      * sich anpassen.
      * @param imageView das Bild vom Mosaikteil
      */
-    private void fitFieldImageView(ImageView imageView, Rotation rotation) {
+    private void fitFieldImageView(ImageView imageView) {
         int columnCount = gridPane.getColumnCount();
         int rowsCount = gridPane.getRowCount();
 
-        // Anpassen der Bilder anhand der Rotation
-        // Methode verwendet
-        if (getDegrees(rotation) == 0 || getDegrees(rotation) == 180) {
-            imageView.fitWidthProperty().bind(
-                    gridPane.widthProperty().divide(columnCount - 1).
-                            subtract(gridPane.getHgap())
-            );
-            imageView.fitHeightProperty().bind(
-                    gridPane.heightProperty().divide(rowsCount - 1).
-                            subtract(gridPane.getVgap())
-            );
-        } else if (getDegrees(rotation) == 90 || getDegrees(rotation) == 270){
-            imageView.fitWidthProperty().bind(
-                    gridPane.heightProperty().divide(rowsCount - 1).
-                            subtract(gridPane.getVgap())
-            );
-            imageView.fitHeightProperty().bind(
-                    gridPane.widthProperty().divide(columnCount - 1).
-                            subtract(gridPane.getHgap())
-            );
-        }
+        imageView.fitWidthProperty().bind(
+                gridPane.widthProperty().divide(columnCount - 1).
+                        subtract(gridPane.getHgap())
+        );
+        imageView.fitHeightProperty().bind(
+                gridPane.heightProperty().divide(rowsCount - 1).
+                        subtract(gridPane.getVgap())
+        );
+    }
+
+    /**
+     * Erstellt ein ImageView für ein darzustellendes Bild und fügt
+     * es der GridPane zu. Um einen JavaFX-Bug bei der Rotation zu kompensieren,
+     * wird das ImageView einer StackPane zugefügt, die das Bild zentriert, und die
+     * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
+     * Rotation überschreibt.
+     *
+     * @param imageViewWidth - initiale Breite des ImageViews
+     * @param imageViewHeight - initiale Höhe des ImageViews
+     * @param x - Spalte, in die das Bild eingefügt wird
+     * @param y - Reihe, in die das Bild eingefügt wird
+     * @param grdPn - GridPane, der das Bild zugefügt wird
+     * @return das eingebettete ImageView
+     */
+    private ImageView createRotatableImageView(int imageViewWidth, int imageViewHeight, int x, int y, GridPane grdPn){
+        // neues ImageView
+        ImageView imageView = new ImageView();
+
+        // Bild soll an die Zelle angepasst sein und Ratio nicht behalten
+        imageView.setFitWidth(imageViewWidth);
+        imageView.setFitHeight(imageViewHeight);
+        imageView.setPreserveRatio(false);
+        imageView.setSmooth(true);
+
+        // Neues StackPane, um das Bild zu zentrieren
+        StackPane stackpane = new StackPane(imageView);
+
+        // ImageView Maße werden an StackPane Maße gebunden
+        imageView.fitWidthProperty().bind(stackpane.widthProperty());
+        imageView.fitHeightProperty().bind(stackpane.heightProperty());
+
+        RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackpane);
+
+        grdPn.add(rotatableContainer, x, y);
+
+        return imageView;
     }
 
     /**

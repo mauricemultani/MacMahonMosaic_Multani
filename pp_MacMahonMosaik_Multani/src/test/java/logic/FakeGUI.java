@@ -48,6 +48,11 @@ public class FakeGUI implements GUIConnector{
     }
 
     @Override
+    public void showMissingNumbersForField() {
+
+    }
+
+    @Override
     public void showFieldTooSmall() {
 
     }

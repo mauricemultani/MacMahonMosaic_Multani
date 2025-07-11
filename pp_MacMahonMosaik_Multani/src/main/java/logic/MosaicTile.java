@@ -135,4 +135,15 @@ public enum MosaicTile {
     public char giveSingleTile(int index){
         return this.name().charAt(index);
     }
+
+    /**
+     * Methode, welche den Bildpfad zurück zum Enum transformiert.
+     */
+    public static MosaicTile convertImagePathToEnum(String path) {
+        int lastSlash = path.lastIndexOf('/');
+        int dot = path.lastIndexOf('.');
+
+        String tile = path.substring(lastSlash + 1, dot);
+        return MosaicTile.valueOf(tile);
+    }
 }

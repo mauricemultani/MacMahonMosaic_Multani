@@ -187,6 +187,12 @@ public class Game {
                 }
             }
         }
+
+        converted[0][0] = "NNNN";
+        converted[0][columns - 1] = "NNNN";
+        converted[rows - 1][0] = "NNNN";
+        converted[rows -1][columns - 1] = "NNNN";
+
         return converted;
     }
 

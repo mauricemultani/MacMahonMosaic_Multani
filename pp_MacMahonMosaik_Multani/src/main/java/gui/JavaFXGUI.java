@@ -19,10 +19,10 @@ public class JavaFXGUI implements GUIConnector {
     /**
      * Verschiedene ButtonTypes die in handleClose verwendet werden.
      */
-    public final ButtonType buttonSave = new ButtonType("Save");
-    public final ButtonType buttonClose = new ButtonType("Close the Game");
-    public final ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-    public final ButtonType buttonAdjust = new ButtonType("Adjust");
+    private final ButtonType buttonSave = new ButtonType("Save");
+    private final ButtonType buttonClose = new ButtonType("Close the Game");
+    private final ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+    private final ButtonType buttonAdjust = new ButtonType("Adjust");
 
     @Override
     public void gameEnded(boolean gameFinished) {
@@ -49,7 +49,6 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information!");
         alert.setHeaderText("The Game was not saved!");
-        alert.setContentText("You may close the Window.");
         alert.showAndWait();
     }
 
@@ -123,7 +122,7 @@ public class JavaFXGUI implements GUIConnector {
                 try {
                     int rows = Integer.parseInt(rowsTextField.getText());
                     int cols = Integer.parseInt(colTextField.getText());
-                    return new Pair<>(rows, cols);
+                    return new Pair<>(rows + 2, cols + 2);
                 } catch (NumberFormatException e) {
                     return null;
                 }
@@ -135,13 +134,25 @@ public class JavaFXGUI implements GUIConnector {
     }
 
     /**
+     * Mitteilung, wenn eines der Felder für die Spielfeldgröße leer ist.
+     */
+    @Override
+    public void showMissingNumbersForField() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information!");
+        alert.setHeaderText("Fill out both parameters to change your field.");
+        alert.setContentText("Both Parameters must contain numbers between 2 and 6");
+        alert.showAndWait();
+    }
+
+    /**
      * Mitteilung, wenn das Spielfeld zu klein ist.
      */
     @Override
     public void showFieldTooSmall() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information!");
-        alert.setHeaderText("The Field must contain a minimum amount of 4 Rows and Columns");
+        alert.setHeaderText("The Field must contain a minimum amount of 2 Rows and Columns");
         alert.showAndWait();
     }
 
@@ -152,7 +163,7 @@ public class JavaFXGUI implements GUIConnector {
     public void showFieldTooBig() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information!");
-        alert.setHeaderText("The Maximum Amount of Rows and Columns is 8");
+        alert.setHeaderText("The Maximum Amount of Rows and Columns is 6");
         alert.showAndWait();
     }
 
