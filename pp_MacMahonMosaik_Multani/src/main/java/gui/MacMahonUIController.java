@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import logic.Board;
+import logic.Editor;
 import logic.GUIConnector;
 import logic.Game;
 
@@ -30,6 +31,8 @@ public class MacMahonUIController {
     private final GUIConnector gui = new JavaFXGUI();
 
     private Game game;
+
+    private Editor editor;
 
     private BoardController boardController;
 
@@ -77,8 +80,11 @@ public class MacMahonUIController {
         // Erstellung eines neuen Spiels
         game = new Game(board);
 
+        // Initialisiert die Logik für den Editor
+        editor = new Editor(board);
+
         // Initialisierung des Controllers für den Editor Modus
-        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController);
+        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
         menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
             handleEditorMode();
         });
@@ -121,7 +127,18 @@ public class MacMahonUIController {
 
         File file = fileChooser.showOpenDialog(null);
 
-        if (file != null) {
+        if (menuEditorMode.isSelected() && file != null) {
+            editor.loadGame(file);
+
+            game.setBoard(editor.getBoard());
+
+            boardController.setBoardAndUpdate(game.getBoard());
+            gridBottomController.setBoard(game.getBoard());
+            gridBottomController.checkExistentMosaikTiles();
+            
+            success = true;
+            gui.showSuccessLoad();
+        } else if (file != null) {
             game.loadGame(file);
 
             boardController.setBoardAndUpdate(game.getBoard());
@@ -130,7 +147,7 @@ public class MacMahonUIController {
 
             success = true;
             gui.showSuccessLoad();
-        } else if (!success) {
+        } else {
             gui.showFailLoad();
         }
     }
@@ -196,7 +213,7 @@ public class MacMahonUIController {
         if (menuEditorMode.isSelected()) {
                 editorController.initializeEditorMode();
             } else {
-                if (editorController.canSwitchBackToGameMode()) {
+                if (editor.canSwitchBackToGameMode(true)) {
                     editorController.switchBackToGameMode();
                 } else {
                     menuEditorMode.setSelected(true);

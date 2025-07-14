@@ -54,6 +54,8 @@ public class GridBottomController {
      * Hier wird auch das ziehen bzw. draggen der Bilder implementiert
      */
     public void initImages() {
+        gridPane.getChildren().clear();
+
         final int columnCount = gridPane.getColumnCount();
         final int rowsCount = gridPane.getRowCount();
 
@@ -81,6 +83,9 @@ public class GridBottomController {
                 imageIndex++;
             }
         }
+
+        gridPane.setGridLinesVisible(false);
+        gridPane.setGridLinesVisible(true);
     }
 
     /**

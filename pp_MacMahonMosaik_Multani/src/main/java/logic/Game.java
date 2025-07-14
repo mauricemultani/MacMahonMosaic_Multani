@@ -234,7 +234,7 @@ public class Game {
             int rows = field.length;
             int cols = field[0].length;
 
-            this.board = new Board(rows, cols, field);
+            this.board = new Board(rows, cols, field, false);
 
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -56,6 +56,11 @@ public class EditorController {
     private final Game game;
 
     /**
+     * Zugriff auf die Editor Class
+     */
+    private Editor editor;
+
+    /**
      * Zugriff auf die GridBottomController Class.
      */
     private final GridBottomController gridBottomController;
@@ -93,7 +98,8 @@ public class EditorController {
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
-    public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController, GUIConnector gui, Game game, GridBottomController gridBottomController){
+    public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController,
+                            GUIConnector gui, Game game, GridBottomController gridBottomController, Editor editor){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
@@ -101,6 +107,7 @@ public class EditorController {
         this.gui = gui;
         this.game = game;
         this.gridBottomController = gridBottomController;
+        this.editor = editor;
     }
 
     /**
@@ -108,9 +115,13 @@ public class EditorController {
      * in einer Methode zusammenfassen.
      */
     public void initializeEditorMode() {
+        Board currBoard = game.getBoard();
+        editor.setBoard(currBoard);
+        this.board = currBoard;
+
         gridPane.getChildren().clear();
 
-        switchToEditorMode();
+        editor.switchToEditorMode();
 
         // Anpassung des Spielfeldes bei Größenveränderung
         // Spielfeld bleibt quadratisch
@@ -136,26 +147,12 @@ public class EditorController {
             }
         }
 
+        game.setBoard(board);
+
+        boardController.setBoardAndUpdate(board);
+        gridBottomController.checkExistentMosaikTiles();
+
         adjustBorderColors();
-    }
-
-    /**
-     * Die Methode soll bei einem Switch in den Editor-Modus alles
-     * außer den Rändern und Löchern leeren.
-     */
-    public void switchToEditorMode() {
-        int rows = board.getRows();
-        int columns = board.getColumns();
-
-        for (int row = 1; row < rows - 1; row++) {
-            for (int col = 1; col < columns - 1; col++) {
-                BoardCell cell = board.getCell(row, col);
-                if (cell.isPlaced() && !cell.isHole()) {
-                    cell.placeTile(MosaicTile.NNNN, Rotation.DEGREE_0);
-                }
-            }
-        }
-        boardController.initializeBoard();
     }
 
     /**
@@ -213,12 +210,8 @@ public class EditorController {
                 // konvertiert den Bildpfad zurück zu einem Enum
                 MosaicTile currentTile = MosaicTile.convertImagePathToEnum(currentPath);
 
-                int idx = tileList.indexOf(currentTile);
-                int nextIdx = (idx + 1) % tileList.size();
-                MosaicTile nextTile = tileList.get(nextIdx);
-
-                borderArray[index] = nextTile.getImagePath();
-
+                MosaicTile nextTile = editor.getNextBorderColor(currentTile, tileList);
+                editor.nextBorderColor(index, borderArray, nextTile);
 
                 if (node instanceof ImageView imageView) {
                     Image image = new Image(nextTile.getImagePath());
@@ -278,19 +271,42 @@ public class EditorController {
 
             Board newBoard = new Board(rows, columns, false);
             this.board = newBoard;
+            editor.setBoard(newBoard);
             game.setBoard(newBoard);
 
             boardController.setBoardAndUpdate(newBoard);
 
-            int gameFieldRows = board.getRows() - 2;
-            int gameFieldCols = board.getColumns() - 2;
-            int totalCells = gameFieldRows * gameFieldCols;
+            gridBottomController.initImages();
 
-            int maxTiles = 24;
-            int numHoles = Math.max(0, totalCells - maxTiles);
+            final int columnCount = gridPane.getColumnCount();
+            final int rowCount = gridPane.getRowCount();
 
-            if (numHoles > 0) {
+            for (int row = 1; row < rows - 1; row++) {
+                for (int col = 1; col < columns - 1; col++) {
+                    Label label = new Label();
+
+                    label.prefWidthProperty().bind(
+                            gridPane.widthProperty().divide(columnCount - 1).
+                                    subtract(gridPane.getHgap())
+                    );
+                    label.prefHeightProperty().bind(
+                            gridPane.heightProperty().divide(rowCount - 1).
+                                    subtract(gridPane.getVgap())
+                    );
+
+                    gridPane.add(label, col, row);
+                }
+            }
+
+            if (editor.needsHoles(rows, columns)) {
                 choosePositionsOfHoles();
+                editor.canSwitchBackToGameMode(true);
+            } else {
+                game.setBoard(board);
+                boardController.setBoardAndUpdate(board);
+
+                gridBottomController.initImages();
+                editor.canSwitchBackToGameMode(true);
             }
         });
 
@@ -304,12 +320,7 @@ public class EditorController {
      * mehr als 24 Zellen hat.
      */
     private void choosePositionsOfHoles(){
-        int gameFieldRows = board.getRows() - 2;
-        int gameFieldCols = board.getColumns() - 2;
-        int totalCells = gameFieldRows * gameFieldCols;
-
-        int maxTiles = 24;
-        int numHoles = Math.max(0, totalCells - maxTiles);
+        int numHoles = editor.calculateIfHolesNeeded(board.getRows(), board.getColumns());
 
         if (numHoles == 1) {
             gui.showOnlyOneHoleToPlace();
@@ -326,39 +337,54 @@ public class EditorController {
      * @param numHoles      Die Anzahl an zu setzenden Löchern
      */
     private void placingHoles(int numHoles) {
+        editor.canSwitchBackToGameMode(false);
+
         int[] placedHoles = {0};
-        for (int row = 1; row < board.getRows() - 1; row++) {
-            for (int col = 1; col < board.getColumns() - 1; col++) {
-                Node node = getNode(gridPane, col, row);
-                if (node != null) {
-                    int finalRow = row;
-                    int finalCol = col;
+        for (Node node : gridPane.getChildren()) {
+            Integer col = GridPane.getColumnIndex(node);
+            Integer row = GridPane.getRowIndex(node);
 
-                    node.setOnMouseClicked(mouseEvent -> {
-                        if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles) {
-                            board.getCell(finalRow, finalCol).setHole();
+            if (col != null && row != null && col > 0 && col < board.getColumns() - 1
+                && row > 0 && row < board.getRows() - 1) {
 
-                            Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-                            ImageView imageView = new ImageView(image);
+                int finalRow = row;
+                int finalCol = col;
 
-                            if (node instanceof Label label) {
-                                label.setGraphic(imageView);
-                            }
+                node.setOnMouseClicked(mouseEvent -> {
+                    if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles) {
+                        editor.placeHoleAt(finalRow, finalCol);
 
-                            placedHoles[0]++;
+                        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
+                        ImageView imageView = new ImageView(image);
 
-                            if (placedHoles[0] == numHoles) {
-                                removeMouseEvent();
-                                gui.showAllHolesPlaced();
-                                boardController.setBoardAndUpdate(board);
-                            }
+                        if (node instanceof Label label) {
+                            imageView.fitWidthProperty().bind(label.widthProperty());
+                            imageView.fitHeightProperty().bind(label.heightProperty());
+                            label.setGraphic(imageView);
                         }
-                    });
-                    node.setCursor(Cursor.HAND);
-                }
+
+                        placedHoles[0]++;
+
+                        if (placedHoles[0] == numHoles) {
+                            board = editor.getBoard();
+                            game.setBoard(board);
+
+                            boardController.setBoardAndUpdate(board);
+
+                            removeMouseEvent();
+                            gui.showAllHolesPlaced();
+                            adjustBorderColors();
+                            editor.canSwitchBackToGameMode(true);
+                        }
+                    }
+                });
+                node.setCursor(Cursor.HAND);
             }
         }
+
     }
+
+
 
     /**
      * Entfernt das MouseEvent.
@@ -395,17 +421,6 @@ public class EditorController {
         return null;
     }
 
-    /**
-     * Methode welche prüft, ob ein Wechsel zurück in den Spielmodus möglich ist.
-     *
-     * Folgende Bedingungen müssen für einen Wechsel in den Spielmodus erreicht sein:
-     * 1. Alle Ränder haben eine Farbe.
-     * 2. Es müssen ausreichend Löcher vorhanden sein.
-     * 3. Puzzle muss lösbar sein.
-     */
-    public boolean canSwitchBackToGameMode() {
-        return false;
-    }
 
     /**
      * Der Wechsel zurück in den Spielmodus.
@@ -416,21 +431,9 @@ public class EditorController {
      * 3. Puzzle muss lösbar sein.
      */
     public void switchBackToGameMode(){
-
-    }
-
-    /**
-     * Speichert das laufende Spiel.
-     */
-    public void saveGame(){
-
-    }
-
-    /**
-     * Lädt ein gespeichertes Spiel.
-     * Wenn ein Puzzle mit Teilen auf dem Spielfeld geladen wird, sollen diese entfernt werden.
-     */
-    public void loadGame(){
-
+        if (editor.canSwitchBackToGameMode(true)) {
+            boardController.initializeBoard();
+            gridBottomController.checkExistentMosaikTiles();
+        }
     }
 }

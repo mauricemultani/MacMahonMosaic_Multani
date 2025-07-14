@@ -200,8 +200,8 @@ public class JavaFXGUI implements GUIConnector {
     public void showAllHolesPlaced() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
-        alert.setHeaderText("All Holes are placed\n"
-        + "you can continue with the Game");
+        alert.setHeaderText("All Holes are placed!\n"
+        + "You can continue with the Game.");
         alert.showAndWait();
     }
 

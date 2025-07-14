@@ -23,6 +23,8 @@ public class Board {
 
     Random random = new Random();
 
+    private boolean forEditor = false;
+
     /**
      * Konstruktor für Spielfeld. Setzt die Anzahl an Reihen und Spalten.
      * Initialisiert das Spielfeld mit leeren Zellen und auch mit Löchern (falls Zellen > 24).
@@ -75,14 +77,17 @@ public class Board {
      * @param columns       die Anzahl an Spalten
      * @param field         das Spielfeld
      */
-    public Board(int rows, int columns, String[][] field) {
+    public Board(int rows, int columns, String[][] field, boolean forEditor) {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
+        this.forEditor = false;
 
+        if (!forEditor) {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 String tileName = field[row][column];
+
                 if ("HHHH".equals(tileName)) {
                     this.cells[row][column] = new BoardCell(true);
                 } else if ("NNNN".equals(tileName)) {
@@ -103,6 +108,23 @@ public class Board {
         this.bottomBorderColors = initSavedColors(extractBottomBorderTiles(field));
         this.leftBorderColors = initSavedColors(extractLeftBorderTiles(field));
         this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
+        } else {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < columns; col++) {
+                    String tileName = field[row][col];
+                    if ("HHHH".equals(tileName)) {
+                        this.cells[row][col] = new BoardCell(true);
+                    } else {
+                        this.cells[row][col] = new BoardCell(null);
+                    }
+                }
+            }
+
+            this.topBorderColors = initSavedColors(extractTopBorderTiles(field));
+            this.bottomBorderColors = initSavedColors(extractBottomBorderTiles(field));
+            this.leftBorderColors = initSavedColors(extractLeftBorderTiles(field));
+            this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
+        }
     }
 
     /**
