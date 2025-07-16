@@ -133,6 +133,51 @@ public class BoardController {
     }
 
     /**
+     * Die Methode soll das Spiel neu starten.
+     * Nur Löcher und Ränder bleiben gleich.
+     * Schon gesetzte Teile werden zurückgesetzt.
+     */
+    public void restartGame() {
+        gridPane.getChildren().clear();
+        gridPane.getRowConstraints().clear();
+        gridPane.getColumnConstraints().clear();
+
+        board.restartGame();
+
+        // Überschreiben von Zeilen und Spalten des GridPanes.
+        createBoard();
+
+        // Anpassung Zeilen und Spalten des Spielfelds
+        adjustRowsAndColumns();
+        adjustGameField(board.getColumns(), board.getRows());
+
+        // Anpassung des Spielfeldes bei Größenveränderung
+        // Spielfeld bleibt quadratisch
+        gameFieldPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(newVal.doubleValue(), gameFieldPane.getHeight());
+        });
+        gameFieldPane.heightProperty().addListener((obs, oldVal, newVal) -> {
+            adjustGameField(gameFieldPane.getWidth(), newVal.doubleValue());
+        });
+
+        // setzt eine Mindestgröße beim Spielfeld
+        gridPane.setMinSize(450, 450);
+
+        // Initialisiert die Bilder an den Grenzen des Spielfeldes
+        initImagesBorderBoard();
+
+        // stellt die gespeicherten Mosaikteile (Ränder mit inbegriffen) dar
+        displaySavedTiles();
+
+        // Ermöglicht das droppen der Mosaikteile
+        dropTiles();
+
+        // setzt die GridLines auf sichtbar
+        gridPane.setGridLinesVisible(false);
+        gridPane.setGridLinesVisible(true);
+    }
+
+    /**
      * Erstellt ein Spielfeld.
      * Das Board darf nicht mit weniger als 4, oder mehr als 8 Zeilen oder Spalten generiert werden.
      * Bedingungen sind mit entsprechenden Exceptions gesetzt.
@@ -265,7 +310,6 @@ public class BoardController {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
-
             }
             dragEvent.consume();
         });
@@ -273,7 +317,6 @@ public class BoardController {
         gridPane.setOnDragDropped(dragEvent -> {
             Dragboard db = dragEvent.getDragboard();
             if (db.hasString()) {
-
                 double totalWidth = gridPane.getWidth();
                 double totalHeight = gridPane.getHeight();
 
@@ -292,29 +335,26 @@ public class BoardController {
                 int column = (int) ((x - borderWidth) / cellWidth);
                 int row = (int) ((y - borderHeight) / cellHeight);
 
-                if (!TileActions.isCellEmpty(gridPane, column + 1, row + 1)) {
+                if (TileActions.isCellNotEmpty(gridPane, column + 1, row + 1)) {
                     dragEvent.setDropCompleted(false);
                     dragEvent.consume();
                     return;
                 }
 
                 if (column >= 0 && column < middleCols && row >= 0 && row < middleRows) {
-                    // String[] tileInfo = db.getString().split("/");
-                    // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                    // Rotation rotation = Rotation.valueOf(tileInfo[1]);
-
-                    String tileInfo = db.getString();
-                    MosaicTile tile = MosaicTile.valueOf(tileInfo);
+                    String[] tileInfo = db.getString().split("/");
+                    MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                    Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
                     ImageView imageView = new ImageView(db.getImage());
-                    // imageView.setRotate(getDegrees(rotation));
+                    imageView.setRotate(getDegrees(rotation));
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
-                    // droppedLabel.setUserData(rotation);
+                    droppedLabel.setUserData(rotation);
 
                     Position position = new Position(row + 1, column + 1);
-                    board.placeTileAt(tile, Rotation.DEGREE_0, position);
+                    board.placeTileAt(tile, rotation, position);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
                     TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile);

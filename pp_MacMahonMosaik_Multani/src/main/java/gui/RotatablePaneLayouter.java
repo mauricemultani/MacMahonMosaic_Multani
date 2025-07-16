@@ -12,7 +12,7 @@ import javafx.scene.layout.Region;
  * Korrigiert das fehlerhafte relocate und resize beim Drehen einer Pane.
  */
 public class RotatablePaneLayouter extends Region {
-    private Pane child;
+    private final Pane child;
 
     public RotatablePaneLayouter(Pane child) {
         getChildren().add(child);

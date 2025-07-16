@@ -72,36 +72,6 @@ public class Game {
     }
 
     /**
-     * Hier findet der Prozess vom Spiel statt.
-     * Der Spieler wird erst dann benachrichtigt,
-     * wenn alle Zellen belegt und die Farbregeln nicht verletzt werden.
-     */
-    public boolean winningGame() {
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
-                // Spielzelle mit der Position von Reihe und Spalte
-                BoardCell cell = board.getCell(row, col);
-
-                // if-Überprüfung, ob alle Zellen belegt sind
-                if (!cell.isHole() && !cell.isPlaced()) {
-                    return false;
-                }
-
-                // Farben der Nachbarn bei einer
-                // belegten Zelle überprüfen
-                if (cell.isPlaced()) {
-                    Position pos = new Position(row, col);
-                    if (!board.fitsNeighbours(cell.getTile(), cell.getRotation(), pos)) {
-                        return false;
-                    }
-
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
      * Initialisiert das Spiel.
      * Löscht alle Zellen und setzt das Spielfeld zurück.
      */
@@ -132,7 +102,7 @@ public class Game {
 
     /**
      * Klont das Spielfeld.
-     * Wird für die Speicherung des Spielfelds verwendet.
+     * // TODO gucken ob es benötigt wird.
      */
     private BoardCell[][] saveCells() {
         BoardCell[][] saveCells = new BoardCell[board.getRows()][board.getColumns()];

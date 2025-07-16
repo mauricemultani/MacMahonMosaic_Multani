@@ -31,11 +31,11 @@ public class TileActions {
      * @param tile          Das Mosaikteil
      */
     public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile) {
-        dragTiles(label, imageView, tile);
+        dragTiles(gridPane, label, imageView, tile);
 
         boardOnDragDone(gridPane, board, label, pos);
 
-        rotateTile(gridPane, label, imageView);
+        rotateTile(gridPane, label, imageView, pos, board, tile);
 
         fitBoardImageView(gridPane, imageView);
     }
@@ -48,7 +48,7 @@ public class TileActions {
      * @param tile          Das Mosaikteil
      */
     public static void gridBottomActions(GridPane gridPane,Label label, ImageView imageView, MosaicTile tile) {
-        dragTiles(label, imageView, tile);
+        dragTiles(gridPane, label, imageView, tile);
 
         gridBottomOnDragDone(gridPane, label);
 
@@ -63,18 +63,17 @@ public class TileActions {
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
      * @param tile          Das Mosaikteil
      */
-    private static void dragTiles(Label label, ImageView imageView, MosaicTile tile){
+    private static void dragTiles(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile){
         label.setOnDragDetected(mouseEvent -> {
            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
 
-               //TODO: gedrehtes Bild übertragen und nicht das Standardbild.
                ImageView rotatedView = new ImageView(imageView.getImage());
-               // Rotation rotation = (Rotation) label.getUserData();
+               Rotation rotation = (Rotation) label.getUserData();
 
-               // if (rotation == null) rotation = Rotation.DEGREE_0;
+               if (rotation == null) rotation = Rotation.DEGREE_0;
 
-               // rotatedView.setRotate(TileActions.getDegrees(rotation));
+               rotatedView.setRotate(TileActions.getDegrees(rotation));
 
                rotatedView.setFitWidth(imageView.getFitWidth());
                rotatedView.setFitHeight(imageView.getFitHeight());
@@ -82,27 +81,48 @@ public class TileActions {
                ClipboardContent content = new ClipboardContent();
                content.putImage(imageView.getImage());
 
-               String data = tile.name();
-                       // + '/' + rotation.name();
+               // Das Teil wird in einem String mit ihrer Rotation gespeichert.
+               String data = tile.name() + '/' + rotation.name();
 
                content.putString(data);
 
                db.setContent(content);
                mouseEvent.consume();
+
+
            }
         });
-    }
 
-    private static void boardOnDragDone(GridPane gridPane, Board board, Label label, Position pos) {
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
-
-                board.removeTileAt(pos);
             }
         });
     }
 
+    /**
+     * Private Methode, wenn im board ein DragDone vorkommt.
+     * Entfernt auch die Position vom Board.
+     * @param gridPane  das GridPane
+     * @param board     das Spielfeld
+     * @param label     das Label
+     * @param pos       die Position
+     */
+    private static void boardOnDragDone(GridPane gridPane, Board board, Label label, Position pos) {
+        label.setOnDragDone(dragEvent -> {
+            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
+                board.removeTileAt(pos);
+
+                gridPane.getChildren().remove(label);
+            }
+        });
+    }
+
+    /**
+     *  Private Methode, wenn im gridBottom ein DragDone benötigt wird.
+     * @param gridPane  das GridPane
+     * @param label     das Label
+     */
     private static void gridBottomOnDragDone(GridPane gridPane, Label label) {
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
@@ -112,9 +132,13 @@ public class TileActions {
     }
 
     /**
+     * Private Methode, wenn
+     */
+
+    /**
      * Methode, welche das Drop-Verhalten für eine GridPane aktiviert.
      *
-     * @param gridPane      Das GridPane, in dass das Mosaikteil platziert werden darf.
+     * @param gridPane  Das GridPane, in dass das Mosaikteil platziert werden darf.
      */
     private static void dropTiles(GridPane gridPane){
         gridPane.setOnDragOver(dragEvent -> {
@@ -132,24 +156,22 @@ public class TileActions {
                 final int rowCount = gridPane.getRowCount();
 
                 double cellWidth = totalWidth / columnCount;
-                double x = dragEvent.getX();
-                int column = (int) (x / cellWidth);
+                int column = (int) (dragEvent.getX() / cellWidth);
 
                 if (column >= 0 && column < columnCount) {
-                    // Finde die erste freie Zeile in der Spalte
                     for (int row = 0; row < rowCount; row++) {
-                        if (isCellEmpty(gridPane, column, row)) {
-
-                            // String[] tileInfo = db.getString().split("/");
-                            // MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                            // Rotation rotation = Rotation.valueOf(tileInfo[1]);
-
-                            String tileInfo = db.getString();
-                            MosaicTile tile = MosaicTile.valueOf(tileInfo);
+                        if (isCellNotEmpty(gridPane, column, row)) {
+                            dragEvent.setDropCompleted(false);
+                            dragEvent.consume();
+                            return;
+                        } else {
+                            String[] tileInfo = db.getString().split("/");
+                            MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                            Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
                             ImageView imageView = new ImageView(db.getImage());
 
-                            // imageView.setRotate(getDegrees(rotation));
+                            imageView.setRotate(getDegrees(rotation));
 
                             imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
                             imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowCount));
@@ -158,13 +180,19 @@ public class TileActions {
                             Label droppedLabel = new Label();
 
                             droppedLabel.setGraphic(imageView);
-                            // droppedLabel.setUserData(rotation);
+                            droppedLabel.setUserData(rotation);
 
                             gridPane.add(droppedLabel, column, row);
+
+                            gridBottomActions(gridPane, droppedLabel, imageView, tile);
+
+                            droppedLabel.setOnDragDone(dragEvent1 -> {
+                                if (dragEvent.getTransferMode() == TransferMode.MOVE) {
+                                    gridPane.getChildren().remove(droppedLabel);
+                                }
+                            });
                         }
-                        else if (!isCellEmpty(gridPane, column, row)) {
-                            dragEvent.setDropCompleted(false);
-                        }
+
                     }
                 }
             }
@@ -180,7 +208,7 @@ public class TileActions {
      * @param label         Das Label, das rotiert werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView){
+    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView, Position pos, Board board, MosaicTile tile){
         label.setOnMouseClicked(mouseEvent -> {
             // rotiert nur bei Rechtsklick
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
@@ -199,6 +227,8 @@ public class TileActions {
                 // das imageView und auch das label werden auf die nächste Rotation gesetzt.
                 imageView.setRotate(getDegrees(next));
                 label.setUserData(next);
+
+                board.placeTileAt(tile, next, pos);
             }
         });
     }
@@ -211,16 +241,16 @@ public class TileActions {
      * @param row       Reihe bzw. Reihenanzahl
      * @return          true, wenn eine leere Zelle gefunden wird, ansonsten false.
      */
-    public static boolean isCellEmpty(GridPane gridPane, int column, int row) {
+    public static boolean isCellNotEmpty(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {
             Integer col = GridPane.getColumnIndex(node);
             Integer rows = GridPane.getRowIndex(node);
 
             if (col != null && rows != null && col == column && rows == row) {
-                return false; // Zelle ist nicht leer
+                return true; // Zelle ist nicht leer
             }
         }
-        return true; // Zelle ist leer
+        return false; // Zelle ist leer
     }
 
     /**
@@ -266,11 +296,8 @@ public class TileActions {
      * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
      * Rotation überschreibt.
      *
-     * @param imageViewWidth - initiale Breite des ImageViews
-     * @param imageViewHeight - initiale Höhe des ImageViews
      * @param x - Spalte, in die das Bild eingefügt wird
      * @param y - Reihe, in die das Bild eingefügt wird
-     * @param grdPn - GridPane, der das Bild zugefügt wird
      * @return das eingebettete ImageView
      */
     private static void createRotatableImageView(GridPane gridPane, Image image, int x, int y){

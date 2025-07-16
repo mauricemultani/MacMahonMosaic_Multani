@@ -30,16 +30,34 @@ public class Solvability {
      * 2. Alle möglich belegbaren Zellen belegt sind.
      *
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
-     * Spieler wird auch über die Lösbarkeit im aktuellen Spielstand informiert.
      */
     public boolean solveGame(){
-        return board.isPositionValid(pos)
-                && board.fitsNeighbours(tile, rotation, pos)
-                && allTilesPlaced(board);
+        // if-Überprüfung, ob alle Zellen belegt sind
+        if (!allTilesPlaced(board)) {
+            return false;
+        }
+
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getColumns(); col++) {
+                // Spielzelle mit der Position von Reihe und Spalte
+                BoardCell cell = board.getCell(row, col);
+
+                // Farben der Nachbarn bei einer
+                // belegten Zelle überprüfen
+                if (cell.isPlaced()) {
+                    Position pos = new Position(row, col);
+                    if (!board.fitsNeighbours(cell.getTile(), cell.getRotation(), pos)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     /**
-     * Prüft im aktuellen Spielstand, bei freien Stellen und verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
+     * Prüft im aktuellen Spielstand, bei freien Stellen und
+     * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
     public void possibleSolvation(){
 
@@ -71,9 +89,9 @@ public class Solvability {
      * Prüft, ob alle Zellen belegt sind.
      */
     public boolean allTilesPlaced(Board board) {
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int column = 0; column < board.getColumns(); column++) {
-                if (!board.getCell(row, column).isPlaced() && board.getCell(row, column).isHole()) {
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int column = 1; column < board.getColumns() - 1; column++) {
+                if (!board.getCell(row, column).isPlaced() && !board.getCell(row, column).isHole()) {
                     return false;
                 }
             }

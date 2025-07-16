@@ -14,10 +14,10 @@ public interface GUIConnector {
 
     /**
      * Wird angezeigt, wenn das Spiel korrekt beendet ist.
-     * @param gameFinished boolescher Wert um zu bestimmen, ob das Spiel zu Ende ist.
      */
-    void gameEnded(boolean gameFinished);
+    void showGameWon();
 
+    void showGamesNotFinished();
 
     /**
      * Soll bei erfolgreicher Speicherung, dies dem Spieler auch mitteilen.

@@ -56,7 +56,7 @@ public class Editor {
             for (int col = 1; col < columns - 1; col++) {
                 BoardCell cell = board.getCell(row, col);
                 if (cell.isPlaced() && !cell.isHole()) {
-                    cell.placeTile(MosaicTile.NNNN, Rotation.DEGREE_0);
+                    cell.placeTile(null, null);
                 }
             }
         }

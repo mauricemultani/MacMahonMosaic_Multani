@@ -23,8 +23,6 @@ public class Board {
 
     Random random = new Random();
 
-    private boolean forEditor = false;
-
     /**
      * Konstruktor für Spielfeld. Setzt die Anzahl an Reihen und Spalten.
      * Initialisiert das Spielfeld mit leeren Zellen und auch mit Löchern (falls Zellen > 24).
@@ -81,7 +79,6 @@ public class Board {
         this.rows = rows;
         this.columns = columns;
         this.cells = new BoardCell[rows][columns];
-        this.forEditor = false;
 
         if (!forEditor) {
         for (int row = 0; row < rows; row++) {
@@ -406,7 +403,6 @@ public class Board {
                     int neighbourIndex = oppositeSides[i];
 
                     if (neighbourColors[neighbourIndex] != Color.GRAY && !tileColors[tileIndex].equals(neighbourColors[neighbourIndex])) {
-                        System.out.println("i: " + i + ", tileColors[i]: " + tileColors[i] + ", neighbourColors[oppositeSide]: " + neighbourColors[neighbourIndex]);
                         return false;
                     }
                 }
@@ -479,8 +475,9 @@ public class Board {
      * @param pos           die Position, wo das Mosaikteil platziert werden soll.
      */
     public void placeTileAt(MosaicTile mosaicTile, Rotation rotation, Position pos) {
-        if (isPositionValid(pos)) {
-            cells[pos.row()][pos.column()].placeTile(mosaicTile, rotation);
+        BoardCell cell = cells[pos.row()][pos.column()];
+        if (!cell.isHole()) {
+            cell.placeTile(mosaicTile, rotation);
         }
     }
 
@@ -493,4 +490,19 @@ public class Board {
         cells[pos.row()][pos.column()].placeTile(null, Rotation.DEGREE_0);
     }
 
+    /**
+     * Startet das Spiel neu.
+     * Alle Teile sollen vom Feld genommen werden. Nur Rand und Löcher bleiben übrig.
+     */
+    public void restartGame() {
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < columns - 1; col++) {
+                BoardCell cell = getCell(row, col);
+
+                if (!cell.isHole()) {
+                    cells[row][col] = new BoardCell(null);
+                }
+            }
+        }
+    }
 }

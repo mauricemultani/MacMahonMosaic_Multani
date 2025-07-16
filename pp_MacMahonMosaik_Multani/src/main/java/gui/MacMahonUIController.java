@@ -10,10 +10,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import logic.Board;
-import logic.Editor;
-import logic.GUIConnector;
-import logic.Game;
+import logic.*;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -61,10 +58,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 7;
+        int rows = 4;
 
         // Anzahl an Spalten
-        int columns = 7;
+        int columns = 4;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
@@ -91,7 +88,7 @@ public class MacMahonUIController {
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
-        gridBottomController.initImages();
+        gridBottomController.checkExistentMosaikTiles();
 
         closeGameViaStage();
     }
@@ -238,7 +235,16 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameSubmit() {
+        Board currBoard = game.getBoard();
+        Solvability solve = new Solvability(null, null, currBoard, null);
 
+        success = solve.solveGame();
+
+        if (success) {
+            gui.showGameWon();
+        } else {
+            gui.showGamesNotFinished();
+        }
     }
 
     /**
@@ -250,7 +256,15 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameRestart() {
+        boardController.restartGame();
 
+        Board newBoard = this.game.getBoard();
+
+        game.setBoard(newBoard);
+
+        boardController.setBoardAndUpdate(newBoard);
+        gridBottomController.setBoard(newBoard);
+        gridBottomController.checkExistentMosaikTiles();
     }
 
     /**

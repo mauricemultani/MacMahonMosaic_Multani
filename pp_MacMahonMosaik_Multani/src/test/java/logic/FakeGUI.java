@@ -13,7 +13,12 @@ import java.util.Optional;
 public class FakeGUI implements GUIConnector{
 
     @Override
-    public void gameEnded(boolean gameFinished) {
+    public void showGameWon() {
+
+    }
+
+    @Override
+    public void showGamesNotFinished() {
 
     }
 
@@ -81,5 +86,4 @@ public class FakeGUI implements GUIConnector{
     public void showOnlyOneHoleToPlace() {
 
     }
-
 }

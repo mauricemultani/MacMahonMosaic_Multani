@@ -25,8 +25,21 @@ public class JavaFXGUI implements GUIConnector {
     private final ButtonType buttonAdjust = new ButtonType("Adjust");
 
     @Override
-    public void gameEnded(boolean gameFinished) {
+    public void showGameWon() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game is solved!");
+        alert.setHeaderText("Congratulations! You correctly solved the puzzle!");
+        alert.setContentText("You may choose to rerun a new Game for another Game of fun!");
+        alert.showAndWait();
+    }
 
+    @Override
+    public void showGamesNotFinished() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game is unfinished");
+        alert.setHeaderText("This may come in unhandy, but the Game's not correctly solved...");
+        alert.setContentText("Check the placed Tiles, there may be some wrong placements.");
+        alert.showAndWait();
     }
 
     /**
