@@ -357,9 +357,11 @@ public class BoardController {
                     board.placeTileAt(tile, rotation, position);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
+                    System.out.println("Mosaikteil wurde erfolgreich gedropped/dropTiles in BoardController");
                     TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile);
                 }
             }
+            // Bestätigen des Drops
             dragEvent.setDropCompleted(true);
             dragEvent.consume();
         });

@@ -93,11 +93,13 @@ public class TileActions {
            }
         });
 
-        label.setOnDragDone(dragEvent -> {
-            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
-                gridPane.getChildren().remove(label);
-            }
-        });
+//        label.setOnDragDone(dragEvent -> {
+//            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
+//                gridPane.getChildren().remove(label);
+//
+//                System.out.println("Tile wurde erfolgreich gedragged/dragTiles");
+//            }
+//        });
     }
 
     /**
@@ -114,6 +116,8 @@ public class TileActions {
                 board.removeTileAt(pos);
 
                 gridPane.getChildren().remove(label);
+
+                System.out.println("Tile wurde erfolgreich gedroppt/boardOnDragDone");
             }
         });
     }
@@ -127,6 +131,8 @@ public class TileActions {
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
+
+                System.out.println("Tile wurde erfolgreich gedroppt/gridBottomOnDragDone");
             }
         });
     }
@@ -152,48 +158,46 @@ public class TileActions {
             Dragboard db = dragEvent.getDragboard();
             if (db.hasString()) {
                 final double totalWidth = gridPane.getWidth();
+                final double totalHeight = gridPane.getHeight();
+
                 final int columnCount = gridPane.getColumnCount();
-                final int rowCount = gridPane.getRowCount();
+                final int rowsCount = gridPane.getRowCount();
 
                 double cellWidth = totalWidth / columnCount;
-                int column = (int) (dragEvent.getX() / cellWidth);
+                double cellHeight = totalHeight / rowsCount;
 
-                if (column >= 0 && column < columnCount) {
-                    for (int row = 0; row < rowCount; row++) {
-                        if (isCellNotEmpty(gridPane, column, row)) {
-                            dragEvent.setDropCompleted(false);
-                            dragEvent.consume();
-                            return;
-                        } else {
-                            String[] tileInfo = db.getString().split("/");
-                            MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
-                            Rotation rotation = Rotation.valueOf(tileInfo[1]);
+                double x = dragEvent.getX();
+                double y = dragEvent.getY();
 
-                            ImageView imageView = new ImageView(db.getImage());
+                int column = (int) (x / cellWidth);
+                int rw = (int) (y / cellHeight);
 
-                            imageView.setRotate(getDegrees(rotation));
+                if (isCellNotEmpty(gridPane, column, rw)) {
+                    dragEvent.setDropCompleted(false);
+                    dragEvent.consume();
+                    return;
+                }
 
-                            imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
-                            imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowCount));
-                            imageView.setPreserveRatio(true);
+                if (column >= 0 && column < columnCount && rw >= 0 && rw < rowsCount) {
+                    String[] tileInfo = db.getString().split("/");
+                    MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
+                    Rotation rotation = Rotation.valueOf(tileInfo[1]);
 
-                            Label droppedLabel = new Label();
+                    ImageView imageView = new ImageView(db.getImage());
+                    imageView.setRotate(getDegrees(rotation));
 
-                            droppedLabel.setGraphic(imageView);
-                            droppedLabel.setUserData(rotation);
+                    imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
+                    imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowsCount));
+                    imageView.setPreserveRatio(true);
 
-                            gridPane.add(droppedLabel, column, row);
+                    Label droppedLabel = new Label();
+                    droppedLabel.setGraphic(imageView);
+                    droppedLabel.setUserData(rotation);
 
-                            gridBottomActions(gridPane, droppedLabel, imageView, tile);
+                    gridPane.add(droppedLabel, column, rw);
+                    System.out.println("Mosaikteil wurde erfolgreich gedropped/dropTiles in TileActions für Gridbottom");
 
-                            droppedLabel.setOnDragDone(dragEvent1 -> {
-                                if (dragEvent.getTransferMode() == TransferMode.MOVE) {
-                                    gridPane.getChildren().remove(droppedLabel);
-                                }
-                            });
-                        }
-
-                    }
+                    gridBottomActions(gridPane, droppedLabel, imageView, tile);
                 }
             }
             // Bestätigen des Drops
