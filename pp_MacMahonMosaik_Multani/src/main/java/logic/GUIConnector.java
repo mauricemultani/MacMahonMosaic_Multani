@@ -83,4 +83,8 @@ public interface GUIConnector {
      * Mitteilung, wenn nur ein Loch zu platzieren ist.
      */
     void showOnlyOneHoleToPlace();
+
+    void showPlaceAllTilesFirst();
+
+    void showHolesNotPlaced();
 }

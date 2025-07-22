@@ -385,21 +385,21 @@ public class Board {
                 {0, 1}   // rechter Nachbar
         };
 
-        //
         int[] tileSide = {0, 2, 3, 1};
+        // Die gegenüber liegenden Mosaikteil in ihren Himmelsrichtungen
         int[] oppositeSides = {2, 0, 1, 3};
 
         for (int i = 0; i < 4; i++) {
             int newRow = pos.row() + directions[i][0];
             int newCol = pos.column() + directions[i][1];
+            int tileIndex = tileSide[i];
 
-            // Überprüfung, ob Nachbar
+            // Überprüfung, ob Nachbar richtig angrenzende Farben haben
             if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < columns) {
                 BoardCell neighbourCell = cells[newRow][newCol];
 
                 if (neighbourCell.isPlaced()) {
                     Color[] neighbourColors = neighbourCell.getTile().getColors(neighbourCell.getRotation());
-                    int tileIndex = tileSide[i];
                     int neighbourIndex = oppositeSides[i];
 
                     if (neighbourColors[neighbourIndex] != Color.GRAY && !tileColors[tileIndex].equals(neighbourColors[neighbourIndex])) {
@@ -408,6 +408,85 @@ public class Board {
                 }
             }
         }
+
+        if (!fitsBorderNeighbours()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Methode, welche sich die Platzierung der Randzellen und ihren Nachbarzellen anschaut.
+     * @return  true, wenn alle Nachbarzellen und Randzellen übereinstimmen, ansonsten false.
+     */
+    private boolean fitsBorderNeighbours() {
+        // Überprüfung, ob die oberen Randzellen passen
+        for (int col = 0; col < columns; col++) {
+            // holt sich die Mosaikteile, die an den Rändern platziert sind
+            BoardCell cell = getCell(1, col);
+
+            if (cell.isPlaced()) {
+                String borderTile = getTopBorderTiles()[col];
+
+                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[2];
+
+                Color tileColor = cell.getTile().getColors(cell.getRotation())[0];
+
+                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
+                    return false;
+                }
+            }
+        }
+
+        // Überprüfung, ob die unteren Randzellen passen
+        for (int col = 0; col < columns; col++) {
+            BoardCell cell = getCell(rows - 2, col);
+            if (cell.isPlaced()) {
+                String borderTile = getBottomBorderTiles()[col];
+
+                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[0];
+
+                Color tileColor = cell.getTile().getColors(cell.getRotation())[2];
+
+                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
+                    return false;
+                }
+            }
+        }
+
+        // Überprüfung, ob die linken Randzellen passen
+        for (int row = 0; row< rows; row++) {
+            BoardCell cell = getCell(row, 1);
+            if (cell.isPlaced()) {
+                String borderTile = getLeftBorderTiles()[row];
+
+                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[1];
+
+                Color tileColor = cell.getTile().getColors(cell.getRotation())[3];
+
+                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
+                    return false;
+                }
+            }
+        }
+
+        // Überprüfung, ob die rechten Randzellen passen
+        for (int row = 0; row < rows; row++) {
+            BoardCell cell = getCell(row, columns - 2);
+            if (cell.isPlaced()) {
+                String borderTile = getRightBorderTiles()[row];
+
+                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[3];
+
+                Color tileColor = cell.getTile().getColors(cell.getRotation())[1];
+
+                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 

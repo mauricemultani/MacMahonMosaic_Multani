@@ -208,14 +208,15 @@ public class MacMahonUIController {
     @FXML
     private void handleEditorMode() {
         if (menuEditorMode.isSelected()) {
-                editorController.initializeEditorMode();
+            editorController.initializeEditorMode();
+        } else {
+            if (editorController.canSwitchBackToGameMode()) {
+                menuEditorMode.setSelected(false);
+                editorController.switchBackToGameMode();
             } else {
-                if (editor.canSwitchBackToGameMode(true)) {
-                    editorController.switchBackToGameMode();
-                } else {
-                    menuEditorMode.setSelected(true);
-                }
+                menuEditorMode.setSelected(true);
             }
+        }
     }
 
     /**
@@ -238,12 +239,21 @@ public class MacMahonUIController {
         Board currBoard = game.getBoard();
         Solvability solve = new Solvability(null, null, currBoard, null);
 
-        success = solve.solveGame();
-
-        if (success) {
-            gui.showGameWon();
+        if (!solve.allTilesPlaced(currBoard)) {
+            gui.showPlaceAllTilesFirst();
         } else {
-            gui.showGamesNotFinished();
+            success = solve.solveGame();
+
+            if (success) {
+                gui.showGameWon();
+            } else {
+                gui.showGamesNotFinished();
+            }
+        }
+        // TODO: vielleicht Spielfeld "freezen"
+        // zum neustart "zwingen"?
+        if (solve.gameDone()) {
+
         }
     }
 

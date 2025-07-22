@@ -77,27 +77,6 @@ public class Editor {
     }
 
     /**
-     * Methode zur Anpassung der Größe des Spielfeldes.
-     * Spielfeld muss mind. 2 und max. 6 Zellen hoch und breit sein.
-     * Muss rechteckig, aber nicht quadratisch sein.
-     */
-    public void changeSizeOfGameField(int rows, int columns){
-        // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
-        if (rows < 4 || columns < 4) {
-            throw new IllegalArgumentException("Das Feld muss mindestens 4 Zeilen und Spalten haben");
-        }
-
-        // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
-        if (rows > 8 || columns > 8) {
-            throw new IllegalArgumentException("Das Feld darf maximal 8 Zeilen und Spalten haben");
-        }
-
-        Board newBoard = new Board(board.getRows(), board.getColumns(), false);
-        this.board = newBoard;
-        setBoard(newBoard);
-    }
-
-    /**
      * Hilfsmethode für changeSizeOfGameField().
      *
      * Spieler bestimmt Positionen der Löcher, wenn dass Spielfeld nach seiner Erstellung
@@ -132,53 +111,6 @@ public class Editor {
     }
 
     /**
-     * Prüft, ob ein Loch an der angegebenen Stelle ist, oder nicht.
-     * @param row   Die Reihe
-     * @param col   Die Spalte
-     * @return      True, wenn dort ein Loch ist, ansonsten false
-     */
-    public boolean isHoleAt(int row, int col) {
-        return board.getCell(row, col).isHole();
-    }
-
-    /**
-     * Der Wechsel zurück in den Spielmodus.
-     *
-     * Findet bei folgenden Bedingungen statt:
-     * 1. Alle Ränder haben eine Farbe.
-     * 2. Es müssen ausreichend Löcher vorhanden sein. (zutreffend bei mehr als 24 Zellen)
-     * 3. Puzzle muss lösbar sein.
-     */
-    public void switchBackToGameMode(){
-
-    }
-
-    /**
-     * Methode welche prüft, ob ein Wechsel zurück in den Spielmodus möglich ist.
-     *
-     * Folgende Bedingungen müssen für einen Wechsel in den Spielmodus erreicht sein:
-     * 1. Alle Ränder haben eine Farbe.
-     * 2. Es müssen ausreichend Löcher vorhanden sein.
-     * 3. Puzzle muss lösbar sein.
-     */
-    public boolean canSwitchBackToGameMode(boolean allowed) {
-
-
-        return allowed;
-    }
-
-    /**
-     * Prüft, ob Löcher platziert wurden oder nicht.
-     */
-    public boolean checkIfHolesNeeded() {
-        int gameFieldRows = board.getRows() - 2;
-        int gameFieldCols = board.getColumns() - 2;
-        int totalCells = gameFieldRows * gameFieldCols;
-
-        return totalCells <= 24;
-    }
-
-    /**
      * Lädt ein gespeichertes Spiel.
      * Wenn ein Puzzle mit Teilen auf dem Spielfeld geladen wird,
      * sollen diese entfernt werden.
@@ -200,5 +132,20 @@ public class Editor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Die Methode soll jedes Mosaikteil durchgehen und schauen,
+     * ob an einer Stelle ein Mosaikteil passt oder nicht.
+     *
+     * Für Lösbarkeitsüberprüfung & help to Solve
+     */
+    public void checkSolvability() {
+        //TODO Entweder enhanced for Schleife oder normale for Schleife für das Mosaikteil.
+        // Notiz: Um Zeit zu sparen, dem Spieler bei einem platzierten Mosaikteil
+        // auch die Rotation mitgeben, damit er/sie das Bild dementsprechend auch rotieren kann.
+
+        // Bild wird (wahrscheinlich) nicht mit Rotation in der leeren Zelle
+        // eingefügt, da die Enum Konstanten dafür nicht definiert sind.
     }
 }

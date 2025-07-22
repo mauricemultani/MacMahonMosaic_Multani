@@ -58,7 +58,7 @@ public class EditorController {
     /**
      * Zugriff auf die Editor Class
      */
-    private Editor editor;
+    private final Editor editor;
 
     /**
      * Zugriff auf die GridBottomController Class.
@@ -300,13 +300,12 @@ public class EditorController {
 
             if (editor.needsHoles(rows, columns)) {
                 choosePositionsOfHoles();
-                editor.canSwitchBackToGameMode(true);
             } else {
                 game.setBoard(board);
                 boardController.setBoardAndUpdate(board);
 
                 gridBottomController.initImages();
-                editor.canSwitchBackToGameMode(true);
+                switchBackToGameMode();
             }
         });
 
@@ -337,8 +336,6 @@ public class EditorController {
      * @param numHoles      Die Anzahl an zu setzenden Löchern
      */
     private void placingHoles(int numHoles) {
-        editor.canSwitchBackToGameMode(false);
-
         int[] placedHoles = {0};
         for (Node node : gridPane.getChildren()) {
             Integer col = GridPane.getColumnIndex(node);
@@ -374,7 +371,7 @@ public class EditorController {
                             removeMouseEvent();
                             gui.showAllHolesPlaced();
                             adjustBorderColors();
-                            editor.canSwitchBackToGameMode(true);
+                            switchBackToGameMode();
                         }
                     }
                 });
@@ -421,6 +418,28 @@ public class EditorController {
         return null;
     }
 
+    /**
+     * Methode welche prüft, ob ein Wechsel zurück in den Spielmodus möglich ist.
+     *
+     * Folgende Bedingungen müssen für einen Wechsel in den Spielmodus erreicht sein:
+     * 1. Alle Ränder haben eine Farbe.
+     * 2. Es müssen ausreichend Löcher vorhanden sein.
+     * 3. Puzzle muss lösbar sein.
+     */
+    public boolean canSwitchBackToGameMode() {
+        if (editor.needsHoles(board.getRows(), board.getColumns())) {
+            gui.showHolesNotPlaced();
+            board = editor.getBoard();
+            game.setBoard(board);
+            boardController.setBoardAndUpdate(board);
+            choosePositionsOfHoles();
+            return false;
+        }
+
+        //TODO: Lösbarkeitsprüfung fehlt noch, ansonsten mit allem durch.
+
+        return true;
+    }
 
     /**
      * Der Wechsel zurück in den Spielmodus.
@@ -431,9 +450,8 @@ public class EditorController {
      * 3. Puzzle muss lösbar sein.
      */
     public void switchBackToGameMode(){
-        if (editor.canSwitchBackToGameMode(true)) {
-            boardController.initializeBoard();
-            gridBottomController.checkExistentMosaikTiles();
-        }
+        boardController.initializeBoard();
+        gridBottomController.setBoard(game.getBoard());
+        gridBottomController.checkExistentMosaikTiles();
     }
 }

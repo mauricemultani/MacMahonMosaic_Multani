@@ -31,7 +31,7 @@ public class TileActions {
      * @param tile          Das Mosaikteil
      */
     public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile) {
-        dragTiles(gridPane, label, imageView, tile);
+        dragTiles(label, imageView, tile);
 
         boardOnDragDone(gridPane, board, label, pos);
 
@@ -42,13 +42,14 @@ public class TileActions {
 
     /**
      * Die Methode beschränkt sich auf alle Aktionen, die im gridBottom gridPane gemacht werden dürfen.
-     * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
-     * @param label         Das Label, das verschoben werden soll.
-     * @param imageView     Das ImageView, dessen Bild übertragen wird.
-     * @param tile          Das Mosaikteil
+     *
+     * @param gridPane  Das GridPane, von dem die Mosaikteile gedragged werden können.
+     * @param label     Das Label, das verschoben werden soll.
+     * @param imageView Das ImageView, dessen Bild übertragen wird.
+     * @param tile      Das Mosaikteil
      */
-    public static void gridBottomActions(GridPane gridPane,Label label, ImageView imageView, MosaicTile tile) {
-        dragTiles(gridPane, label, imageView, tile);
+    public static void gridBottomActions(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile) {
+        dragTiles(label, imageView, tile);
 
         gridBottomOnDragDone(gridPane, label);
 
@@ -59,56 +60,49 @@ public class TileActions {
      * Methode, welche das Drag-Verhalten für ein Label
      * mit einem Bild aktiviert.
      *
-     * @param label         Das Label, das verschoben werden soll.
-     * @param imageView     Das ImageView, dessen Bild übertragen wird.
-     * @param tile          Das Mosaikteil
+     * @param label     Das Label, das verschoben werden soll.
+     * @param imageView Das ImageView, dessen Bild übertragen wird.
+     * @param tile      Das Mosaikteil
      */
-    private static void dragTiles(GridPane gridPane, Label label, ImageView imageView, MosaicTile tile){
+    private static void dragTiles(Label label, ImageView imageView, MosaicTile tile) {
         label.setOnDragDetected(mouseEvent -> {
-           if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-               Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                Dragboard db = label.startDragAndDrop(TransferMode.MOVE);
 
-               ImageView rotatedView = new ImageView(imageView.getImage());
-               Rotation rotation = (Rotation) label.getUserData();
+                ImageView rotatedView = new ImageView(imageView.getImage());
+                Rotation rotation = (Rotation) label.getUserData();
 
-               if (rotation == null) rotation = Rotation.DEGREE_0;
+                if (rotation == null) rotation = Rotation.DEGREE_0;
 
-               rotatedView.setRotate(TileActions.getDegrees(rotation));
+                rotatedView.setRotate(TileActions.getDegrees(rotation));
 
-               rotatedView.setFitWidth(imageView.getFitWidth());
-               rotatedView.setFitHeight(imageView.getFitHeight());
+                rotatedView.setFitWidth(imageView.getFitWidth());
+                rotatedView.setFitHeight(imageView.getFitHeight());
 
-               ClipboardContent content = new ClipboardContent();
-               content.putImage(imageView.getImage());
+                ClipboardContent content = new ClipboardContent();
+                content.putImage(imageView.getImage());
 
-               // Das Teil wird in einem String mit ihrer Rotation gespeichert.
-               String data = tile.name() + '/' + rotation.name();
+                // Das Teil wird in einem String mit ihrer Rotation gespeichert.
+                String data = tile.name() + '/' + rotation.name();
 
-               content.putString(data);
+                content.putString(data);
 
-               db.setContent(content);
-               mouseEvent.consume();
+                db.setContent(content);
+                mouseEvent.consume();
 
 
-           }
+            }
         });
-
-//        label.setOnDragDone(dragEvent -> {
-//            if (dragEvent.getTransferMode() == TransferMode.MOVE) {
-//                gridPane.getChildren().remove(label);
-//
-//                System.out.println("Tile wurde erfolgreich gedragged/dragTiles");
-//            }
-//        });
     }
 
     /**
      * Private Methode, wenn im board ein DragDone vorkommt.
      * Entfernt auch die Position vom Board.
-     * @param gridPane  das GridPane
-     * @param board     das Spielfeld
-     * @param label     das Label
-     * @param pos       die Position
+     *
+     * @param gridPane das GridPane
+     * @param board    das Spielfeld
+     * @param label    das Label
+     * @param pos      die Position
      */
     private static void boardOnDragDone(GridPane gridPane, Board board, Label label, Position pos) {
         label.setOnDragDone(dragEvent -> {
@@ -116,37 +110,30 @@ public class TileActions {
                 board.removeTileAt(pos);
 
                 gridPane.getChildren().remove(label);
-
-                System.out.println("Tile wurde erfolgreich gedroppt/boardOnDragDone");
             }
         });
     }
 
     /**
-     *  Private Methode, wenn im gridBottom ein DragDone benötigt wird.
-     * @param gridPane  das GridPane
-     * @param label     das Label
+     * Private Methode, wenn im gridBottom ein DragDone benötigt wird.
+     *
+     * @param gridPane das GridPane
+     * @param label    das Label
      */
     private static void gridBottomOnDragDone(GridPane gridPane, Label label) {
         label.setOnDragDone(dragEvent -> {
             if (dragEvent.getTransferMode() == TransferMode.MOVE) {
                 gridPane.getChildren().remove(label);
-
-                System.out.println("Tile wurde erfolgreich gedroppt/gridBottomOnDragDone");
             }
         });
     }
 
     /**
-     * Private Methode, wenn
-     */
-
-    /**
      * Methode, welche das Drop-Verhalten für eine GridPane aktiviert.
      *
-     * @param gridPane  Das GridPane, in dass das Mosaikteil platziert werden darf.
+     * @param gridPane Das GridPane, in dass das Mosaikteil platziert werden darf.
      */
-    private static void dropTiles(GridPane gridPane){
+    private static void dropTiles(GridPane gridPane) {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasString()) {
                 dragEvent.acceptTransferModes(TransferMode.MOVE);
@@ -170,15 +157,15 @@ public class TileActions {
                 double y = dragEvent.getY();
 
                 int column = (int) (x / cellWidth);
-                int rw = (int) (y / cellHeight);
+                int row = (int) (y / cellHeight);
 
-                if (isCellNotEmpty(gridPane, column, rw)) {
+                if (isCellNotEmpty(gridPane, column, row)) {
                     dragEvent.setDropCompleted(false);
                     dragEvent.consume();
                     return;
                 }
 
-                if (column >= 0 && column < columnCount && rw >= 0 && rw < rowsCount) {
+                if (column >= 0 && column < columnCount && row >= 0 && row < rowsCount) {
                     String[] tileInfo = db.getString().split("/");
                     MosaicTile tile = MosaicTile.valueOf(tileInfo[0]);
                     Rotation rotation = Rotation.valueOf(tileInfo[1]);
@@ -194,9 +181,7 @@ public class TileActions {
                     droppedLabel.setGraphic(imageView);
                     droppedLabel.setUserData(rotation);
 
-                    gridPane.add(droppedLabel, column, rw);
-                    System.out.println("Mosaikteil wurde erfolgreich gedropped/dropTiles in TileActions für Gridbottom");
-
+                    gridPane.add(droppedLabel, column, row);
                     gridBottomActions(gridPane, droppedLabel, imageView, tile);
                 }
             }
@@ -209,10 +194,10 @@ public class TileActions {
     /**
      * Ermöglicht, das Rotieren des Bildes.
      *
-     * @param label         Das Label, das rotiert werden soll.
-     * @param imageView     Das ImageView, dessen Bild übertragt werden soll.
+     * @param label     Das Label, das rotiert werden soll.
+     * @param imageView Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView, Position pos, Board board, MosaicTile tile){
+    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView, Position pos, Board board, MosaicTile tile) {
         label.setOnMouseClicked(mouseEvent -> {
             // rotiert nur bei Rechtsklick
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
@@ -221,7 +206,7 @@ public class TileActions {
 
                 // Wenn die derzeitige Rotierung == null ist,
                 // dann wird sie auf 0-Grad gesetzt.
-                if (current == null){
+                if (current == null) {
                     current = Rotation.DEGREE_0;
                 }
                 // andernfalls geht sie zur nächsten rotierung rüber.
@@ -240,10 +225,10 @@ public class TileActions {
     /**
      * Private Methode welche prüft, ob eine Zelle leer ist, oder nicht.
      *
-     * @param gridPane  das Spielfeld.
-     * @param column    Spalte bzw. Spaltenanzahl
-     * @param row       Reihe bzw. Reihenanzahl
-     * @return          true, wenn eine leere Zelle gefunden wird, ansonsten false.
+     * @param gridPane das Spielfeld.
+     * @param column   Spalte bzw. Spaltenanzahl
+     * @param row      Reihe bzw. Reihenanzahl
+     * @return false, wenn eine leere Zelle gefunden wird, ansonsten true.
      */
     public static boolean isCellNotEmpty(GridPane gridPane, int column, int row) {
         for (Node node : gridPane.getChildren()) {
@@ -259,8 +244,9 @@ public class TileActions {
 
     /**
      * Wandelt die Enum-Werte vom Typ Rotation in Gradangaben.
-     * @param rotation  Rotationsrichtung als Enum-Wert.
-     * @return          Rotationsrichtung als Winkel in Grad.
+     *
+     * @param rotation Rotationsrichtung als Enum-Wert.
+     * @return Rotationsrichtung als Winkel in Grad.
      */
     public static double getDegrees(Rotation rotation) {
         return switch (rotation) {

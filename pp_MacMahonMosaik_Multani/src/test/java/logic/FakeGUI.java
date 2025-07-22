@@ -86,4 +86,14 @@ public class FakeGUI implements GUIConnector{
     public void showOnlyOneHoleToPlace() {
 
     }
+
+    @Override
+    public void showPlaceAllTilesFirst() {
+
+    }
+
+    @Override
+    public void showHolesNotPlaced() {
+
+    }
 }

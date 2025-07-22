@@ -32,11 +32,6 @@ public class Solvability {
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      */
     public boolean solveGame(){
-        // if-Überprüfung, ob alle Zellen belegt sind
-        if (!allTilesPlaced(board)) {
-            return false;
-        }
-
         for (int row = 0; row < board.getRows(); row++) {
             for (int col = 0; col < board.getColumns(); col++) {
                 // Spielzelle mit der Position von Reihe und Spalte

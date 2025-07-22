@@ -224,10 +224,37 @@ public class JavaFXGUI implements GUIConnector {
     @Override
     public void showOnlyOneHoleToPlace() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
+        alert.setTitle("Too many empty Cells!");
         alert.setHeaderText("There are more than 24 cells on the field!\n"
                 + "Place one Hole.");
         alert.setContentText("After placing this Hole you will be able to continue the Game.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, wenn der Spieler nicht alle Löcher platziert hat,
+     * aber das Spiel für eine Lösung einreichen will.
+     */
+    @Override
+    public void showPlaceAllTilesFirst() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Something seems to not add up...");
+        alert.setHeaderText(" It seems like there are still empty cells to fill");
+        alert.setContentText(" Fill every cell with a tile first \n " +
+                "submit and check the answer afterward.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Diese Mitteilung soll erscheinen, wenn der Spieler vom Editor-Modus
+     * in den Spielmodus zurückkehren will, aber noch nicht die Bedingungen erfüllt hat.
+     */
+    @Override
+    public void showHolesNotPlaced() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("The Conditions to be in the Game are not met");
+        alert.setHeaderText(" You need to place enough holes to switch to the Game Mode");
+        alert.setContentText(" That is because you only have 24 Mosaictiles but more empty cells");
         alert.showAndWait();
     }
 }
