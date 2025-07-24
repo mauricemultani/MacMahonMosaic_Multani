@@ -1,0 +1,9 @@
+{
+  "field": [
+    ["NNNN", "NNGN", "NNGN", "NNGN", "NNNN"],
+    ["NGNN", "NNNN", "NNNN", "NNNN", "NNNG"],
+    ["NRNN", "NNNN", "NNNN", "NNNN", "NNNR"],
+    ["NGNN", "NNNN", "NNNN", "NNNN", "NNNG"],
+    ["NNNN", "YNNN", "GNNN", "YNNN", "NNNN"]
+  ]
+}

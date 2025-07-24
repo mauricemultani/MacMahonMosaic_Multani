@@ -1,78 +1,27 @@
-//package logic;
-//
-//import javafx.scene.image.Image;
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.assertFalse;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//
-//public class SolvabilityTest implements Solvability{
-//
-//    @Test
-//    void solveGame_emptyField() {
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleMiddleTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
+package logic;
+
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+public class SolvabilityTest {
+
+    @Test
+    void solveGame_emptyField() {
+        Board board = new Board(5, 5, false);
+        Game game = new Game(board);
+
+        game.loadGame(new File(String.valueOf(getClass().getResourceAsStream("example_empty.json"))));
+
+        Solvability solve = new Solvability(null, null, board, null);
+
+        boolean result = solve.solveGame();
+
+        assertFalse(result);
+    }
+
 //    @Test
 //    void solveGame_exampleFieldNearlySolved(){
 //        Board gameField = new Board();
@@ -787,4 +736,4 @@
 //
 //        assertFalse(result);
 //    }
-//}
+}

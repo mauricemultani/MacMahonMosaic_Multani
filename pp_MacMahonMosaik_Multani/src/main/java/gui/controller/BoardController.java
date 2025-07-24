@@ -11,7 +11,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import logic.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static gui.TileActions.getDegrees;
 
@@ -52,6 +55,21 @@ public class BoardController {
     }
 
     /**
+     * Ein Set aus den platzierbaren Mosaikteilen in der Class Mosaictile.
+     */
+    private static final Set<MosaicTile> USABLE_TILES = Set.of(
+            MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
+            MosaicTile.GRYG, MosaicTile.GRYR, MosaicTile.GYRG, MosaicTile.GYYY,
+
+            MosaicTile.RGGG, MosaicTile.RGYG, MosaicTile.RGYR, MosaicTile.RRRR,
+            MosaicTile.RRYY, MosaicTile.RYGR, MosaicTile.RYGY, MosaicTile.RYYY,
+
+            MosaicTile.YGGG, MosaicTile.YGRY, MosaicTile.YGYG, MosaicTile.YRGY,
+            MosaicTile.YRRR, MosaicTile.YRYR, MosaicTile.YYGG, MosaicTile.YYYY
+
+    );
+
+    /**
      * Hier wird das Board initialisiert.
      * Die Methode wird als einzige Methode an der MacMahonUIController Class
      * übergeben.
@@ -90,7 +108,7 @@ public class BoardController {
      * Methode, welche das Board aktualisieren soll,
      * wenn eine gespeicherte Datei geladen werden soll.
      */
-    public void updateBoardWhenLoading() {
+    private void updateBoardWhenLoading() {
         gridPane.getChildren().clear();
         gridPane.getRowConstraints().clear();
         gridPane.getColumnConstraints().clear();
@@ -364,6 +382,52 @@ public class BoardController {
             dragEvent.setDropCompleted(true);
             dragEvent.consume();
         });
+    }
+
+    /**
+     * Die Methode soll das Spielfeld durchgehen und ein Mosaikteil an einer beliebigen Stelle platzieren.
+     * Die Voraussetzung hierbei ist, dass das Mosaikteil an der gegebenen Stelle passt.
+     */
+    public void placeTileAnywhere() {
+        List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                Position pos = new Position(row, col);
+                BoardCell cell = board.getCell(row, col);
+
+                if (!cell.isPlaced() && !cell.isHole()) {
+                    for (MosaicTile tile : usableTiles) {
+                        for (Rotation rotation : Rotation.values()) {
+                            if (board.fitsNeighbours(tile, rotation, pos)) {
+                                board.placeTileAt(tile, rotation, pos);
+
+                                Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
+                                ImageView imageView = new ImageView(img);
+
+                                Label tileLabel = new Label();
+                                tileLabel.setGraphic(imageView);
+                                tileLabel.setUserData(rotation);
+
+                                gridPane.add(tileLabel, col, row);
+
+                                TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile);
+                                usableTiles.remove(cell.getTile());
+                                System.out.println("Verfügbare Tiles: " + usableTiles);
+                                System.out.println("Placed tile at " + pos);
+
+                                return;
+                            } else {
+                                board.removeTileAt(pos);
+                            }
+                        }
+                    }
+                    System.out.println("Kein Tile platzierbar");
+                    System.out.println("Trying to place tile at " +  pos);
+                }
+            }
+        }
+
     }
 
     /**

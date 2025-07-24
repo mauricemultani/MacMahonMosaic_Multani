@@ -96,4 +96,9 @@ public class FakeGUI implements GUIConnector{
     public void showHolesNotPlaced() {
 
     }
+
+    @Override
+    public void showPlacingHoleNotAllowed() {
+
+    }
 }

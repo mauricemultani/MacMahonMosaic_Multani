@@ -305,7 +305,6 @@ public class EditorController {
                 boardController.setBoardAndUpdate(board);
 
                 gridBottomController.initImages();
-                switchBackToGameMode();
             }
         });
 
@@ -348,7 +347,13 @@ public class EditorController {
                 int finalCol = col;
 
                 node.setOnMouseClicked(mouseEvent -> {
-                    if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles) {
+                    if (mouseEvent.getButton() == MouseButton.PRIMARY && board.isHole(finalRow, finalCol)) {
+                        gui.showPlacingHoleNotAllowed();
+                    }
+
+                    if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles && !board.isHole(finalRow, finalCol)) {
+
+
                         editor.placeHoleAt(finalRow, finalCol);
 
                         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
@@ -378,7 +383,6 @@ public class EditorController {
                 node.setCursor(Cursor.HAND);
             }
         }
-
     }
 
 
@@ -429,9 +433,7 @@ public class EditorController {
     public boolean canSwitchBackToGameMode() {
         if (editor.needsHoles(board.getRows(), board.getColumns())) {
             gui.showHolesNotPlaced();
-            board = editor.getBoard();
-            game.setBoard(board);
-            boardController.setBoardAndUpdate(board);
+
             choosePositionsOfHoles();
             return false;
         }

@@ -136,6 +136,13 @@ public class Board {
     }
 
     /**
+     *
+     */
+    public boolean isHole(int row, int col) {
+        return cells[row][col].isHole();
+    }
+
+    /**
      * Gibt die Anzahl der Reihen zurück.
      *
      * @return Anzahl an Reihen.
@@ -533,10 +540,10 @@ public class Board {
             for (int col = 0; col < columns; col++) {
                 Position pos = new Position(row, col);
 
-                if (isPositionValid(pos) && !cells[row][col].isPlaced()) {
-
+                if (isPositionValid(pos)) {
                     for (Rotation rotation : Rotation.values()) {
                         if (fitsNeighbours(tile, rotation, pos)) {
+                            placeTileAt(tile, rotation, pos);
                             return true;
                         }
                     }

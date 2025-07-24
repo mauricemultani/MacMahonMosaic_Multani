@@ -89,8 +89,19 @@ public class Editor {
         int gameFieldRows = rows - 2;
         int gameFieldCols = cols - 2;
         int totalCells = gameFieldRows * gameFieldCols;
+        int holes = 0;
 
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < cols - 1; col++) {
+                if (board.isHole(row, col)) {
+                    holes++;
+                }
+            }
+        }
         int maxTiles = 24;
+
+        totalCells = totalCells - holes;
+
         return Math.max(0, totalCells - maxTiles);
     }
 
@@ -128,7 +139,6 @@ public class Editor {
             this.board = new Board(rows, cols, field, true);
 
             setBoard(board);
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

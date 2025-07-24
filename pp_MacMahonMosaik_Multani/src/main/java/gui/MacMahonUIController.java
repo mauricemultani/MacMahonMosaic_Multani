@@ -58,10 +58,10 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 4;
+        int rows = 8;
 
         // Anzahl an Spalten
-        int columns = 4;
+        int columns = 8;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
@@ -284,7 +284,10 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameHint() {
+        boardController.placeTileAnywhere();
 
+        gridBottomController.setBoard(game.getBoard());
+        gridBottomController.checkExistentMosaikTiles();
     }
 
     /**

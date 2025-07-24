@@ -37,6 +37,9 @@ public class GridBottomController {
         this.board = board;
     }
 
+    /**
+     * Ein Set aus den platzierbaren Mosaikteilen in der Class Mosaictile.
+     */
     private static final Set<MosaicTile> USABLE_TILES = Set.of(
             MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
             MosaicTile.GRYG, MosaicTile.GRYR, MosaicTile.GYRG, MosaicTile.GYYY,

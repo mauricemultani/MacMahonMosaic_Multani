@@ -173,15 +173,24 @@ public class TileActions {
                     ImageView imageView = new ImageView(db.getImage());
                     imageView.setRotate(getDegrees(rotation));
 
-                    imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
-                    imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowsCount));
-                    imageView.setPreserveRatio(true);
+                    imageView.setFitWidth(imageView.getFitWidth());
+                    imageView.setFitHeight(imageView.getFitHeight());
+                    imageView.setPreserveRatio(false);
+                    imageView.setSmooth(true);
+
+                    // Stackpane, um das Bild zu zentrieren
+                    StackPane stackPane = new StackPane(imageView);
+
+                    imageView.fitWidthProperty().bind(stackPane.widthProperty());
+                    imageView.fitHeightProperty().bind(stackPane.heightProperty());
+
+                    RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackPane);
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
                     droppedLabel.setUserData(rotation);
 
-                    gridPane.add(droppedLabel, column, row);
+                    gridPane.add(rotatableContainer, column, row);
                     gridBottomActions(gridPane, droppedLabel, imageView, tile);
                 }
             }

@@ -87,4 +87,6 @@ public interface GUIConnector {
     void showPlaceAllTilesFirst();
 
     void showHolesNotPlaced();
+
+    void showPlacingHoleNotAllowed();
 }

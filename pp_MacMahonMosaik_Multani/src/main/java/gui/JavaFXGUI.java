@@ -257,4 +257,16 @@ public class JavaFXGUI implements GUIConnector {
         alert.setContentText(" That is because you only have 24 Mosaictiles but more empty cells");
         alert.showAndWait();
     }
+
+    /**
+     * Mitteilung, wenn der Spieler versucht, ein Loch
+     * in einem schon vorhandenen Loch in Lochsetzung in Spielfeldgrößenänderung zu setzen.
+     */
+    @Override
+    public void showPlacingHoleNotAllowed() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Placing a hole on an already set hole?!");
+        alert.setHeaderText(" You cannot place a hole in an already placed hole.");
+        alert.setContentText(" Pointing out the obvious...");
+    }
 }

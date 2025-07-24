@@ -14,12 +14,7 @@ import java.io.*;
  */
 public class Game {
 
-
     private Board board;
-
-    private MosaicTile tile;
-
-    private Rotation rotation;
 
     private final int rows;
 
@@ -72,18 +67,6 @@ public class Game {
     }
 
     /**
-     * Initialisiert das Spiel.
-     * Löscht alle Zellen und setzt das Spielfeld zurück.
-     */
-    public void initializeGame() {
-        this.board = new Board(rows, columns, true);
-
-        this.ongoingGame = new BoardCell[rows][columns];
-
-        clearBoard();
-    }
-
-    /**
      * Entfernt alle bereits belegten Zellen und setzt das Spielfeld zurück.
      */
     public void clearBoard() {
@@ -98,30 +81,6 @@ public class Game {
                 board.getCell(row, column).placeTile(null, Rotation.DEGREE_0);
             }
         }
-    }
-
-    /**
-     * Klont das Spielfeld.
-     * // TODO gucken ob es benötigt wird.
-     */
-    private BoardCell[][] saveCells() {
-        BoardCell[][] saveCells = new BoardCell[board.getRows()][board.getColumns()];
-
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int col = 0; col < board.getColumns(); col++) {
-                BoardCell cell = board.getCell(row, col);
-
-                    if (cell.isHole()) {
-                        saveCells[row][col] = new BoardCell(true);
-                    } else if (cell.isPlaced()) {
-                        saveCells[row][col] = new BoardCell(cell.getTile());
-                    } else {
-                        saveCells[row][col] = new BoardCell(null);
-                    }
-            }
-        }
-
-        return saveCells;
     }
 
     /**
