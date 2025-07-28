@@ -2,738 +2,277 @@ package logic;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SolvabilityTest {
 
     @Test
-    void solveGame_emptyField() {
-        Board board = new Board(5, 5, false);
-        Game game = new Game(board);
+    void solveGame_exampleEmptyField() {
+        String[][] field = {
+                {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"},
+                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
+                {"NRNN", "NNNN", "NNNN", "NNNN", "NNNR"},
+                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
+                {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
+        };
 
-        game.loadGame(new File(String.valueOf(getClass().getResourceAsStream("example_empty.json"))));
+        int rows = field.length;
+        int cols = field[0].length;
 
-        Solvability solve = new Solvability(null, null, board, null);
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
 
         boolean result = solve.solveGame();
 
         assertFalse(result);
     }
 
-//    @Test
-//    void solveGame_exampleFieldNearlySolved(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void solveGame_oneTilePlacedFalsely(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void solveGame_emptyField_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleMiddleTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void solveGame_exampleFieldNearlySolved_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void solveGame_oneTilePlacedFalsely_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = solveGame(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void finishGame_doneField(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYG.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertTrue(result);
-//    }
-//
-//    @Test
-//    public void finishGame_exampleFieldNearlySolved(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void finishGame_partiallyDoneField_OneTilePlacedWrong(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void finishGame_doneField_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void finishGame_exampleFieldNearlySolved_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GYRG.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/NNNN.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertFalse(result);
-//    }
-//
-//    @Test
-//    public void finishGame_partiallyDoneField_OneTilePlacedWrong_withHole(){
-//        Board gameField = new Board();
-//
-//        MosaicTile borderTopLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderTopRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile topLeftTile      = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYG.png")));
-//        MosaicTile topMiddleTile    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GRYR.png")));
-//        MosaicTile topRightTile     = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
-//
-//        MosaicTile borderLeftTop    = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderLeftMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderLeftBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        MosaicTile bottomLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YGRY.png")));
-//        MosaicTile bottomMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGY.png")));
-//        MosaicTile bottomRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YRGY.png")));
-//
-//        MosaicTile borderBottomLeft = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//        MosaicTile borderBottomMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderBottomRight = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/YYYY_ohne_Linien.png")));
-//
-//        MosaicTile middleLeftTile   = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RYGR.png")));
-//        MosaicTile middleMiddleTile = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR.png")));
-//        MosaicTile middleRightTile  = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RGYR.png")));
-//
-//        MosaicTile borderRightTop = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//        MosaicTile borderRightMiddle = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/RRRR_ohne_Linien.png")));
-//        MosaicTile borderRightBottom = new MosaicTile(new Image(getClass().getResourceAsStream("/gui/tiles/GGGG_ohne_Linien.png")));
-//
-//        gameField.placeTileAt(borderTopLeft, 0, 1);
-//        gameField.placeTileAt(borderTopMiddle, 0, 2);
-//        gameField.placeTileAt(borderTopRight, 0 , 3);
-//
-//        gameField.placeTileAt(borderLeftTop, 1, 0);
-//        gameField.placeTileAt(borderLeftMiddle, 2, 0);
-//        gameField.placeTileAt(borderLeftBottom, 3, 0);
-//
-//        gameField.placeTileAt(topLeftTile, 1, 1);
-//        gameField.placeTileAt(topMiddleTile, 1, 2);
-//        gameField.placeTileAt(topRightTile, 1, 3);
-//
-//        gameField.placeTileAt(middleLeftTile, 2, 1);
-//        gameField.placeTileAt(middleMiddleTile, 2, 2);
-//        gameField.placeTileAt(middleRightTile, 2, 3);
-//
-//        gameField.placeTileAt(borderRightTop, 1, 4);
-//        gameField.placeTileAt(borderRightMiddle, 2, 4);
-//        gameField.placeTileAt(borderRightBottom, 3, 4);
-//
-//        gameField.placeTileAt(bottomLeftTile, 3, 1);
-//        gameField.placeTileAt(bottomMiddleTile, 3, 2);
-//        gameField.placeTileAt(bottomRightTile, 3, 3);
-//
-//        gameField.placeTileAt(borderBottomLeft, 4, 1);
-//        gameField.placeTileAt(borderBottomMiddle, 4, 2);
-//        gameField.placeTileAt(borderBottomRight, 4, 3);
-//
-//        boolean result = gameDone(gameField);
-//
-//        assertFalse(result);
-//    }
+    @Test
+    void solveGame_exampleEmptyField_withOneHole() {
+        String[][] field = {
+                {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"},
+                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
+                {"NRNN", "NNNN", "HHHH", "NNNN", "NNNR"},
+                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
+                {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertFalse(result);
+    }
+
+    @Test
+    void solveGame_exampleFieldNearlySolved(){
+        String[][] field = {
+                {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"},
+                {"NGNN", "GRYG", "GRYR", "GGYR", "NNNG"},
+                {"NRNN", "YGRR", "NNNN", "YRRG", "NNNR"},
+                {"NGNN", "RYYG", "RYGY", "RGYY", "NNNG"},
+                {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertFalse(result);
+    }
+
+    @Test
+    void solveGame_exampleFieldNearlySolved_withOneHole_rotated(){
+        String[][] field = {
+                {"NNNN", "NNGN", "NNGN", "NNGN", "NNNN"},
+                {"NGNN", "GRYG", "GRYR", "GYRG", "NNNG"},
+                {"NRNN", "RYGR", "HHHH", "RGYR", "NNNR"},
+                {"NGNN", "YGRY", "RYGY", "YRGY", "NNNG"},
+                {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_270);
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_180);
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180);
+        board.getCell(3, 3).setRotation(Rotation.DEGREE_270);
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_fieldWithWrongTilePlaced(){
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "YGRY", "GGGG", "NNNG"},
+                {"NYNN", "GGRR", "GRGR", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertFalse(result);
+    }
+
+    @Test
+    void solveGame_fieldWithWrongTilePlaced_withOneHole(){
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "YGRY", "HHHH", "NNNG"},
+                {"NYNN", "GGRR", "GRGR", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertFalse(result);
+    }
+
+    @Test
+    void solveGame_correctField_2x2_NoRotation() {
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "YGRY", "GGGG", "NNNG"},
+                {"NYNN", "RRYY", "GRGR", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_correctField_2x2_NoRotation_OneHole() {
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "YGRY", "HHHH", "NNNG"},
+                {"NYNN", "RRYY", "GRGR", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_correctField_2x2_OnlyHoles() {
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "HHHH", "HHHH", "NNNG"},
+                {"NYNN", "HHHH", "HHHH", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_correctField_2x2_WithRotation() {
+        String[][] field = {
+                {"NNNN", "NNYN", "NNGN", "NNNN"},
+                {"NYNN", "RYYY", "YGGG", "NNNG"},
+                {"NYNN", "RRYY", "GRGR", "NNNR"},
+                {"NNNN", "YNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_180);
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_270);
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_correctField_3x3_WithRotation() {
+        String[][] field = {
+                {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
+                {"NRNN", "GGRR", "GYRG", "GRRR", "NNNR"},
+                {"NRNN", "GRGR", "RGYG", "RRYY", "NNNR"},
+                {"NRNN", "YRGY", "GRYG", "YYGG", "NNNY"},
+                {"NNNN", "YNNN", "RNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180);
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_270);
+        board.getCell(3,2).setRotation(Rotation.DEGREE_90);
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_270);
+
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
+
+    @Test
+    void solveGame_correctField_3x3_OnlyHoles() {
+        String[][] field = {
+                {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
+                {"NRNN", "HHHH", "HHHH", "HHHH", "NNNR"},
+                {"NRNN", "HHHH", "HHHH", "HHHH", "NNNR"},
+                {"NRNN", "HHHH", "HHHH", "HHHH", "NNNY"},
+                {"NNNN", "YNNN", "RNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+        Solvability solve = new Solvability(board);
+
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180);
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_270);
+        board.getCell(3,2).setRotation(Rotation.DEGREE_90);
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_270);
+
+
+        boolean result = solve.solveGame();
+
+        assertTrue(result);
+    }
 }

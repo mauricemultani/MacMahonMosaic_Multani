@@ -44,7 +44,7 @@ public class MacMahonUIController {
      * die Anzeige der benutzbaren Bilder via einer GridPane darunter.
      */
     @FXML
-    private GridPane gameField;
+    private GridPane gridPane;
     @FXML
     private Pane gameFieldPane;
     @FXML
@@ -58,17 +58,17 @@ public class MacMahonUIController {
      */
     public void initialize() {
         // Anzahl an Reihen
-        int rows = 8;
+        int rows = 4;
 
         // Anzahl an Spalten
-        int columns = 8;
+        int columns = 4;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
-        Board board = new Board(rows, columns, true);
+        Board board = new Board(rows + 2, columns + 2, true);
 
         // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gameField, board, gameFieldPane);
+        this.boardController = new BoardController(gridPane, board, gameFieldPane);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld
@@ -81,7 +81,7 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         // Initialisierung des Controllers für den Editor Modus
-        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
+        this.editorController = new EditorController(gridPane, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
         menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
             handleEditorMode();
         });
@@ -124,7 +124,7 @@ public class MacMahonUIController {
 
         File file = fileChooser.showOpenDialog(null);
 
-        if (menuEditorMode.isSelected() && file != null) {
+        if (menuEditorMode.isSelected() && file != null && file.getName().endsWith(".json")) {
             editor.loadGame(file);
 
             game.setBoard(editor.getBoard());
@@ -135,7 +135,7 @@ public class MacMahonUIController {
             
             success = true;
             gui.showSuccessLoad();
-        } else if (file != null) {
+        } else if (file != null && file.getName().endsWith(".json")) {
             game.loadGame(file);
 
             boardController.setBoardAndUpdate(game.getBoard());
@@ -182,7 +182,7 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) gameField.getScene().getWindow();
+        Stage stage = (Stage) gridPane.getScene().getWindow();
         Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
         if (result.isPresent()) {
@@ -237,7 +237,7 @@ public class MacMahonUIController {
     @FXML
     private void handleGameSubmit() {
         Board currBoard = game.getBoard();
-        Solvability solve = new Solvability(null, null, currBoard, null);
+        Solvability solve = new Solvability(currBoard);
 
         if (!solve.allTilesPlaced(currBoard)) {
             gui.showPlaceAllTilesFirst();
@@ -295,7 +295,7 @@ public class MacMahonUIController {
      * das Spiel mit dem 'X' oben rechts am Fenster schließen will.
      */
     private void closeGameViaStage() {
-        gameField.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
+        gridPane.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.windowProperty().addListener((obs, oldWindow, newWindow) -> {
                     if (newWindow != null) {

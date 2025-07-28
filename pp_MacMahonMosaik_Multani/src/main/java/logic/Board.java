@@ -536,14 +536,15 @@ public class Board {
      * @return      True, wenn es irgendwo auf dem Spielfeld passt, ansonsten false.
      */
     public boolean doesTileFitAnywhere(MosaicTile tile) {
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < columns; col++) {
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < columns - 1; col++) {
                 Position pos = new Position(row, col);
 
                 if (isPositionValid(pos)) {
                     for (Rotation rotation : Rotation.values()) {
                         if (fitsNeighbours(tile, rotation, pos)) {
                             placeTileAt(tile, rotation, pos);
+                            System.out.println("Placing tile at: " + pos);
                             return true;
                         }
                     }

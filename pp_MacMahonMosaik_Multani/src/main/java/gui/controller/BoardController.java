@@ -269,7 +269,7 @@ public class BoardController {
                     gridPane.add(label, col, row);
 
                     Position pos = new Position(row, col);
-                    TileActions.boardActions(gridPane, board, label, imageView, pos, tile);
+                    TileActions.boardActions(gridPane, board, label, imageView, pos, tile, rotation);
                 }
             }
         }
@@ -375,7 +375,9 @@ public class BoardController {
                     board.placeTileAt(tile, rotation, position);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
-                    TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile);
+                    TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile, rotation);
+
+                    TileActions.differentColorsOnEdge(board, tile, rotation, position, imageView);
                 }
             }
             // Bestätigen des Drops
@@ -411,14 +413,15 @@ public class BoardController {
 
                                 gridPane.add(tileLabel, col, row);
 
-                                TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile);
+                                TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
+
+                                usableTiles.remove(tile);
                                 usableTiles.remove(cell.getTile());
+
                                 System.out.println("Verfügbare Tiles: " + usableTiles);
                                 System.out.println("Placed tile at " + pos);
 
                                 return;
-                            } else {
-                                board.removeTileAt(pos);
                             }
                         }
                     }
@@ -427,7 +430,7 @@ public class BoardController {
                 }
             }
         }
-
+        System.out.println("No placeable Tile found");
     }
 
     /**

@@ -17,6 +17,9 @@ public interface GUIConnector {
      */
     void showGameWon();
 
+    /**
+     * Wird angezeigt, wenn die Lösung des Spiels nicht korrekt ist.
+     */
     void showGamesNotFinished();
 
     /**
@@ -84,9 +87,19 @@ public interface GUIConnector {
      */
     void showOnlyOneHoleToPlace();
 
+    /**
+     * Mitteilung, wenn nicht alle freie Zellen belegt sind.
+     */
     void showPlaceAllTilesFirst();
 
+    /**
+     * Mitteilung, wenn Editormodus frühzeitig versucht wird zu verlassen,
+     * ohne das Löcher gesetzt wurden.
+     */
     void showHolesNotPlaced();
 
+    /**
+     * Mitteilung, wenn versucht wird ein Loch auf ein Loch im Editormodus zu platzieren.
+     */
     void showPlacingHoleNotAllowed();
 }

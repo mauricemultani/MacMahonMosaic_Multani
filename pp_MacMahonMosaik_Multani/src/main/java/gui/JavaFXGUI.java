@@ -85,7 +85,7 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information!");
         alert.setHeaderText("There was a fail while loading the Game!");
-        alert.setContentText("You may close the Window.");
+        alert.setContentText("Please only load json-Files");
         alert.showAndWait();
     }
 
@@ -268,5 +268,6 @@ public class JavaFXGUI implements GUIConnector {
         alert.setTitle("Placing a hole on an already set hole?!");
         alert.setHeaderText(" You cannot place a hole in an already placed hole.");
         alert.setContentText(" Pointing out the obvious...");
+        alert.showAndWait();
     }
 }

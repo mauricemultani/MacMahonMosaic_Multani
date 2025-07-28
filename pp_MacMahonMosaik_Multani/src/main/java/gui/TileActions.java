@@ -2,6 +2,8 @@ package gui;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -10,6 +12,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import logic.Board;
 import logic.MosaicTile;
 import logic.Position;
@@ -26,16 +29,21 @@ public class TileActions {
     /**
      * Die Methode beschränkt sich auf alle Aktionen, die im Spielfeld gemacht werden dürfen.
      * @param gridPane      Das GridPane, von dem die Mosaikteile gedragged werden können.
+     * @param board         Das Spielfeld das vom GridPane dargestellt wird.
      * @param label         Das Label, das verschoben werden soll.
      * @param imageView     Das ImageView, dessen Bild übertragen wird.
+     * @param pos           Die Position
      * @param tile          Das Mosaikteil
+     * @param rotation      Die Rotation
      */
-    public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile) {
+    public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile, Rotation rotation) {
         dragTiles(label, imageView, tile);
 
         boardOnDragDone(gridPane, board, label, pos);
 
         rotateTile(gridPane, label, imageView, pos, board, tile);
+
+        differentColorsOnEdge(board, tile, rotation, pos, imageView);
 
         fitBoardImageView(gridPane, imageView);
     }
@@ -90,7 +98,8 @@ public class TileActions {
                 db.setContent(content);
                 mouseEvent.consume();
 
-
+                imageView.setEffect(null);
+                imageView.setBlendMode(null);
             }
         });
     }
@@ -173,25 +182,19 @@ public class TileActions {
                     ImageView imageView = new ImageView(db.getImage());
                     imageView.setRotate(getDegrees(rotation));
 
-                    imageView.setFitWidth(imageView.getFitWidth());
-                    imageView.setFitHeight(imageView.getFitHeight());
+                    imageView.fitWidthProperty().bind(gridPane.widthProperty().divide(columnCount));
+                    imageView.fitHeightProperty().bind(gridPane.heightProperty().divide(rowsCount));
                     imageView.setPreserveRatio(false);
-                    imageView.setSmooth(true);
-
-                    // Stackpane, um das Bild zu zentrieren
-                    StackPane stackPane = new StackPane(imageView);
-
-                    imageView.fitWidthProperty().bind(stackPane.widthProperty());
-                    imageView.fitHeightProperty().bind(stackPane.heightProperty());
-
-                    RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackPane);
 
                     Label droppedLabel = new Label();
                     droppedLabel.setGraphic(imageView);
                     droppedLabel.setUserData(rotation);
 
-                    gridPane.add(rotatableContainer, column, row);
+                    gridPane.add(droppedLabel, column, row);
                     gridBottomActions(gridPane, droppedLabel, imageView, tile);
+
+                    imageView.setEffect(null);
+                    imageView.setBlendMode(null);
                 }
             }
             // Bestätigen des Drops
@@ -227,6 +230,7 @@ public class TileActions {
                 label.setUserData(next);
 
                 board.placeTileAt(tile, next, pos);
+                differentColorsOnEdge(board, tile, next, pos, imageView);
             }
         });
     }
@@ -264,6 +268,21 @@ public class TileActions {
             case DEGREE_270 -> 270;
             default -> 0; // Standardwert für DEGREE_0
         };
+    }
+
+    /**
+     * Die Methode soll bewirken, dass wenn ein Mosaikteil falsch platziert ist,
+     * das Mosaikteil leicht "glühen" sollte, damit dem Spieler klar wird,
+     * dass das Mosaikteil falsch platziert ist.
+     */
+    public static void differentColorsOnEdge(Board board, MosaicTile tile, Rotation rotation, Position pos, ImageView imageView) {
+        if (!board.fitsNeighbours(tile, rotation, pos)) {
+            imageView.setEffect(new InnerShadow(0.1, Color.RED));
+            imageView.setBlendMode(BlendMode.GREEN);
+        } else if (board.fitsNeighbours(tile, rotation, pos)) {
+            imageView.setEffect(null);
+            imageView.setBlendMode(null);
+        }
     }
 
     /**

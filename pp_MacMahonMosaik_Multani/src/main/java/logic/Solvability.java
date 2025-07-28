@@ -7,19 +7,10 @@ package logic;
  */
 public class Solvability {
 
-    private final MosaicTile tile;
-
-    private final Rotation rotation;
-
     private final Board board;
 
-    private final Position pos;
-
-    public Solvability(MosaicTile tile, Rotation rotation, Board board, Position pos) {
-        this.tile = tile;
-        this.rotation = rotation;
+    public Solvability(Board board) {
         this.board = board;
-        this.pos = pos;
     }
 
     /**
@@ -32,8 +23,12 @@ public class Solvability {
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      */
     public boolean solveGame(){
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int col = 0; col < board.getColumns(); col++) {
+        if (!allTilesPlaced(board)) {
+            return false;
+        }
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
                 // Spielzelle mit der Position von Reihe und Spalte
                 BoardCell cell = board.getCell(row, col);
 
@@ -55,20 +50,6 @@ public class Solvability {
      * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
     public void possibleSolvation(){
-
-    }
-
-    /**
-     * Soll dem Spieler die Möglichkeit geben, einen Tipp für die Lösung zu bekommen.
-     * Prüft zunächst auf eine mögliche Lösung.
-     *
-     * Wenn es eine mögliche Lösung gibt, wird eine leere Zelle belegt.
-     *  - Die leere Zelle muss an Rand oder an min. einer belegten Zelle angrenzen.
-     *
-     *  Unendliche Nutzung möglich. Puzzle kann auch nur mit der Hilfe gelöst werden.
-     */
-    public void helpSolve() {
-
     }
 
     /**
@@ -86,11 +67,14 @@ public class Solvability {
     public boolean allTilesPlaced(Board board) {
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int column = 1; column < board.getColumns() - 1; column++) {
-                if (!board.getCell(row, column).isPlaced() && !board.getCell(row, column).isHole()) {
+                if (board.getCell(row, column).getTile() == MosaicTile.NNNN ||
+                        !board.getCell(row, column).isPlaced() &&
+                        !board.getCell(row, column).isHole()) {
                     return false;
                 }
             }
         }
+
         return true;
     }
 
