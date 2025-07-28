@@ -427,7 +427,7 @@ public class Board {
      * Methode, welche sich die Platzierung der Randzellen und ihren Nachbarzellen anschaut.
      * @return  true, wenn alle Nachbarzellen und Randzellen übereinstimmen, ansonsten false.
      */
-    private boolean fitsBorderNeighbours() {
+    public boolean fitsBorderNeighbours() {
         // Überprüfung, ob die oberen Randzellen passen
         for (int col = 0; col < columns; col++) {
             // holt sich die Mosaikteile, die an den Rändern platziert sind

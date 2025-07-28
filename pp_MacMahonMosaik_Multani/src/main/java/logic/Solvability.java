@@ -50,13 +50,6 @@ public class Solvability {
      * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
     public void possibleSolvation(){
-    }
-
-    /**
-     * Hilfsmethode um die Lösung zu prüfen.
-     * Prüft, ob die Kanten dieselben Farben haben.
-     */
-    public void sameColouredEdges() {
 
     }
 
@@ -76,12 +69,5 @@ public class Solvability {
         }
 
         return true;
-    }
-
-    /**
-     * Prüfung zur Testung, ob das Spiel fertig ist.
-     */
-    public boolean gameDone() {
-        return solveGame();
     }
 }

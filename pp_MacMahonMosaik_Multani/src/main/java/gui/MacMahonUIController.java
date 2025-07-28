@@ -250,11 +250,6 @@ public class MacMahonUIController {
                 gui.showGamesNotFinished();
             }
         }
-        // TODO: vielleicht Spielfeld "freezen"
-        // zum neustart "zwingen"?
-        if (solve.gameDone()) {
-
-        }
     }
 
     /**

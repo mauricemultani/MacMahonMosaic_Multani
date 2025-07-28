@@ -393,6 +393,15 @@ public class BoardController {
     public void placeTileAnywhere() {
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
+        for (int row = 1; row < board.getRows(); row++) {
+            for (int col = 1; col < board.getColumns(); col++) {
+                BoardCell cell = board.getCell(row, col);
+                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
+                    usableTiles.remove(cell.getTile());
+                }
+            }
+        }
+
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
                 Position pos = new Position(row, col);
@@ -401,7 +410,7 @@ public class BoardController {
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : usableTiles) {
                         for (Rotation rotation : Rotation.values()) {
-                            if (board.fitsNeighbours(tile, rotation, pos)) {
+                            if (board.fitsNeighbours(tile, rotation, pos) && board.fitsBorderNeighbours()) {
                                 board.placeTileAt(tile, rotation, pos);
 
                                 Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
@@ -411,16 +420,14 @@ public class BoardController {
                                 tileLabel.setGraphic(imageView);
                                 tileLabel.setUserData(rotation);
 
+                                imageView.setRotate(getDegrees(rotation));
+
                                 gridPane.add(tileLabel, col, row);
 
                                 TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
 
-                                usableTiles.remove(tile);
-                                usableTiles.remove(cell.getTile());
-
                                 System.out.println("Verfügbare Tiles: " + usableTiles);
                                 System.out.println("Placed tile at " + pos);
-
                                 return;
                             }
                         }
