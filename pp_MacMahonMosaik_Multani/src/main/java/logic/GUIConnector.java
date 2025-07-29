@@ -13,6 +13,11 @@ import java.util.Optional;
 public interface GUIConnector {
 
     /**
+     * Mitteilung, welche eine Willkommensnachricht sein soll.
+     */
+    void showWelcomeToGame();
+
+    /**
      * Wird angezeigt, wenn das Spiel korrekt beendet ist.
      */
     void showGameWon();
@@ -103,5 +108,8 @@ public interface GUIConnector {
      */
     void showPlacingHoleNotAllowed();
 
+    /**
+     * Mitteilung, wenn kein platzierbares Mosaikteil gefunden wurde.
+     */
     void showNoPlaceableTileFound();
 }

@@ -13,6 +13,11 @@ import java.util.Optional;
 public class FakeGUI implements GUIConnector{
 
     @Override
+    public void showWelcomeToGame() {
+
+    }
+
+    @Override
     public void showGameWon() {
 
     }

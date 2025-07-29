@@ -23,7 +23,7 @@ public class Solvability {
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      */
     public boolean solveGame(){
-        if (!allTilesPlaced(board)) {
+        if (allTilesPlaced(board)) {
             return false;
         }
 
@@ -49,8 +49,14 @@ public class Solvability {
      * Prüft im aktuellen Spielstand, bei freien Stellen und
      * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
-    public void possibleSolvation(){
+    public boolean possibleSolvation(){
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
 
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -63,11 +69,11 @@ public class Solvability {
                 if (board.getCell(row, column).getTile() == MosaicTile.NNNN ||
                         !board.getCell(row, column).isPlaced() &&
                         !board.getCell(row, column).isHole()) {
-                    return false;
+                    return true;
                 }
             }
         }
 
-        return true;
+        return false;
     }
 }

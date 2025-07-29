@@ -24,6 +24,21 @@ public class JavaFXGUI implements GUIConnector {
     private final ButtonType buttonCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
     private final ButtonType buttonAdjust = new ButtonType("Adjust");
 
+    /**
+     * Mitteilung, welche eine Willkommensnachricht sein soll.
+     */
+    @Override
+    public void showWelcomeToGame() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Welcome to Maurice's MacMahonMosaik");
+        alert.setHeaderText("Welcome to Maurice's MacMahonMosaik");
+        alert.setContentText("Enjoy :)");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, welche bei einem gewonnenen Spiel kommen soll.
+     */
     @Override
     public void showGameWon() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -33,6 +48,9 @@ public class JavaFXGUI implements GUIConnector {
         alert.showAndWait();
     }
 
+    /**
+     * Mitteilung, welche bei einem nicht erfolgreichen Spiel kommen soll.
+     */
     @Override
     public void showGamesNotFinished() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -278,7 +296,7 @@ public class JavaFXGUI implements GUIConnector {
     public void showNoPlaceableTileFound() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
-        alert.setHeaderText("It seems as if there was no Tile placeable.");
+        alert.setHeaderText("It seems as if there is no Tile placeable.");
         alert.setContentText("Maybe rearrange some Tiles differently.");
         alert.showAndWait();
     }

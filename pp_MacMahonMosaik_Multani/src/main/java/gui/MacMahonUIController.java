@@ -15,6 +15,7 @@ import logic.*;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Main class for the user interface.
@@ -44,7 +45,7 @@ public class MacMahonUIController {
      * die Anzeige der benutzbaren Bilder via einer GridPane darunter.
      */
     @FXML
-    private GridPane gridPane;
+    private GridPane gameField;
     @FXML
     private Pane gameFieldPane;
     @FXML
@@ -57,18 +58,20 @@ public class MacMahonUIController {
      * initialization and then change the java doc comment.
      */
     public void initialize() {
+        Random random = new Random();
+
         // Anzahl an Reihen
-        int rows = 4;
+        int rows = random.nextInt(5) + 2;
 
         // Anzahl an Spalten
-        int columns = 4;
+        int columns = random.nextInt(5) + 2;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
         Board board = new Board(rows + 2, columns + 2, true);
 
         // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gridPane, board, gameFieldPane, gui);
+        this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld
@@ -81,7 +84,7 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         // Initialisierung des Controllers für den Editor Modus
-        this.editorController = new EditorController(gridPane, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
+        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
         menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
             handleEditorMode();
         });
@@ -89,6 +92,8 @@ public class MacMahonUIController {
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
         gridBottomController.checkExistentMosaikTiles();
+
+        gui.showWelcomeToGame();
 
         closeGameViaStage();
     }
@@ -182,7 +187,7 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleClose() {
-        Stage stage = (Stage) gridPane.getScene().getWindow();
+        Stage stage = (Stage) gameField.getScene().getWindow();
         Optional<ButtonType> result = gui.showSignWhenHandleClose();
 
         if (result.isPresent()) {
@@ -239,7 +244,7 @@ public class MacMahonUIController {
         Board currBoard = game.getBoard();
         Solvability solve = new Solvability(currBoard);
 
-        if (!solve.allTilesPlaced(currBoard)) {
+        if (solve.allTilesPlaced(currBoard)) {
             gui.showPlaceAllTilesFirst();
         } else {
             success = solve.solveGame();
@@ -291,7 +296,7 @@ public class MacMahonUIController {
      * das Spiel mit dem 'X' oben rechts am Fenster schließen will.
      */
     private void closeGameViaStage() {
-        gridPane.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
+        gameField.sceneProperty().addListener(((observableValue, oldScene, newScene) -> {
             if (newScene != null) {
                 newScene.windowProperty().addListener((obs, oldWindow, newWindow) -> {
                     if (newWindow != null) {
