@@ -102,4 +102,6 @@ public interface GUIConnector {
      * Mitteilung, wenn versucht wird ein Loch auf ein Loch im Editormodus zu platzieren.
      */
     void showPlacingHoleNotAllowed();
+
+    void showNoPlaceableTileFound();
 }

@@ -42,16 +42,19 @@ public class BoardController {
     @FXML
     private Pane gameFieldPane;
 
+    private GUIConnector gui;
+
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
-    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane){
+    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
+        this.gui = gui;
     }
 
     /**
@@ -393,14 +396,16 @@ public class BoardController {
     public void placeTileAnywhere() {
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
-        for (int row = 1; row < board.getRows(); row++) {
-            for (int col = 1; col < board.getColumns(); col++) {
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
                 BoardCell cell = board.getCell(row, col);
                 if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
                     usableTiles.remove(cell.getTile());
                 }
             }
         }
+
+        boolean foundTile = false;
 
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
@@ -410,7 +415,8 @@ public class BoardController {
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : usableTiles) {
                         for (Rotation rotation : Rotation.values()) {
-                            if (board.fitsNeighbours(tile, rotation, pos) && board.fitsBorderNeighbours()) {
+                            if (!foundTile && board.fitsNeighbours(tile, rotation, pos)
+                                    && board.fitsBorderNeighbours(tile, rotation, pos)) {
                                 board.placeTileAt(tile, rotation, pos);
 
                                 Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
@@ -426,18 +432,16 @@ public class BoardController {
 
                                 TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
 
-                                System.out.println("Verfügbare Tiles: " + usableTiles);
-                                System.out.println("Placed tile at " + pos);
-                                return;
+                                foundTile = true;
                             }
                         }
                     }
-                    System.out.println("Kein Tile platzierbar");
-                    System.out.println("Trying to place tile at " +  pos);
                 }
             }
         }
-        System.out.println("No placeable Tile found");
+        if (!foundTile) {
+            gui.showNoPlaceableTileFound();
+        }
     }
 
     /**

@@ -270,4 +270,16 @@ public class JavaFXGUI implements GUIConnector {
         alert.setContentText(" Pointing out the obvious...");
         alert.showAndWait();
     }
+
+    /**
+     * Mitteilung, wenn kein platzierbares Mosaikteil gefunden wurde.
+     */
+    @Override
+    public void showNoPlaceableTileFound() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("It seems as if there was no Tile placeable.");
+        alert.setContentText("Maybe rearrange some Tiles differently.");
+        alert.showAndWait();
+    }
 }

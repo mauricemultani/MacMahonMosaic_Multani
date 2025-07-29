@@ -416,7 +416,7 @@ public class Board {
             }
         }
 
-        if (!fitsBorderNeighbours()) {
+        if (!fitsBorderNeighbours(tile, rotation, pos)) {
             return false;
         }
 
@@ -427,70 +427,48 @@ public class Board {
      * Methode, welche sich die Platzierung der Randzellen und ihren Nachbarzellen anschaut.
      * @return  true, wenn alle Nachbarzellen und Randzellen übereinstimmen, ansonsten false.
      */
-    public boolean fitsBorderNeighbours() {
-        // Überprüfung, ob die oberen Randzellen passen
-        for (int col = 0; col < columns; col++) {
-            // holt sich die Mosaikteile, die an den Rändern platziert sind
-            BoardCell cell = getCell(1, col);
+    public boolean fitsBorderNeighbours(MosaicTile tile, Rotation rotation, Position pos) {
+        int row = pos.row();
+        int col = pos.column();
+        Color[] tileColors = tile.getColors(rotation);
 
-            if (cell.isPlaced()) {
-                String borderTile = getTopBorderTiles()[col];
+        if (row == 1) {
+            String borderTile = getTopBorderTiles()[col];
 
-                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[2];
+            Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[2];
 
-                Color tileColor = cell.getTile().getColors(cell.getRotation())[0];
-
-                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
-                    return false;
-                }
+            if (tileColors[0] != Color.GRAY && !tileColors[0].equals(borderingColor)) {
+                return false;
             }
         }
 
-        // Überprüfung, ob die unteren Randzellen passen
-        for (int col = 0; col < columns; col++) {
-            BoardCell cell = getCell(rows - 2, col);
-            if (cell.isPlaced()) {
-                String borderTile = getBottomBorderTiles()[col];
+        if (row == rows - 2) {
+            String borderTile = getBottomBorderTiles()[col];
 
-                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[0];
+            Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[0];
 
-                Color tileColor = cell.getTile().getColors(cell.getRotation())[2];
-
-                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
-                    return false;
-                }
+            if (tileColors[2] != Color.GRAY && !tileColors[2].equals(borderingColor)) {
+                return false;
             }
         }
 
-        // Überprüfung, ob die linken Randzellen passen
-        for (int row = 0; row< rows; row++) {
-            BoardCell cell = getCell(row, 1);
-            if (cell.isPlaced()) {
-                String borderTile = getLeftBorderTiles()[row];
+        if (col == 1) {
+            String borderTile = getLeftBorderTiles()[row];
 
-                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[1];
+            Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[1];
 
-                Color tileColor = cell.getTile().getColors(cell.getRotation())[3];
-
-                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
-                    return false;
-                }
+            if (tileColors[3] != Color.GRAY && !tileColors[3].equals(borderingColor)) {
+                return false;
             }
         }
 
-        // Überprüfung, ob die rechten Randzellen passen
-        for (int row = 0; row < rows; row++) {
-            BoardCell cell = getCell(row, columns - 2);
-            if (cell.isPlaced()) {
-                String borderTile = getRightBorderTiles()[row];
+        if (col == columns - 2) {
+            String borderTile = getRightBorderTiles()[row];
 
-                Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[3];
+            Color borderingColor = MosaicTile.valueOf(borderTile).getColors()[3];
 
-                Color tileColor = cell.getTile().getColors(cell.getRotation())[1];
-
-                if (tileColor != Color.GRAY && !tileColor.equals(borderingColor)) {
-                    return false;
-                }
+            if (tileColors[1] != Color.GRAY && !tileColors[1].equals(borderingColor)) {
+                return false;
             }
         }
 

@@ -68,7 +68,7 @@ public class MacMahonUIController {
         Board board = new Board(rows + 2, columns + 2, true);
 
         // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gridPane, board, gameFieldPane);
+        this.boardController = new BoardController(gridPane, board, gameFieldPane, gui);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld
@@ -273,8 +273,9 @@ public class MacMahonUIController {
     }
 
     /**
-     * Gibt dem Spieler ein Hinweis, um das Spiel zu lösen.
-     * <p>
+     * Platziert für den Spieler ein Mosaikteil
+     * an einer beliebigen Stelle.
+     *
      * Zu Beachten: unendliche Nutzung möglich.
      */
     @FXML

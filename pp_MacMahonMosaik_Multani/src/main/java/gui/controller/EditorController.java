@@ -452,6 +452,9 @@ public class EditorController {
      * 3. Puzzle muss lösbar sein.
      */
     public void switchBackToGameMode(){
+        game.setBoard(editor.getBoard());
+
+        boardController.setBoardAndUpdate(game.getBoard());
         boardController.initializeBoard();
         gridBottomController.setBoard(game.getBoard());
         gridBottomController.checkExistentMosaikTiles();

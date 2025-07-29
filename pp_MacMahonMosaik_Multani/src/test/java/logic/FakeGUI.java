@@ -101,4 +101,9 @@ public class FakeGUI implements GUIConnector{
     public void showPlacingHoleNotAllowed() {
 
     }
+
+    @Override
+    public void showNoPlaceableTileFound() {
+
+    }
 }
