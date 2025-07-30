@@ -474,7 +474,7 @@ public class BoardController {
 
     /**
      * Initialisierung der Bilder an der linken und rechten Grenze vom Spielfeld.
-     * Wird in initImagesBorderGameField verwendet.
+     * Wird in initImagesBorderBoard verwendet.
      *
      */
     private void setImagesColumnBorder() {
@@ -494,7 +494,7 @@ public class BoardController {
 
     /**
      * Initialisierung der Bilder an der oberen und unteren Grenze vom Spielfeld.
-     * Wird in initImagesBorderGameField verwendet.
+     * Wird in initImagesBorderBoard verwendet.
      */
     private void setImagesRowBorder() {
         String[] topBorderColors = board.getTopBorderColors();
