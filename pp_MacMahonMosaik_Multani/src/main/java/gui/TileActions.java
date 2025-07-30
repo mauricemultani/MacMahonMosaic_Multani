@@ -279,7 +279,7 @@ public class TileActions {
         if (!board.fitsNeighbours(tile, rotation, pos)) {
             imageView.setEffect(new InnerShadow(0.1, Color.RED));
             imageView.setBlendMode(BlendMode.GREEN);
-        } else if (board.fitsNeighbours(tile, rotation, pos)) {
+        } else if (board.fitsNeighbours(tile, rotation, pos) || tile == MosaicTile.NNNN) {
             imageView.setEffect(null);
             imageView.setBlendMode(null);
         }

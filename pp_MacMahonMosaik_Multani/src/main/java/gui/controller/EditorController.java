@@ -66,6 +66,11 @@ public class EditorController {
     private final GridBottomController gridBottomController;
 
     /**
+     * Zugriff auf Solvability Class.
+     */
+    private final Solvability solve;
+
+    /**
      * private boolescher Wert der mit der Initialisierung
      * der Bilder in meinem gridBottom gridPane zusammenarbeitet.
      */
@@ -99,7 +104,7 @@ public class EditorController {
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
     public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController,
-                            GUIConnector gui, Game game, GridBottomController gridBottomController, Editor editor){
+                            GUIConnector gui, Game game, GridBottomController gridBottomController, Editor editor, Solvability solve){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
@@ -108,6 +113,7 @@ public class EditorController {
         this.game = game;
         this.gridBottomController = gridBottomController;
         this.editor = editor;
+        this.solve = solve;
     }
 
     /**
@@ -439,6 +445,14 @@ public class EditorController {
         }
 
         //TODO: Lösbarkeitsprüfung fehlt noch, ansonsten mit allem durch.
+        if (!solve.possibleSolvation()) {
+            gui.showNoPossibleSolvation();
+
+            return false;
+        } else {
+            System.out.println("Es gibt eine mögliche Lösung");
+        }
+
 
         return true;
     }

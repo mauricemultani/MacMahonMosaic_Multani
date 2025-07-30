@@ -300,4 +300,20 @@ public class JavaFXGUI implements GUIConnector {
         alert.setContentText("Maybe rearrange some Tiles differently.");
         alert.showAndWait();
     }
+
+    /**
+     * Mitteilung, welche kommen soll, wenn beim Verlassen des Editormodus in den Spielmodus,
+     * vom Programm festgestellt wird, dass mit dem dargestellten Spielfeld keine mögliche Lösung möglich ist.
+     */
+    @Override
+    public void showNoPossibleSolvation() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("It seems as if the field is not solvable.");
+        alert.setContentText("""
+                Give the borders a different color\s
+                a simple Spoiler: You can use the 'Help Me!'-Option in 'Game'\s
+                to track the borders you need to change precisely\s""");
+        alert.showAndWait();
+    }
 }

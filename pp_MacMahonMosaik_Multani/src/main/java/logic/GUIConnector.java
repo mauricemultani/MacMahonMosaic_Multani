@@ -112,4 +112,10 @@ public interface GUIConnector {
      * Mitteilung, wenn kein platzierbares Mosaikteil gefunden wurde.
      */
     void showNoPlaceableTileFound();
+
+    /**
+     * Mitteilung, welche kommen soll, wenn beim Verlassen des Editormodus in den Spielmodus,
+     * vom Programm festgestellt wird, dass mit dem dargestellten Spielfeld keine mögliche Lösung möglich ist.
+     */
+    void showNoPossibleSolvation();
 }

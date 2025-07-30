@@ -25,7 +25,7 @@
                      <items>
                       <MenuItem mnemonicParsing="false" onAction="#handleGameSubmit" text="Submit and Check" />
                       <MenuItem mnemonicParsing="false" onAction="#handleGameRestart" text="Restart Game" />
-                      <MenuItem mnemonicParsing="false" onAction="#handleGameHint" text="Help: Place a Tile" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleGameHint" text="Help Me! - Place a Tile" />
                      </items>
                   </Menu>
               </menus>

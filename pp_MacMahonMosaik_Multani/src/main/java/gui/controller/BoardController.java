@@ -42,7 +42,7 @@ public class BoardController {
     @FXML
     private Pane gameFieldPane;
 
-    private GUIConnector gui;
+    private final GUIConnector gui;
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -396,21 +396,16 @@ public class BoardController {
     public void placeTileAnywhere() {
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
-        for (int row = 1; row < board.getRows() - 1; row++) {
-            for (int col = 1; col < board.getColumns() - 1; col++) {
-                BoardCell cell = board.getCell(row, col);
-                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
-                    usableTiles.remove(cell.getTile());
-                }
-            }
-        }
-
         boolean foundTile = false;
 
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
                 Position pos = new Position(row, col);
                 BoardCell cell = board.getCell(row, col);
+
+                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
+                    usableTiles.remove(cell.getTile());
+                }
 
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : usableTiles) {

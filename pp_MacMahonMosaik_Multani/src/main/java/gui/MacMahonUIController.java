@@ -38,6 +38,8 @@ public class MacMahonUIController {
 
     private EditorController editorController;
 
+    private Solvability solve;
+
     private boolean success;
 
     /**
@@ -83,8 +85,12 @@ public class MacMahonUIController {
         // Initialisiert die Logik für den Editor
         editor = new Editor(board);
 
+        //Initialisieren des Konstruktors für Solvability
+        solve = new Solvability(board);
+
         // Initialisierung des Controllers für den Editor Modus
-        this.editorController = new EditorController(gameField, board, gameFieldPane, boardController, gui, game, gridBottomController, editor);
+        this.editorController = new EditorController(gameField, board, gameFieldPane,
+                boardController, gui, game, gridBottomController, editor, solve);
         menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
             handleEditorMode();
         });

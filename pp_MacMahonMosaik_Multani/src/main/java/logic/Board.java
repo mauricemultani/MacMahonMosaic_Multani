@@ -1,7 +1,10 @@
 package logic;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Stellt das Spielfeld dar, auf dem die Mosaikteile platziert werden können.
@@ -123,6 +126,21 @@ public class Board {
             this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
         }
     }
+
+    /**
+     * Ein Set aus den platzierbaren Mosaikteilen in der Class Mosaictile.
+     */
+    private static final Set<MosaicTile> USABLE_TILES = Set.of(
+            MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
+            MosaicTile.GRYG, MosaicTile.GRYR, MosaicTile.GYRG, MosaicTile.GYYY,
+
+            MosaicTile.RGGG, MosaicTile.RGYG, MosaicTile.RGYR, MosaicTile.RRRR,
+            MosaicTile.RRYY, MosaicTile.RYGR, MosaicTile.RYGY, MosaicTile.RYYY,
+
+            MosaicTile.YGGG, MosaicTile.YGRY, MosaicTile.YGYG, MosaicTile.YRGY,
+            MosaicTile.YRRR, MosaicTile.YRYR, MosaicTile.YYGG, MosaicTile.YYYY
+
+    );
 
     /**
      * Gibt die Zelle an der angegebenen Position wieder zurück.
@@ -553,6 +571,45 @@ public class Board {
      */
     public void removeTileAt(Position pos) {
         cells[pos.row()][pos.column()].placeTile(null, Rotation.DEGREE_0);
+    }
+
+    /**
+     * Platziert das Mosaikteil an einer freien Stelle im Spielfeld,
+     * wenn es zu den Nachbarn der freien Stelle passt.
+     */
+    public void placeTileAnywhere() {
+        List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
+
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < columns - 1; col++) {
+                BoardCell cell = getCell(row, col);
+                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
+                    usableTiles.remove(cell.getTile());
+                }
+            }
+        }
+
+        boolean foundTile = false;
+
+        for (int row = 1; row < rows - 1; row++) {
+            for (int col = 1; col < columns - 1; col++) {
+                Position pos = new Position(row, col);
+                BoardCell cell = getCell(row, col);
+
+                if (!cell.isPlaced() && !cell.isHole()) {
+                    for (MosaicTile tile : usableTiles) {
+                        for (Rotation rotation : Rotation.values()) {
+                            if (!foundTile && fitsNeighbours(tile, rotation, pos)
+                                    && fitsBorderNeighbours(tile, rotation, pos)) {
+                                placeTileAt(tile, rotation, pos);
+
+                                foundTile = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

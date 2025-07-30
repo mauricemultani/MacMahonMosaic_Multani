@@ -111,4 +111,9 @@ public class FakeGUI implements GUIConnector{
     public void showNoPlaceableTileFound() {
 
     }
+
+    @Override
+    public void showNoPossibleSolvation() {
+
+    }
 }
