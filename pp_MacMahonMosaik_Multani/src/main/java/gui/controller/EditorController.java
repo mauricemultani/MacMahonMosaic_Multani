@@ -197,7 +197,7 @@ public class EditorController {
 
     /**
      * Die Methode ist da um redundanten Code verringern.
-     * Bei einem Klick auf eines der Randbilder wird das Bild gewechselt
+     * Bei einem Klick auf eine der Randbilder wird das Bild gewechselt
      * und rüber zum nächsten Bild gegangen.
      * @param node          das Node
      * @param tileList      die ArrayList von den Randbildern
@@ -358,8 +358,6 @@ public class EditorController {
                     }
 
                     if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles && !board.isHole(finalRow, finalCol)) {
-
-
                         editor.placeHoleAt(finalRow, finalCol);
 
                         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/gui/tiles/HHHH.png")));
@@ -440,7 +438,8 @@ public class EditorController {
         if (editor.needsHoles(board.getRows(), board.getColumns())) {
             gui.showHolesNotPlaced();
 
-            choosePositionsOfHoles();
+            removeMouseEvent();
+            placingHoles(editor.calculateIfHolesNeeded(board.getRows(), board.getColumns()));
             return false;
         }
 

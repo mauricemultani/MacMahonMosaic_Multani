@@ -291,7 +291,7 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameHint() {
-        boardController.placeTileAnywhere();
+        boardController.placingTileForPlayer();
 
         gridBottomController.setBoard(game.getBoard());
         gridBottomController.checkExistentMosaikTiles();

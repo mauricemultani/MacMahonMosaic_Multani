@@ -393,7 +393,7 @@ public class BoardController {
      * Die Methode soll das Spielfeld durchgehen und ein Mosaikteil an einer beliebigen Stelle platzieren.
      * Die Voraussetzung hierbei ist, dass das Mosaikteil an der gegebenen Stelle passt.
      */
-    public void placeTileAnywhere() {
+    public void placingTileForPlayer() {
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
         boolean foundTile = false;

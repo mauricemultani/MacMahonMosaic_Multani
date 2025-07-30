@@ -577,17 +577,8 @@ public class Board {
      * Platziert das Mosaikteil an einer freien Stelle im Spielfeld,
      * wenn es zu den Nachbarn der freien Stelle passt.
      */
-    public void placeTileAnywhere() {
+    public void placingTileForPlayer() {
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
-
-        for (int row = 1; row < rows - 1; row++) {
-            for (int col = 1; col < columns - 1; col++) {
-                BoardCell cell = getCell(row, col);
-                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
-                    usableTiles.remove(cell.getTile());
-                }
-            }
-        }
 
         boolean foundTile = false;
 
@@ -595,6 +586,10 @@ public class Board {
             for (int col = 1; col < columns - 1; col++) {
                 Position pos = new Position(row, col);
                 BoardCell cell = getCell(row, col);
+
+                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
+                    usableTiles.remove(cell.getTile());
+                }
 
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : usableTiles) {
