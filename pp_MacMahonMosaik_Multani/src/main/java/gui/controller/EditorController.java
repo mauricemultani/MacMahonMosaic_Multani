@@ -445,13 +445,13 @@ public class EditorController {
         }
 
         //TODO: Lösbarkeitsprüfung fehlt noch, ansonsten mit allem durch.
-        if (!solve.possibleSolvation()) {
-            gui.showNoPossibleSolvation();
-
-            return false;
-        } else {
-            System.out.println("Es gibt eine mögliche Lösung");
-        }
+//        if (!solve.possibleSolvation()) {
+//            gui.showNoPossibleSolvation();
+//
+//            return false;
+//        } else {
+//            System.out.println("Es gibt eine mögliche Lösung");
+//        }
 
 
         return true;

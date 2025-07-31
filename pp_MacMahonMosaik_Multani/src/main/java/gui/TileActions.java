@@ -2,8 +2,7 @@ package gui;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.InnerShadow;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -99,7 +98,6 @@ public class TileActions {
                 mouseEvent.consume();
 
                 imageView.setEffect(null);
-                imageView.setBlendMode(null);
             }
         });
     }
@@ -194,7 +192,6 @@ public class TileActions {
                     gridBottomActions(gridPane, droppedLabel, imageView, tile);
 
                     imageView.setEffect(null);
-                    imageView.setBlendMode(null);
                 }
             }
             // Bestätigen des Drops
@@ -277,11 +274,14 @@ public class TileActions {
      */
     public static void differentColorsOnEdge(Board board, MosaicTile tile, Rotation rotation, Position pos, ImageView imageView) {
         if (!board.fitsNeighbours(tile, rotation, pos)) {
-            imageView.setEffect(new InnerShadow(0.1, Color.RED));
-            imageView.setBlendMode(BlendMode.GREEN);
+            DropShadow ds = new DropShadow();
+            ds.setColor(Color.RED);
+            ds.setRadius(10);
+            ds.setSpread(0.5);
+
+            imageView.setEffect(ds);
         } else if (board.fitsNeighbours(tile, rotation, pos) || tile == MosaicTile.NNNN) {
             imageView.setEffect(null);
-            imageView.setBlendMode(null);
         }
     }
 

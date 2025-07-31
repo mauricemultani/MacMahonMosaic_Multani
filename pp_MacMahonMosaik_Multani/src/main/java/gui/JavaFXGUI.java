@@ -103,7 +103,8 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information!");
         alert.setHeaderText("There was a fail while loading the Game!");
-        alert.setContentText("Please only load json-Files");
+        alert.setContentText(" 1. Please only load json-Files \n" +
+                " 2. Only load Boards within the allowed range of 2x2 to 6x6");
         alert.showAndWait();
     }
 

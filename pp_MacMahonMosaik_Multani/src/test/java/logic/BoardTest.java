@@ -223,4 +223,24 @@ public class BoardTest {
 
         assertTrue(result);
     }
+
+    @Test
+    void doesTileFitAnywhere_fullField() {
+        String[][] field = {
+                {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
+                {"NRNN", "GGRR", "GYRG", "GRRR", "NNNR"},
+                {"NRNN", "GRGR", "RGYG", "RRYY", "NNNR"},
+                {"NRNN", "YRGY", "GRYG", "YYGG", "NNNY"},
+                {"NNNN", "YNNN", "RNNN", "GNNN", "NNNN"}
+        };
+
+        int rows = field.length;
+        int cols = field[0].length;
+
+        Board board = new Board(rows, cols, field, false);
+
+        boolean result = board.doesTileFitAnywhere(MosaicTile.RGGG);
+
+        assertFalse(result);
+    }
 }

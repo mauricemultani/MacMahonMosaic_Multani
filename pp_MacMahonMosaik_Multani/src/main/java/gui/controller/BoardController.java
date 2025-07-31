@@ -209,19 +209,14 @@ public class BoardController {
      * Bedingungen sind mit entsprechenden Exceptions gesetzt.
      */
     private void createBoard() {
-        // Exception, falls das Board 0 Reihen oder 0 Spalten hat.
-        if (board.getRows() == 0 || board.getColumns() == 0) {
-            throw new IllegalArgumentException("Column or Row is Empty");
-        }
-
         // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
         if (board.getRows() < 4 || board.getColumns() < 4) {
-            throw new IllegalArgumentException("Das Feld muss mindestens 4 Zeilen und Spalten haben");
+            gui.showFieldTooSmall();
         }
 
         // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
         if (board.getRows() > 8 || board.getColumns() > 8) {
-            throw new IllegalArgumentException("Das Feld darf maximal 8 Zeilen und Spalten haben");
+            gui.showFieldTooBig();
         }
 
         // löscht die vorhanden Reihen und Spalten Constraints
@@ -252,6 +247,24 @@ public class BoardController {
     }
 
     /**
+     * Methode, welche überprüft, ob das Spielfeld die korrekte Anzahl an Reihen und Spalten hat.
+     */
+    public boolean checkBoardSize() {
+        // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
+        if (board.getRows() < 4 || board.getColumns() < 4) {
+            gui.showFieldTooSmall();
+            return false;
+        }
+
+        // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
+        if (board.getRows() > 8 || board.getColumns() > 8) {
+            gui.showFieldTooBig();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Die Methode lädt eine gespeicherte Datei (jeweils belegte Zellen, als auch die Ränder)
      * auf dem Spielfeld.
      */
@@ -259,6 +272,7 @@ public class BoardController {
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
                 BoardCell cell = board.getCell(row, col);
+                Position pos = new Position(row, col);
 
                 if (cell.isPlaced() && !cell.isHole()) {
                     MosaicTile tile = cell.getTile();
@@ -276,8 +290,9 @@ public class BoardController {
 
                     gridPane.add(label, col, row);
 
-                    Position pos = new Position(row, col);
                     TileActions.boardActions(gridPane, board, label, imageView, pos, tile, rotation);
+
+                    imageView.setEffect(null);
                 }
             }
         }

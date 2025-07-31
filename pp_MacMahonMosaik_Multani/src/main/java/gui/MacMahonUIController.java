@@ -116,7 +116,7 @@ public class MacMahonUIController {
         );
         File file = fileChooser.showSaveDialog(null);
 
-        if (file != null) {
+        if (file != null && file.getName().endsWith(".json")) {
             game.saveGame(file);
             success = true;
             gui.showSuccessSave();
@@ -146,7 +146,7 @@ public class MacMahonUIController {
             
             success = true;
             gui.showSuccessLoad();
-        } else if (file != null && file.getName().endsWith(".json")) {
+        } else if (file != null && file.getName().endsWith(".json") && boardController.checkBoardSize()) {
             game.loadGame(file);
 
             boardController.setBoardAndUpdate(game.getBoard());
@@ -265,10 +265,6 @@ public class MacMahonUIController {
 
     /**
      * Startet das laufende Spiel neu.
-     * <p>
-     * Mögliche Dinge die zu beachten sind:
-     * Ob der Spieler nicht vielleicht, das laufende Spiel
-     * speichern und einen Namen geben will.
      */
     @FXML
     private void handleGameRestart() {
