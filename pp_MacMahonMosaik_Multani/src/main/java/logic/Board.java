@@ -1,5 +1,10 @@
 package logic;
 
+import logic.utils.BoardCell;
+import logic.utils.MosaicTile;
+import logic.utils.Position;
+import logic.utils.Rotation;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;

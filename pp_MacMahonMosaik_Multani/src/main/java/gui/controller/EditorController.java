@@ -12,6 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Pair;
 import logic.*;
+import logic.utils.MosaicTile;
 
 import java.util.*;
 

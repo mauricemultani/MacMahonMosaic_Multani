@@ -1,4 +1,4 @@
-package logic;
+package logic.utils;
 
 /**
  * Klasse für die Position.

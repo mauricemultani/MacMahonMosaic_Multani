@@ -9,7 +9,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
-import logic.*;
+import logic.Board;
+import logic.GUIConnector;
+import logic.utils.BoardCell;
+import logic.utils.MosaicTile;
+import logic.utils.Position;
+import logic.utils.Rotation;
 
 import java.util.ArrayList;
 import java.util.List;

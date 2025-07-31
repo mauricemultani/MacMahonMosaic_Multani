@@ -1,4 +1,4 @@
-package logic;
+package logic.utils;
 
 /**
  * Die Klasse BoardCell. Sie stellt eine Zelle im Spielfeld dar.

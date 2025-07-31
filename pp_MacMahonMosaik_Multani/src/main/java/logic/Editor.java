@@ -1,6 +1,8 @@
 package logic;
 
 import com.google.gson.Gson;
+import logic.utils.BoardCell;
+import logic.utils.MosaicTile;
 
 import java.io.File;
 import java.io.FileReader;

@@ -1,4 +1,4 @@
-package logic;
+package logic.utils;
 
 /**
  * Eine Enum-Klasse für die Rotation.

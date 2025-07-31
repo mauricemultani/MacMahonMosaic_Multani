@@ -14,9 +14,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import logic.Board;
-import logic.MosaicTile;
-import logic.Position;
-import logic.Rotation;
+import logic.utils.MosaicTile;
+import logic.utils.Position;
+import logic.utils.Rotation;
 
 /**
  * Klasse für die Drag&Drop Logik und die rotierungs Logik.

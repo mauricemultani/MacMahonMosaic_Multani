@@ -6,8 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import logic.Board;
-import logic.BoardCell;
-import logic.MosaicTile;
+import logic.utils.BoardCell;
+import logic.utils.MosaicTile;
 
 import java.util.ArrayList;
 import java.util.List;
