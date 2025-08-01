@@ -38,8 +38,6 @@ public class MacMahonUIController {
 
     private EditorController editorController;
 
-    private Solvability solve;
-
     private boolean success;
 
     /**
@@ -86,7 +84,7 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         //Initialisieren des Konstruktors für Solvability
-        solve = new Solvability(board);
+        Solvability solve = new Solvability(board);
 
         // Initialisierung des Controllers für den Editor Modus
         this.editorController = new EditorController(gameField, board, gameFieldPane,

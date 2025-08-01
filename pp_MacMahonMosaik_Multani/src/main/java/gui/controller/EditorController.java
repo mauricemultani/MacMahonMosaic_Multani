@@ -439,8 +439,8 @@ public class EditorController {
         if (editor.needsHoles(board.getRows(), board.getColumns())) {
             gui.showHolesNotPlaced();
 
-            removeMouseEvent();
-            placingHoles(editor.calculateIfHolesNeeded(board.getRows(), board.getColumns()));
+//            removeMouseEvent();
+//            placingHoles(editor.calculateIfHolesNeeded(board.getRows(), board.getColumns()));
             return false;
         }
 

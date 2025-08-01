@@ -275,9 +275,9 @@ public class TileActions {
     public static void differentColorsOnEdge(Board board, MosaicTile tile, Rotation rotation, Position pos, ImageView imageView) {
         if (!board.fitsNeighbours(tile, rotation, pos)) {
             DropShadow ds = new DropShadow();
-            ds.setColor(Color.RED);
+            ds.setColor(Color.BLUE);
             ds.setRadius(10);
-            ds.setSpread(0.5);
+            ds.setSpread(0.7);
 
             imageView.setEffect(ds);
         } else if (board.fitsNeighbours(tile, rotation, pos) || tile == MosaicTile.NNNN) {
