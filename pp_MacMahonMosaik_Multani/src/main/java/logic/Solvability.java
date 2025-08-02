@@ -16,10 +16,16 @@ import java.util.Set;
  */
 public class Solvability {
 
-    private final Board board;
+    private Board board;
 
-    public Solvability(Board board) {
+    private final Editor editor;
+
+    private final Game game;
+
+    public Solvability(Board board, Editor editor, Game game) {
         this.board = board;
+        this.editor = editor;
+        this.game = game;
     }
 
     /**
@@ -47,7 +53,7 @@ public class Solvability {
      * Spiel ist nicht lösbar, wenn ein Teil falsch platziert ist.
      */
     public boolean solveGame(){
-        if (allTilesPlaced(board)) {
+        if (!allCellsPlaced(board)) {
             return false;
         }
 
@@ -74,6 +80,8 @@ public class Solvability {
      * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
      */
     public boolean possibleSolvation(){
+        board = editor.getBoard();
+        game.setBoard(board);
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
         for (int row = 1; row < board.getRows() - 1; row++) {
@@ -113,18 +121,44 @@ public class Solvability {
     /**
      * Hilfsmethode um die Lösung zu prüfen.
      * Prüft, ob alle Zellen belegt sind.
+     *
+     * true, wenn alle Zellen belegt sind, ansonsten false
      */
-    public boolean allTilesPlaced(Board board) {
+    public boolean allCellsPlaced(Board board) {
         for (int row = 1; row < board.getRows() - 1; row++) {
-            for (int column = 1; column < board.getColumns() - 1; column++) {
-                if (board.getCell(row, column).getTile() == MosaicTile.NNNN ||
-                        !board.getCell(row, column).isPlaced() &&
-                        !board.getCell(row, column).isHole()) {
-                    return true;
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                BoardCell cell = board.getCell(row, col);
+
+                if (!cell.isPlaced() && !cell.isHole()) {
+                    return false;
                 }
             }
         }
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Methode, welche überprüft wie viele leere Zellen noch im Spielfeld genau sind.
+     * Wenn es über 18 leere Zellen sind, soll es true angeben, ansonsten false
+     */
+    public boolean overEighteenEmptyCells() {
+        board = editor.getBoard();
+        game.setBoard(board);
+
+        int emptyCells = 0;
+        final int MAXIMUM_AMOUNT_OF_EMPTY_CELLS = 18;
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                BoardCell cell = board.getCell(row, col);
+
+                if (!cell.isHole() && !cell.isPlaced()) {
+                    emptyCells++;
+                }
+            }
+        }
+
+        return emptyCells > MAXIMUM_AMOUNT_OF_EMPTY_CELLS;
     }
 }

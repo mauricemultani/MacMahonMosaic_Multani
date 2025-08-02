@@ -118,4 +118,6 @@ public interface GUIConnector {
      * vom Programm festgestellt wird, dass mit dem dargestellten Spielfeld keine mögliche Lösung möglich ist.
      */
     void showNoPossibleSolvation();
+
+    void showSkipSolvabilityCheck();
 }

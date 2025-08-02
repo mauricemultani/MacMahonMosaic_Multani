@@ -317,4 +317,18 @@ public class JavaFXGUI implements GUIConnector {
                 to track the borders you need to change precisely\s""");
         alert.showAndWait();
     }
+
+    /**
+     * Mitteilung, dass die Lösbarkeitsprüfung übersprungen wird,
+     * da es ansonsten zu lange dauern würde.
+     */
+    @Override
+    public void showSkipSolvabilityCheck() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Solvability check is being skipped.");
+        alert.setContentText("Else the programm would take too long to run \n" +
+                "thank you for your understanding.");
+        alert.showAndWait();
+    }
 }

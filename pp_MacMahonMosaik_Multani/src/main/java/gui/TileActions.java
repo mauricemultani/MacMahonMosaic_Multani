@@ -200,6 +200,15 @@ public class TileActions {
         });
     }
 
+    public static void noDroppingTilesAllowed(GridPane gridPane) {
+        gridPane.setOnDragOver(dragEvent -> {
+            if (dragEvent.getDragboard().hasString()) {
+                dragEvent.acceptTransferModes(TransferMode.NONE);
+            }
+            dragEvent.consume();
+        });
+    }
+
     /**
      * Ermöglicht, das Rotieren des Bildes.
      *

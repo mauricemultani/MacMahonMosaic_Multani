@@ -116,4 +116,9 @@ public class FakeGUI implements GUIConnector{
     public void showNoPossibleSolvation() {
 
     }
+
+    @Override
+    public void showSkipSolvabilityCheck() {
+
+    }
 }

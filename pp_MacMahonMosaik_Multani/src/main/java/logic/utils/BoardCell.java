@@ -65,7 +65,7 @@ public class BoardCell {
     }
 
     public boolean isPlaced() {
-        return tile != null && !hole;
+        return tile != null && !hole && tile != MosaicTile.NNNN;
     }
 
 }

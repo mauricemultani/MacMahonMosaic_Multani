@@ -84,14 +84,11 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         //Initialisieren des Konstruktors für Solvability
-        Solvability solve = new Solvability(board);
+        Solvability solve = new Solvability(board, editor, game);
 
         // Initialisierung des Controllers für den Editor Modus
         this.editorController = new EditorController(gameField, board, gameFieldPane,
                 boardController, gui, game, gridBottomController, editor, solve);
-        menuEditorMode.selectedProperty().addListener((obs, notSelected, isSelected) -> {
-            handleEditorMode();
-        });
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
@@ -144,6 +141,7 @@ public class MacMahonUIController {
             
             success = true;
             gui.showSuccessLoad();
+            editorController.initializeEditorMode();
         } else if (file != null && file.getName().endsWith(".json") && boardController.checkBoardSize()) {
             game.loadGame(file);
 
@@ -218,13 +216,11 @@ public class MacMahonUIController {
     private void handleEditorMode() {
         if (menuEditorMode.isSelected()) {
             editorController.initializeEditorMode();
+        } else if (editorController.canSwitchBackToGameMode()) {
+            menuEditorMode.setSelected(false);
+            editorController.switchBackToGameMode();
         } else {
-            if (editorController.canSwitchBackToGameMode()) {
-                menuEditorMode.setSelected(false);
-                editorController.switchBackToGameMode();
-            } else {
-                menuEditorMode.setSelected(true);
-            }
+            menuEditorMode.setSelected(true);
         }
     }
 
@@ -246,9 +242,9 @@ public class MacMahonUIController {
     @FXML
     private void handleGameSubmit() {
         Board currBoard = game.getBoard();
-        Solvability solve = new Solvability(currBoard);
+        Solvability solve = new Solvability(currBoard, editor, game);
 
-        if (solve.allTilesPlaced(currBoard)) {
+        if (!solve.allCellsPlaced(currBoard)) {
             gui.showPlaceAllTilesFirst();
         } else {
             success = solve.solveGame();

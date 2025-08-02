@@ -1,5 +1,6 @@
 package gui.controller;
 
+import gui.TileActions;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -160,6 +161,7 @@ public class EditorController {
         gridBottomController.checkExistentMosaikTiles();
 
         adjustBorderColors();
+        TileActions.noDroppingTilesAllowed(gridPane);
     }
 
     /**
@@ -324,7 +326,7 @@ public class EditorController {
      * Spieler bestimmt Positionen der Löcher, wenn dass Spielfeld nach seiner Erstellung
      * mehr als 24 Zellen hat.
      */
-    private void choosePositionsOfHoles(){
+    public void choosePositionsOfHoles(){
         int numHoles = editor.calculateIfHolesNeeded(board.getRows(), board.getColumns());
 
         if (numHoles == 1) {
@@ -381,7 +383,7 @@ public class EditorController {
                             removeMouseEvent();
                             gui.showAllHolesPlaced();
                             adjustBorderColors();
-                            switchBackToGameMode();
+                            TileActions.noDroppingTilesAllowed(gridPane);
                         }
                     }
                 });
@@ -438,21 +440,20 @@ public class EditorController {
     public boolean canSwitchBackToGameMode() {
         if (editor.needsHoles(board.getRows(), board.getColumns())) {
             gui.showHolesNotPlaced();
-
-//            removeMouseEvent();
-//            placingHoles(editor.calculateIfHolesNeeded(board.getRows(), board.getColumns()));
             return false;
         }
 
-        //TODO: Lösbarkeitsprüfung fehlt noch, ansonsten mit allem durch.
-//        if (!solve.possibleSolvation()) {
-//            gui.showNoPossibleSolvation();
-//
-//            return false;
-//        } else {
-//            System.out.println("Es gibt eine mögliche Lösung");
-//        }
-
+        if (!solve.overEighteenEmptyCells()) {
+            if (!solve.possibleSolvation()) {
+                gui.showNoPossibleSolvation();
+                return false;
+            } else {
+                board.restartGame();
+            }
+        } else {
+            gui.showSkipSolvabilityCheck();
+            return true;
+        }
 
         return true;
     }
