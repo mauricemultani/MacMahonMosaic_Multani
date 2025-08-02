@@ -55,7 +55,7 @@ public interface GUIConnector {
     /**
      * Mitteilung, wenn der Spieler im Editor-Modus sein Board verändern will.
      */
-    Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField();
+    Optional<Pair<Integer, Integer>> whenChangingSizeOfGameField();
 
     /**
      * Mitteilung, wenn eines der Felder für die Spielfeldgröße leer ist.
@@ -119,5 +119,11 @@ public interface GUIConnector {
      */
     void showNoPossibleSolvation();
 
+    void showPossibleSolvation();
+
     void showSkipSolvabilityCheck();
+
+    void showSkipHelp();
+
+    void showNotAvailableInEditor();
 }

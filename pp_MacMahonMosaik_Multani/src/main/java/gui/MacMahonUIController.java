@@ -38,6 +38,8 @@ public class MacMahonUIController {
 
     private EditorController editorController;
 
+    private Solvability solve;
+
     private boolean success;
 
     /**
@@ -84,7 +86,7 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         //Initialisieren des Konstruktors für Solvability
-        Solvability solve = new Solvability(board, editor, game);
+        solve = new Solvability(board, editor, game);
 
         // Initialisierung des Controllers für den Editor Modus
         this.editorController = new EditorController(gameField, board, gameFieldPane,
@@ -145,7 +147,10 @@ public class MacMahonUIController {
         } else if (file != null && file.getName().endsWith(".json") && boardController.checkBoardSize()) {
             game.loadGame(file);
 
+            game.setBoard(game.getBoard());
+
             boardController.setBoardAndUpdate(game.getBoard());
+            boardController.initializeBoard();
             gridBottomController.setBoard(game.getBoard());
             gridBottomController.checkExistentMosaikTiles();
 
@@ -244,16 +249,20 @@ public class MacMahonUIController {
         Board currBoard = game.getBoard();
         Solvability solve = new Solvability(currBoard, editor, game);
 
-        if (!solve.allCellsPlaced(currBoard)) {
-            gui.showPlaceAllTilesFirst();
-        } else {
-            success = solve.solveGame();
-
-            if (success) {
-                gui.showGameWon();
+        if (!menuEditorMode.isSelected()) {
+            if (!solve.allCellsPlaced(currBoard)) {
+                gui.showPlaceAllTilesFirst();
             } else {
-                gui.showGamesNotFinished();
+                success = solve.solveGame();
+
+                if (success) {
+                    gui.showGameWon();
+                } else {
+                    gui.showGamesNotFinished();
+                }
             }
+        } else {
+            gui.showNotAvailableInEditor();
         }
     }
 
@@ -281,10 +290,18 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameHint() {
-        boardController.placingTileForPlayer();
+        if (!menuEditorMode.isSelected()) {
+            if (!solve.overEighteenEmptyCells()) {
+                boardController.placingTileForPlayer();
 
-        gridBottomController.setBoard(game.getBoard());
-        gridBottomController.checkExistentMosaikTiles();
+                gridBottomController.setBoard(game.getBoard());
+                gridBottomController.checkExistentMosaikTiles();
+            } else {
+                gui.showSkipHelp();
+            }
+        } else {
+            gui.showNotAvailableInEditor();
+        }
     }
 
     /**

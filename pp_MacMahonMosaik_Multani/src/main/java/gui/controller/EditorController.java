@@ -237,7 +237,7 @@ public class EditorController {
      * Muss rechteckig, aber nicht quadratisch sein.
      */
     public void changeSizeOfGameField() {
-        Optional<Pair<Integer, Integer>> result = gui.whenChangeSizeOfGameField();
+        Optional<Pair<Integer, Integer>> result = gui.whenChangingSizeOfGameField();
 
         if (result.isEmpty()) {
             gui.showMissingNumbersForField();
@@ -449,6 +449,7 @@ public class EditorController {
                 return false;
             } else {
                 board.restartGame();
+                gui.showPossibleSolvation();
             }
         } else {
             gui.showSkipSolvabilityCheck();

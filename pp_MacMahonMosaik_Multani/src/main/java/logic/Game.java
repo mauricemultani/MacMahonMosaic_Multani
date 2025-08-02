@@ -167,6 +167,7 @@ public class Game {
 
             this.board = new Board(rows, cols, field, false);
 
+            setBoard(board);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -143,8 +143,9 @@ public class Solvability {
      * Wenn es über 18 leere Zellen sind, soll es true angeben, ansonsten false
      */
     public boolean overEighteenEmptyCells() {
+        editor.setBoard(game.getBoard());
         board = editor.getBoard();
-        game.setBoard(board);
+        game.setBoard(this.board);
 
         int emptyCells = 0;
         final int MAXIMUM_AMOUNT_OF_EMPTY_CELLS = 18;
@@ -159,6 +160,7 @@ public class Solvability {
             }
         }
 
+        System.out.println(emptyCells);
         return emptyCells > MAXIMUM_AMOUNT_OF_EMPTY_CELLS;
     }
 }

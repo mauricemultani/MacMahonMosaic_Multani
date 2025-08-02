@@ -126,7 +126,7 @@ public class JavaFXGUI implements GUIConnector {
      * Mitteilung, wenn der Spieler im Editor-Modus sein Board verändern will.
      */
     @Override
-    public Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField() {
+    public Optional<Pair<Integer, Integer>> whenChangingSizeOfGameField() {
         Dialog<Pair<Integer, Integer>> dialog = new Dialog<>();
         dialog.setTitle("Changing the Size of your Game field!");
         dialog.setHeaderText("Enter the amount of Columns and Rows your Game field should have");
@@ -319,6 +319,19 @@ public class JavaFXGUI implements GUIConnector {
     }
 
     /**
+     * Mitteilung, dass es eine mögliche Lösung für das Spielfeld gibt.
+     * Die Mitteilung soll beim switch Editor zu Spielmodus erscheinen
+     */
+    @Override
+    public void showPossibleSolvation() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("There is a possible Solution for the puzzle");
+        alert.setContentText("Have fun struggling and solving!");
+        alert.showAndWait();
+    }
+
+    /**
      * Mitteilung, dass die Lösbarkeitsprüfung übersprungen wird,
      * da es ansonsten zu lange dauern würde.
      */
@@ -327,8 +340,36 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
         alert.setHeaderText("The Solvability check is being skipped.");
+        alert.setContentText("Else the programm would take too long to run. \n" +
+                "Thank you for your understanding. \n" +
+                "You will return to your Game now.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, dass die "Help Me!"-Funktion nicht funktionieren wird.
+     * Sie soll erst funktionieren, wenn 18 leere Zellen noch zur Verfügung stehen.
+     */
+    @Override
+    public void showSkipHelp() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The Help Option will work once there are only 18 empty cells left.");
         alert.setContentText("Else the programm would take too long to run \n" +
                 "thank you for your understanding.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Mitteilung, welche dann erscheint wenn die "Help Me!" Funktion
+     * im Editormodus verwendet wird.
+     */
+    @Override
+    public void showNotAvailableInEditor() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("This function is not available in Editor");
+        alert.setContentText("Solving the puzzle should only happen in Game");
         alert.showAndWait();
     }
 }

@@ -243,6 +243,7 @@ public class BoardController {
      */
     public void setBoardAndUpdate(Board newBoard) {
         this.board = newBoard;
+
         updateBoardWhenLoading();
     }
 
@@ -418,14 +419,20 @@ public class BoardController {
 
         boolean foundTile = false;
 
-        for (int row = 1; row < board.getRows() - 1; row++) {
-            for (int col = 1; col < board.getColumns() - 1; col++) {
-                Position pos = new Position(row, col);
+        for (int row = 1; row < board.getRows(); row++) {
+            for (int col = 1; col < board.getColumns(); col++) {
                 BoardCell cell = board.getCell(row, col);
 
                 if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
                     usableTiles.remove(cell.getTile());
                 }
+            }
+        }
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                Position pos = new Position(row, col);
+                BoardCell cell = board.getCell(row, col);
 
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : usableTiles) {

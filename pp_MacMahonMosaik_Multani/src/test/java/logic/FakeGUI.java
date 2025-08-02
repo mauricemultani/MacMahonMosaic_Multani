@@ -53,7 +53,7 @@ public class FakeGUI implements GUIConnector{
     }
 
     @Override
-    public Optional<Pair<Integer, Integer>> whenChangeSizeOfGameField() {
+    public Optional<Pair<Integer, Integer>> whenChangingSizeOfGameField() {
         return Optional.empty();
     }
 
@@ -118,7 +118,22 @@ public class FakeGUI implements GUIConnector{
     }
 
     @Override
+    public void showPossibleSolvation() {
+
+    }
+
+    @Override
     public void showSkipSolvabilityCheck() {
+
+    }
+
+    @Override
+    public void showSkipHelp() {
+
+    }
+
+    @Override
+    public void showNotAvailableInEditor() {
 
     }
 }
