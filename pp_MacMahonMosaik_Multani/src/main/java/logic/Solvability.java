@@ -103,7 +103,7 @@ public class Solvability {
                                 usableTiles.remove(tile);
 
                                 if (possibleSolvation()) {
-                                    return true;
+                                    return solveGame();
                                 } else {
                                     board.removeTileAt(pos);
                                     usableTiles.add(tile);
@@ -115,7 +115,7 @@ public class Solvability {
                 }
             }
         }
-        return true;
+        return solveGame();
     }
 
     /**
@@ -160,7 +160,6 @@ public class Solvability {
             }
         }
 
-        System.out.println(emptyCells);
         return emptyCells > MAXIMUM_AMOUNT_OF_EMPTY_CELLS;
     }
 }

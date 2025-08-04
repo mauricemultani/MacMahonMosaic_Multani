@@ -13,11 +13,6 @@ import java.util.Optional;
 public class FakeGUI implements GUIConnector{
 
     @Override
-    public void showWelcomeToGame() {
-
-    }
-
-    @Override
     public void showGameWon() {
 
     }
@@ -114,11 +109,6 @@ public class FakeGUI implements GUIConnector{
 
     @Override
     public void showNoPossibleSolvation() {
-
-    }
-
-    @Override
-    public void showPossibleSolvation() {
 
     }
 

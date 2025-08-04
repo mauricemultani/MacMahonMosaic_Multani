@@ -13,11 +13,6 @@ import java.util.Optional;
 public interface GUIConnector {
 
     /**
-     * Mitteilung, welche eine Willkommensnachricht sein soll.
-     */
-    void showWelcomeToGame();
-
-    /**
      * Wird angezeigt, wenn das Spiel korrekt beendet ist.
      */
     void showGameWon();
@@ -118,8 +113,6 @@ public interface GUIConnector {
      * vom Programm festgestellt wird, dass mit dem dargestellten Spielfeld keine mögliche Lösung möglich ist.
      */
     void showNoPossibleSolvation();
-
-    void showPossibleSolvation();
 
     void showSkipSolvabilityCheck();
 

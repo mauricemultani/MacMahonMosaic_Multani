@@ -3,7 +3,6 @@ package logic;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import logic.utils.BoardCell;
-import logic.utils.Rotation;
 
 import java.io.*;
 
@@ -66,23 +65,6 @@ public class Game {
      */
     public void setBoard(Board board) {
         this.board = board;
-    }
-
-    /**
-     * Entfernt alle bereits belegten Zellen und setzt das Spielfeld zurück.
-     */
-    public void clearBoard() {
-        int rows = board.getRows();
-        int columns = board.getColumns();
-
-        for (int row = 1; row < rows - 1; row++) {
-            for (int column = 1; column < columns - 1; column++) {
-                // Kann vllt später verwendet werden
-                // boolean isHole = board.getCell(column, row).isHole();
-
-                board.getCell(row, column).placeTile(null, Rotation.DEGREE_0);
-            }
-        }
     }
 
     /**
@@ -172,15 +154,6 @@ public class Game {
             throw new RuntimeException(e);
         }
     }
-
-    /**
-     * Dem Spieler wird sichtbar angezeigt, welche Zellen nicht die passenden Farben an den Kanten haben.
-     * Soll nur eine Anzeige sein, der Spieler muss den Fehler nicht sofort beheben.
-     */
-    public void showNotMatchingEdge() {
-
-    }
-
 
     /**
      * Eine extra Klasse in Game. Diese ist dafür gedacht, dass bei einer Speicherung das Spielfeld formatierter aussieht.

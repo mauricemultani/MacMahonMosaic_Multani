@@ -6,8 +6,6 @@ import logic.utils.Position;
 import logic.utils.Rotation;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -576,40 +574,6 @@ public class Board {
      */
     public void removeTileAt(Position pos) {
         cells[pos.row()][pos.column()].placeTile(null, Rotation.DEGREE_0);
-    }
-
-    /**
-     * Platziert das Mosaikteil an einer freien Stelle im Spielfeld,
-     * wenn es zu den Nachbarn der freien Stelle passt.
-     */
-    public void placingTileForPlayer() {
-        List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
-
-        boolean foundTile = false;
-
-        for (int row = 1; row < rows - 1; row++) {
-            for (int col = 1; col < columns - 1; col++) {
-                Position pos = new Position(row, col);
-                BoardCell cell = getCell(row, col);
-
-                if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
-                    usableTiles.remove(cell.getTile());
-                }
-
-                if (!cell.isPlaced() && !cell.isHole()) {
-                    for (MosaicTile tile : usableTiles) {
-                        for (Rotation rotation : Rotation.values()) {
-                            if (!foundTile && fitsNeighbours(tile, rotation, pos)
-                                    && fitsBorderNeighbours(tile, rotation, pos)) {
-                                placeTileAt(tile, rotation, pos);
-
-                                foundTile = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**

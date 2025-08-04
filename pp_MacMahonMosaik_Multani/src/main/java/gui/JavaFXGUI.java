@@ -25,18 +25,6 @@ public class JavaFXGUI implements GUIConnector {
     private final ButtonType buttonAdjust = new ButtonType("Adjust");
 
     /**
-     * Mitteilung, welche eine Willkommensnachricht sein soll.
-     */
-    @Override
-    public void showWelcomeToGame() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Welcome to Maurice's MacMahonMosaik");
-        alert.setHeaderText("Welcome to Maurice's MacMahonMosaik");
-        alert.setContentText("Enjoy :)");
-        alert.showAndWait();
-    }
-
-    /**
      * Mitteilung, welche bei einem gewonnenen Spiel kommen soll.
      */
     @Override
@@ -315,19 +303,6 @@ public class JavaFXGUI implements GUIConnector {
                 Give the borders a different color\s
                 a simple Spoiler: You can use the 'Help Me!'-Option in 'Game'\s
                 to track the borders you need to change precisely\s""");
-        alert.showAndWait();
-    }
-
-    /**
-     * Mitteilung, dass es eine mögliche Lösung für das Spielfeld gibt.
-     * Die Mitteilung soll beim switch Editor zu Spielmodus erscheinen
-     */
-    @Override
-    public void showPossibleSolvation() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Information");
-        alert.setHeaderText("There is a possible Solution for the puzzle");
-        alert.setContentText("Have fun struggling and solving!");
         alert.showAndWait();
     }
 

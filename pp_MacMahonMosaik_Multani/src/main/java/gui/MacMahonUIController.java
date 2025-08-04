@@ -96,8 +96,6 @@ public class MacMahonUIController {
         // Drag-Logik ist auch drin.
         gridBottomController.checkExistentMosaikTiles();
 
-        gui.showWelcomeToGame();
-
         closeGameViaStage();
     }
 

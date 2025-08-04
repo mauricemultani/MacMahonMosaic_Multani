@@ -313,6 +313,7 @@ public class EditorController {
                 game.setBoard(board);
                 boardController.setBoardAndUpdate(board);
 
+                TileActions.noDroppingTilesAllowed(gridPane);
                 gridBottomController.initImages();
             }
         });
@@ -449,7 +450,6 @@ public class EditorController {
                 return false;
             } else {
                 board.restartGame();
-                gui.showPossibleSolvation();
             }
         } else {
             gui.showSkipSolvabilityCheck();
