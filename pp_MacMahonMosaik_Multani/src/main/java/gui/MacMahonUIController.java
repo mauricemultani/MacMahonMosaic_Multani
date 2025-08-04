@@ -88,6 +88,13 @@ public class MacMahonUIController {
         //Initialisieren des Konstruktors für Solvability
         solve = new Solvability(board, editor, game);
 
+        // Initialisierung der Controller für Spielfeld und gridBottom
+        this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
+        this.gridBottomController = new GridBottomController(gridBottom, board);
+
+        // Initialisiert das Spielfeld
+        boardController.initializeBoard();
+
         // Initialisierung des Controllers für den Editor Modus
         this.editorController = new EditorController(gameField, board, gameFieldPane,
                 boardController, gui, game, gridBottomController, editor, solve);
@@ -131,29 +138,34 @@ public class MacMahonUIController {
         File file = fileChooser.showOpenDialog(null);
 
         if (menuEditorMode.isSelected() && file != null && file.getName().endsWith(".json")) {
-            editor.loadGame(file);
+            try {
+                editor.loadGame(file);
 
-            game.setBoard(editor.getBoard());
+                game.setBoard(editor.getBoard());
+                boardController.setBoardAndUpdate(game.getBoard());
+                gridBottomController.setBoard(game.getBoard());
+                gridBottomController.checkExistentMosaikTiles();
 
-            boardController.setBoardAndUpdate(game.getBoard());
-            gridBottomController.setBoard(game.getBoard());
-            gridBottomController.checkExistentMosaikTiles();
-            
-            success = true;
-            gui.showSuccessLoad();
-            editorController.initializeEditorMode();
-        } else if (file != null && file.getName().endsWith(".json") && boardController.checkBoardSize()) {
-            game.loadGame(file);
+                success = true;
+                gui.showSuccessLoad();
+                editorController.initializeEditorMode();
+            } catch (Exception e) {
+                gui.showFailLoad();
+            }
+        } else if (file != null && file.getName().endsWith(".json")) {
+            try {
+                game.loadGame(file);
 
-            game.setBoard(game.getBoard());
+                boardController.setBoardAndUpdate(game.getBoard());
+                boardController.initializeBoard();
+                gridBottomController.setBoard(game.getBoard());
+                gridBottomController.checkExistentMosaikTiles();
 
-            boardController.setBoardAndUpdate(game.getBoard());
-            boardController.initializeBoard();
-            gridBottomController.setBoard(game.getBoard());
-            gridBottomController.checkExistentMosaikTiles();
-
-            success = true;
-            gui.showSuccessLoad();
+                success = true;
+                gui.showSuccessLoad();
+            } catch (Exception e) {
+                gui.showFailLoad();
+            }
         } else {
             gui.showFailLoad();
         }

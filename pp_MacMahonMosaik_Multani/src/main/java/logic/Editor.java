@@ -138,26 +138,15 @@ public class Editor {
             int rows = field.length;
             int cols = field[0].length;
 
-            this.board = new Board(rows, cols, field, true);
+            if (rows >= 4 && rows <= 8 && cols >= 4 && cols <= 8) {
+                this.board = new Board(rows, cols, field, true);
 
-            setBoard(board);
+                setBoard(board);
+            } else {
+                throw new IllegalArgumentException("Die Spielfeldgröße muss 2x2 bis 6x6 sein.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Die Methode soll jedes Mosaikteil durchgehen und schauen,
-     * ob an einer Stelle ein Mosaikteil passt oder nicht.
-     *
-     * Für Lösbarkeitsüberprüfung & help to Solve
-     */
-    public void checkSolvability() {
-        //TODO Entweder enhanced for Schleife oder normale for Schleife für das Mosaikteil.
-        // Notiz: Um Zeit zu sparen, dem Spieler bei einem platzierten Mosaikteil
-        // auch die Rotation mitgeben, damit er/sie das Bild dementsprechend auch rotieren kann.
-
-        // Bild wird (wahrscheinlich) nicht mit Rotation in der leeren Zelle
-        // eingefügt, da die Enum Konstanten dafür nicht definiert sind.
     }
 }

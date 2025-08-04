@@ -147,9 +147,13 @@ public class Game {
             int rows = field.length;
             int cols = field[0].length;
 
-            this.board = new Board(rows, cols, field, false);
+            if (rows >= 4 && rows <= 8 && cols >= 4 && cols <= 8) {
+                this.board = new Board(rows, cols, field, false);
 
-            setBoard(board);
+                setBoard(board);
+            } else {
+                throw new IllegalArgumentException("Die Spielfeldgröße muss 2x2 bis 6x6 sein.");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
