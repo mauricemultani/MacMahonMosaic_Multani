@@ -62,14 +62,15 @@ public class MacMahonUIController {
     public void initialize() {
         Random random = new Random();
 
-        // Anzahl an Reihen
+        // Anzahl an Reihen kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
         int rows = random.nextInt(5) + 2;
 
-        // Anzahl an Spalten
+        // Anzahl an Spalten kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
         int columns = random.nextInt(5) + 2;
 
         // Konstruktor, welches die Zeilen und Spalten aufnimmt
         // erstellt auch Löcher und initialisiert Randfarben.
+        // +2 stehen für die Ränder
         Board board = new Board(rows + 2, columns + 2, true);
 
         // Initialisierung der Controller für Spielfeld und gridBottom
@@ -111,19 +112,23 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleSave() {
-        FileChooser fileChooser = getFileChooser();
+        if (!editor.needsHoles(editor.getBoard().getRows(), editor.getBoard().getColumns())) {
+            FileChooser fileChooser = getFileChooser();
 
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(".json", "*.json")
-        );
-        File file = fileChooser.showSaveDialog(null);
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter(".json", "*.json")
+            );
+            File file = fileChooser.showSaveDialog(null);
 
-        if (file != null && file.getName().endsWith(".json")) {
-            game.saveGame(file);
-            success = true;
-            gui.showSuccessSave();
-        } else if (!success){
-            gui.showFailSave();
+            if (file != null && file.getName().endsWith(".json")) {
+                game.saveGame(file);
+                success = true;
+                gui.showSuccessSave();
+            } else if (!success) {
+                gui.showFailSave();
+            }
+        } else {
+            gui.showHolesNotPlaced_Save();
         }
     }
 
@@ -138,6 +143,8 @@ public class MacMahonUIController {
         File file = fileChooser.showOpenDialog(null);
 
         if (menuEditorMode.isSelected() && file != null && file.getName().endsWith(".json")) {
+            Board clonedBoard = game.cloneBoard(game.getBoard());
+
             try {
                 editor.loadGame(file);
 
@@ -149,20 +156,33 @@ public class MacMahonUIController {
                 success = true;
                 gui.showSuccessLoad();
                 editorController.initializeEditorMode();
+
+                checkClonedBoard(clonedBoard);
+
+                game.setBoard(game.getBoard());
+
             } catch (Exception e) {
                 gui.showFailLoad();
             }
         } else if (file != null && file.getName().endsWith(".json")) {
+            Board clonedBoard = game.cloneBoard(game.getBoard());
+
             try {
                 game.loadGame(file);
 
                 boardController.setBoardAndUpdate(game.getBoard());
                 boardController.initializeBoard();
+
                 gridBottomController.setBoard(game.getBoard());
                 gridBottomController.checkExistentMosaikTiles();
 
                 success = true;
                 gui.showSuccessLoad();
+
+                checkClonedBoard(clonedBoard);
+
+                game.setBoard(game.getBoard());
+
             } catch (Exception e) {
                 gui.showFailLoad();
             }
@@ -344,5 +364,29 @@ public class MacMahonUIController {
                 });
             }
         }));
+    }
+
+    /**
+     * Die private Hilfsmethode, soll redundanten Code in handleLoad verringern,
+     * damit es übersichtlich bleibt.
+     */
+    private void checkClonedBoard(Board clonedBoard) {
+        // Überprüfung, ob das geladene Spiel lösbar ist
+        if (!solve.overEighteenEmptyCells()) {
+            // wenn nicht, soll es das vorherige Spiel wieder laden
+            if (!solve.possibleSolvation()) {
+                gui.showNoPossibleSolvation();
+
+                boardController.setBoardAndUpdate(clonedBoard);
+                boardController.initializeBoard();
+
+                gridBottomController.setBoard(clonedBoard);
+                gridBottomController.checkExistentMosaikTiles();
+
+                game.setBoard(clonedBoard);
+            }
+        } else {
+            gui.showSkipSolvabilityCheck();
+        }
     }
 }

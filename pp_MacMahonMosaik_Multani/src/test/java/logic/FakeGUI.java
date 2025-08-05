@@ -93,7 +93,12 @@ public class FakeGUI implements GUIConnector{
     }
 
     @Override
-    public void showHolesNotPlaced() {
+    public void showHolesNotPlaced_Editor() {
+
+    }
+
+    @Override
+    public void showHolesNotPlaced_Save() {
 
     }
 

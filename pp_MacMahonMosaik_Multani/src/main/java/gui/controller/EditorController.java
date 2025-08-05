@@ -440,7 +440,7 @@ public class EditorController {
      */
     public boolean canSwitchBackToGameMode() {
         if (editor.needsHoles(board.getRows(), board.getColumns())) {
-            gui.showHolesNotPlaced();
+            gui.showHolesNotPlaced_Editor();
             return false;
         }
 

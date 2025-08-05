@@ -67,6 +67,29 @@ public class Game {
         this.board = board;
     }
 
+
+    public Board cloneBoard (Board originalBoard) {
+        int rows = originalBoard.getRows();
+        int cols = originalBoard.getColumns();
+        Board clonedBoard = new Board(rows, cols, false);
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                BoardCell cell = originalBoard.getCell(row, col);
+                BoardCell clonedCell = clonedBoard.getCell(row, col);
+
+                if (cell.isHole()) {
+                    clonedCell.setHole();
+                }
+
+                if (cell.isPlaced() && cell.getTile() != null) {
+                    clonedCell.placeTile(cell.getTile(), cell.getRotation());
+                }
+            }
+        }
+        return clonedBoard;
+    }
+
     /**
      * Konvertiert das Spielfeld zu einem String-Array.
      *

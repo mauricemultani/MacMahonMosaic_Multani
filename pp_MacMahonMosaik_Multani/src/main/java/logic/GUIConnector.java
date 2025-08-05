@@ -96,7 +96,9 @@ public interface GUIConnector {
      * Mitteilung, wenn Editormodus frühzeitig versucht wird zu verlassen,
      * ohne das Löcher gesetzt wurden.
      */
-    void showHolesNotPlaced();
+    void showHolesNotPlaced_Editor();
+
+    void showHolesNotPlaced_Save();
 
     /**
      * Mitteilung, wenn versucht wird ein Loch auf ein Loch im Editormodus zu platzieren.

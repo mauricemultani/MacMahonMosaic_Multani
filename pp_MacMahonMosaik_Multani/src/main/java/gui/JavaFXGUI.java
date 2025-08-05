@@ -257,11 +257,23 @@ public class JavaFXGUI implements GUIConnector {
      * in den Spielmodus zurückkehren will, aber noch nicht die Bedingungen erfüllt hat.
      */
     @Override
-    public void showHolesNotPlaced() {
+    public void showHolesNotPlaced_Editor() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("The Conditions to be in the Game are not met");
         alert.setHeaderText(" You need to place enough holes to switch to the Game Mode");
         alert.setContentText(" That is because you only have 24 Mosaictiles but more empty cells");
+        alert.showAndWait();
+    }
+
+    /**
+     * Diese Mitteilung soll erscheinen, wenn der Spieler im Editormodus
+     * ein Spiel speichern will, aber noch keine Löcher platziert hat.
+     */
+    @Override
+    public void showHolesNotPlaced_Save() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("The Conditions to save the Game are not met");
+        alert.setHeaderText(" You need to place your holes to save the Game");
         alert.showAndWait();
     }
 
@@ -299,10 +311,7 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
         alert.setHeaderText("It seems as if the field is not solvable.");
-        alert.setContentText("""
-                Give the borders a different color\s
-                a simple Spoiler: You can use the 'Help Me!'-Option in 'Game'\s
-                to track the borders you need to change precisely\s""");
+        alert.setContentText("Load the Game in Editor to change the colors of your borders.");
         alert.showAndWait();
     }
 

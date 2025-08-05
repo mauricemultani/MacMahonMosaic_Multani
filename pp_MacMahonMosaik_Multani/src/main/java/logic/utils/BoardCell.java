@@ -45,8 +45,8 @@ public class BoardCell {
         this.tile = MosaicTile.HHHH;
     }
 
-    public void setEmptyTile() {
-        this.tile = MosaicTile.NNNN;
+    public MosaicTile setEmptyTile() {
+        return this.tile = MosaicTile.NNNN;
     }
 
     public Rotation rotate() {
