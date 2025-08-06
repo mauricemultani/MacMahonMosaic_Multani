@@ -20,12 +20,12 @@ public class Solvability {
 
     private final Editor editor;
 
-    private final Game game;
+    private final BoardOptions options;
 
-    public Solvability(Board board, Editor editor, Game game) {
+    public Solvability(Board board, Editor editor, BoardOptions options) {
         this.board = board;
         this.editor = editor;
-        this.game = game;
+        this.options = options;
     }
 
     /**
@@ -81,7 +81,7 @@ public class Solvability {
      */
     public boolean possibleSolvation(){
         board = editor.getBoard();
-        game.setBoard(board);
+        options.setBoard(board);
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
         for (int row = 1; row < board.getRows() - 1; row++) {
@@ -143,9 +143,9 @@ public class Solvability {
      * Wenn es über 18 leere Zellen sind, soll es true angeben, ansonsten false
      */
     public boolean overEighteenEmptyCells() {
-        editor.setBoard(game.getBoard());
+        editor.setBoard(options.getBoard());
         board = editor.getBoard();
-        game.setBoard(this.board);
+        options.setBoard(this.board);
 
         int emptyCells = 0;
         final int MAXIMUM_AMOUNT_OF_EMPTY_CELLS = 18;

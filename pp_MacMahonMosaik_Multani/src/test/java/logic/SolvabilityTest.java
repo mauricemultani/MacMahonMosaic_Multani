@@ -284,9 +284,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -308,9 +308,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -333,9 +333,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -359,9 +359,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.overEighteenEmptyCells();
         // über 18 Zellen = Lösbarkeitsprüfung wird geskippt.
@@ -384,9 +384,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -408,9 +408,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -432,9 +432,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -456,9 +456,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -481,13 +481,13 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
         board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 
@@ -510,13 +510,13 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
         Editor editor = new Editor(board);
-        Game game = new Game(board);
+        BoardOptions options = new BoardOptions(board);
 
         board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
 
-        Solvability solve = new Solvability(board, editor, game);
+        Solvability solve = new Solvability(board, editor, options);
 
         boolean result = solve.possibleSolvation();
 

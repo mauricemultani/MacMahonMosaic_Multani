@@ -418,13 +418,13 @@ public class Board {
         int[] oppositeSides = {2, 0, 1, 3};
 
         for (int i = 0; i < 4; i++) {
-            int newRow = pos.row() + directions[i][0];
-            int newCol = pos.column() + directions[i][1];
+            int neighbourRow = pos.row() + directions[i][0];
+            int neighbourCol = pos.column() + directions[i][1];
             int tileIndex = tileSide[i];
 
             // Überprüfung, ob Nachbar richtig angrenzende Farben haben
-            if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < columns) {
-                BoardCell neighbourCell = cells[newRow][newCol];
+            if (neighbourRow >= 0 && neighbourRow < rows && neighbourCol >= 0 && neighbourCol < columns) {
+                BoardCell neighbourCell = cells[neighbourRow][neighbourCol];
 
                 if (neighbourCell.isPlaced()) {
                     Color[] neighbourColors = neighbourCell.getTile().getColors(neighbourCell.getRotation());

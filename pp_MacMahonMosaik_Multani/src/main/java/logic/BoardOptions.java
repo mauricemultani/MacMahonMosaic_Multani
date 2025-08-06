@@ -7,13 +7,12 @@ import logic.utils.BoardCell;
 import java.io.*;
 
 /**
- * Repräsentiert das Spiel.
- * Verwaltet das Spielfeld, die Platzierung der Mosaikteile und den aktuellen Spielstand.
- * Die Klasse ist verantwortlich für die Spiellogik, Initialisieren und Verwalten des Spiels.
+ * Die Klasse BoardOptions verwaltet die Optionen des Boards. Sie speichert/lädt
+ * und klont das Spielfeld für Lösungszwecke.
  *
  * @author Maurice Singh Multani
  */
-public class Game {
+public class BoardOptions {
 
     private Board board;
 
@@ -30,7 +29,7 @@ public class Game {
      * Konstruktor welches das Spielfeld von Board übernimmt.
      * @param board     das Spielfeld, was schon initialisiert, wurde.
      */
-    public Game(Board board) {
+    public BoardOptions(Board board) {
         this.board = board;
         this.rows = board.getRows();
         this.columns = board.getColumns();
@@ -45,7 +44,7 @@ public class Game {
      * @param columns       die Anzahl an Spalten
      * @param ongoingGame   das laufende Spiel
      */
-    public Game(int rows, int columns, BoardCell[][] ongoingGame) {
+    public BoardOptions(int rows, int columns, BoardCell[][] ongoingGame) {
         this.rows = rows;
         this.columns = columns;
         this.ongoingGame = ongoingGame;

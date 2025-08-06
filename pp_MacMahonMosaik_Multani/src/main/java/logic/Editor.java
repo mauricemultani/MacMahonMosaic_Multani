@@ -131,7 +131,7 @@ public class Editor {
     public void loadGame(File file){
         try (Reader reader = new FileReader(file)) {
             Gson gson = new Gson();
-            Game.FieldWrapper wrapper = gson.fromJson(reader, Game.FieldWrapper.class);
+            BoardOptions.FieldWrapper wrapper = gson.fromJson(reader, BoardOptions.FieldWrapper.class);
 
             String[][] field = wrapper.field;
 

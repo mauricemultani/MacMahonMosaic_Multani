@@ -55,7 +55,7 @@ public class EditorController {
     /**
      * Zugriff auf die Game Class
      */
-    private final Game game;
+    private final BoardOptions options;
 
     /**
      * Zugriff auf die Editor Class
@@ -106,13 +106,13 @@ public class EditorController {
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
     public EditorController(GridPane gridPane, Board board, Pane gameFieldPane, BoardController boardController,
-                            GUIConnector gui, Game game, GridBottomController gridBottomController, Editor editor, Solvability solve){
+                            GUIConnector gui, BoardOptions options, GridBottomController gridBottomController, Editor editor, Solvability solve){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
         this.boardController = boardController;
         this.gui = gui;
-        this.game = game;
+        this.options = options;
         this.gridBottomController = gridBottomController;
         this.editor = editor;
         this.solve = solve;
@@ -123,7 +123,7 @@ public class EditorController {
      * in einer Methode zusammenfassen.
      */
     public void initializeEditorMode() {
-        Board currBoard = game.getBoard();
+        Board currBoard = options.getBoard();
         editor.setBoard(currBoard);
         this.board = currBoard;
 
@@ -155,7 +155,7 @@ public class EditorController {
             }
         }
 
-        game.setBoard(board);
+        options.setBoard(board);
 
         boardController.setBoardAndUpdate(board);
         gridBottomController.checkExistentMosaikTiles();
@@ -281,7 +281,7 @@ public class EditorController {
             Board newBoard = new Board(rows, columns, false);
             this.board = newBoard;
             editor.setBoard(newBoard);
-            game.setBoard(newBoard);
+            options.setBoard(newBoard);
 
             boardController.setBoardAndUpdate(newBoard);
 
@@ -310,7 +310,7 @@ public class EditorController {
             if (editor.needsHoles(rows, columns)) {
                 choosePositionsOfHoles();
             } else {
-                game.setBoard(board);
+                options.setBoard(board);
                 boardController.setBoardAndUpdate(board);
 
                 TileActions.noDroppingTilesAllowed(gridPane);
@@ -377,7 +377,7 @@ public class EditorController {
 
                         if (placedHoles[0] == numHoles) {
                             board = editor.getBoard();
-                            game.setBoard(board);
+                            options.setBoard(board);
 
                             boardController.setBoardAndUpdate(board);
 
@@ -468,11 +468,11 @@ public class EditorController {
      * 3. Puzzle muss lösbar sein.
      */
     public void switchBackToGameMode(){
-        game.setBoard(editor.getBoard());
+        options.setBoard(editor.getBoard());
 
-        boardController.setBoardAndUpdate(game.getBoard());
+        boardController.setBoardAndUpdate(options.getBoard());
         boardController.initializeBoard();
-        gridBottomController.setBoard(game.getBoard());
+        gridBottomController.setBoard(options.getBoard());
         gridBottomController.checkExistentMosaikTiles();
     }
 }

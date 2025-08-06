@@ -3,7 +3,6 @@ package gui;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -18,7 +17,7 @@ import logic.utils.Position;
 import logic.utils.Rotation;
 
 /**
- * Klasse für die Drag&Drop Logik und die rotierungs Logik.
+ * Klasse für die Drag&Drop Logik und die Rotationslogik.
  * Die Klasse soll mehrfache Erstellung des gleichen Codes in den GridPanes meiden.
  *
  * @author Maurice Singh Multani
@@ -323,15 +322,20 @@ public class TileActions {
      * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
      * Rotation überschreibt.
      *
+     * @param imageViewWidth - initiale Breite des ImageViews
+     * @param imageViewHeight - initiale Höhe des ImageViews
      * @param x - Spalte, in die das Bild eingefügt wird
      * @param y - Reihe, in die das Bild eingefügt wird
+     * @param grdPn - GridPane, der das Bild zugefügt wird
      * @return das eingebettete ImageView
      */
-    private static void createRotatableImageView(GridPane gridPane, Image image, int x, int y){
+    private ImageView createRotatableImageView(int imageViewWidth, int imageViewHeight, int x, int y, GridPane grdPn){
         // neues ImageView
         ImageView imageView = new ImageView();
 
         // Bild soll an die Zelle angepasst sein und Ratio nicht behalten
+        imageView.setFitWidth(imageViewWidth);
+        imageView.setFitHeight(imageViewHeight);
         imageView.setPreserveRatio(false);
         imageView.setSmooth(true);
 
@@ -344,26 +348,8 @@ public class TileActions {
 
         RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackpane);
 
-        gridPane.add(rotatableContainer, x, y);
+        grdPn.add(rotatableContainer, x, y);
 
-        rotatableContainer.setUserData(Rotation.DEGREE_0);
-
-        rotatableContainer.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                // holt sich den derzeitigen Rotierungsgrad
-                Rotation current = (Rotation) rotatableContainer.getUserData();
-
-                // Wenn die derzeitige Rotierung == null ist,
-                // dann wird sie auf 0-Grad gesetzt.
-                if (current == null){
-                    current = Rotation.DEGREE_0;
-                }
-                // andernfalls geht sie zur nächsten rotierung rüber.
-                Rotation next = current.next();
-
-                rotatableContainer.setRotate(getDegrees(next));
-                rotatableContainer.setUserData(next);
-            }
-        });
+        return imageView;
     }
 }
