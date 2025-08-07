@@ -136,21 +136,23 @@ public class MacMahonUIController {
         File file = fileChooser.showOpenDialog(null);
 
         if (menuEditorMode.isSelected() && file != null && file.getName().endsWith(".json")) {
-            Board clonedBoard = options.cloneBoard(options.getBoard());
+            Board clonedBoard = options.cloneBoard(editor.getBoard());
 
             try {
                 editor.loadGame(file);
 
-                options.setBoard(editor.getBoard());
-                boardController.setBoardAndUpdate(options.getBoard());
-                gridBottomController.setBoard(options.getBoard());
+                Board editorLoadedBoard = editor.getBoard();
+
+                options.setBoard(editorLoadedBoard);
+                boardController.setBoardAndUpdate(editorLoadedBoard);
+                gridBottomController.setBoard(editorLoadedBoard);
                 gridBottomController.checkExistentMosaikTiles();
 
                 success = true;
                 gui.showSuccessLoad();
                 editorController.initializeEditorMode();
 
-                checkClonedBoard(clonedBoard);
+                checkLoadedBoard(clonedBoard);
 
                 options.setBoard(options.getBoard());
 
@@ -163,18 +165,20 @@ public class MacMahonUIController {
             try {
                 options.loadGame(file);
 
-                boardController.setBoardAndUpdate(options.getBoard());
+                Board loadedBoard = options.getBoard();
+
+                boardController.setBoardAndUpdate(loadedBoard);
                 boardController.initializeBoard();
 
-                gridBottomController.setBoard(options.getBoard());
+                gridBottomController.setBoard(loadedBoard);
                 gridBottomController.checkExistentMosaikTiles();
 
                 success = true;
                 gui.showSuccessLoad();
 
-                checkClonedBoard(clonedBoard);
+                checkLoadedBoard(clonedBoard);
 
-                options.setBoard(options.getBoard());
+                options.setBoard(loadedBoard);
 
             } catch (Exception e) {
                 gui.showFailLoad();
@@ -362,8 +366,10 @@ public class MacMahonUIController {
     /**
      * Die private Hilfsmethode soll redundanten Code in handleLoad verringern,
      * damit handleLoad übersichtlich bleibt.
+     *
+     * @param clonedBoard das geklonte Spielfeld, was wiederhergestellt werden soll, wenn das geladene Spielfeld nicht lösbar ist.
      */
-    private void checkClonedBoard(Board clonedBoard) {
+    private void checkLoadedBoard(Board clonedBoard) {
         // Überprüfung, ob das geladene Spiel lösbar ist
         if (!solve.overEighteenEmptyCells()) {
             // wenn nicht, soll es das vorherige Spiel wieder laden

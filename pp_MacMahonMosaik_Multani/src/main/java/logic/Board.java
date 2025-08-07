@@ -111,6 +111,7 @@ public class Board {
         this.bottomBorderColors = initSavedColors(extractBottomBorderTiles(field));
         this.leftBorderColors = initSavedColors(extractLeftBorderTiles(field));
         this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
+
         } else {
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < columns; col++) {
@@ -317,23 +318,6 @@ public class Board {
     }
 
     /**
-     * Für Testzwecke gedacht. Erstellt ein mitten im Spielgeschehen befindliches Spiel
-     * und nimmt das Spielfeld in Form eines StringArrays (äguivalent zur Spielstandsdatei) entgegen.
-     *
-     * @param tiles     die Mosaikteile auf dem Spielfeld
-     */
-    public void createBoard(MosaicTile[][] tiles) {
-        for (int row = 0; row < tiles.length; row++) {
-            for (int column = 0; column < tiles[row].length; column++) {
-                MosaicTile tile = tiles[row][column];
-                if (tile != null) {
-                    cells[row][column].placeTile(tile, Rotation.DEGREE_0);
-                }
-            }
-        }
-    }
-
-    /**
      * Generiert zufällig Löcher im Spiel, es mehr als 24 Zellen im Spielfeld gibt.
      *
      * @param row      Variable für die Reihe
@@ -520,7 +504,7 @@ public class Board {
      * @param tiles     Array mit Randfarben
      * @return          ein String aus den gespeicherten Randfarben.
      */
-    private String[] initSavedColors(String[] tiles) {
+    public String[] initSavedColors(String[] tiles) {
         String[] paths = new String[tiles.length];
         for (int i = 0; i < tiles.length; i++) {
             paths[i] = "/gui/tiles/" + tiles[i] + ".png";

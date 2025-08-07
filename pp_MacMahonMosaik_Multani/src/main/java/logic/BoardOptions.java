@@ -49,7 +49,8 @@ public class BoardOptions {
     public Board cloneBoard (Board originalBoard) {
         int rows = originalBoard.getRows();
         int cols = originalBoard.getColumns();
-        Board clonedBoard = new Board(rows, cols, false);
+        String[][] field = convertBoardToString();
+        Board clonedBoard = new Board(rows, cols, field,  false);
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {

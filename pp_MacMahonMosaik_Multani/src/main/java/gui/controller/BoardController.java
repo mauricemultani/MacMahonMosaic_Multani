@@ -431,8 +431,9 @@ public class BoardController {
                     for (MosaicTile tile : usableTiles) {
                         for (Rotation rotation : Rotation.values()) {
                             if (!foundTile && board.fitsNeighbours(tile, rotation, pos)
-                                    && board.fitsBorderNeighbours(tile, rotation, pos)) {
-                                board.placeTileAt(tile, rotation, pos);
+                                    && board.fitsBorderNeighbours(tile, rotation, pos)
+                                    && board.doesTileFitAnywhere(tile)) {
+                                board.placeTileAt(tile, rotation, pos) ;
 
                                 Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
                                 ImageView imageView = new ImageView(img);
