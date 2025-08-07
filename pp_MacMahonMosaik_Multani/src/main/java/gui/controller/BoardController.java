@@ -11,6 +11,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import logic.Board;
 import logic.GUIConnector;
+import logic.Solvability;
 import logic.utils.BoardCell;
 import logic.utils.MosaicTile;
 import logic.utils.Position;
@@ -49,17 +50,20 @@ public class BoardController {
 
     private final GUIConnector gui;
 
+    private final Solvability solve;
+
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
-    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui){
+    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui, Solvability solve){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
         this.gui = gui;
+        this.solve = solve;
     }
 
     /**
@@ -209,15 +213,7 @@ public class BoardController {
      * Bedingungen sind mit entsprechenden Exceptions gesetzt.
      */
     private void createBoard() {
-        // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
-        if (board.getRows() < 4 || board.getColumns() < 4) {
-            gui.showFieldTooSmall();
-        }
-
-        // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
-        if (board.getRows() > 8 || board.getColumns() > 8) {
-            gui.showFieldTooBig();
-        }
+        checkBoardSize();
 
         // löscht die vorhanden Reihen und Spalten Constraints
         gridPane.getRowConstraints().clear();
@@ -250,19 +246,16 @@ public class BoardController {
     /**
      * Methode, welche überprüft, ob das Spielfeld die korrekte Anzahl an Reihen und Spalten hat.
      */
-    public boolean checkBoardSize() {
+    private void checkBoardSize() {
         // Exception, falls das Board weniger als 4 Zeilen oder Spalten hat
         if (board.getRows() < 4 || board.getColumns() < 4) {
             gui.showFieldTooSmall();
-            return false;
         }
 
         // Exception, falls das Board mehr als 8 Zeilen und Spalten hat
         if (board.getRows() > 8 || board.getColumns() > 8) {
             gui.showFieldTooBig();
-            return false;
         }
-        return true;
     }
 
     /**
@@ -331,7 +324,7 @@ public class BoardController {
      * @param width  Die Breite der Pane
      * @param height Die Höhe der Pane
      */
-    void adjustGameField(double width, double height) {
+    protected void adjustGameField(double width, double height) {
         final int middleRows = board.getRows() - 2;
         final int middleColumns = board.getColumns() - 2;
 

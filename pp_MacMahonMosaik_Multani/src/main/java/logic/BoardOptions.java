@@ -16,38 +16,12 @@ public class BoardOptions {
 
     private Board board;
 
-    private final int rows;
-
-    private final int columns;
-
-    /**
-     * Ein Array zur Speicherung des aktuellen Spielstands.
-     */
-    private BoardCell[][] ongoingGame;
-
     /**
      * Konstruktor welches das Spielfeld von Board übernimmt.
      * @param board     das Spielfeld, was schon initialisiert, wurde.
      */
     public BoardOptions(Board board) {
         this.board = board;
-        this.rows = board.getRows();
-        this.columns = board.getColumns();
-        this.ongoingGame = new BoardCell[rows][columns];
-    }
-
-    /**
-     * Konstruktor für Testzwecke. Erzeugt ein befindliches Spiel mitten im Spielgeschehen.
-     * Nimmt das Spielfeld in Form eines BoardCell-Arrays entgegen.
-     *
-     * @param rows          die Anzahl an Reihen
-     * @param columns       die Anzahl an Spalten
-     * @param ongoingGame   das laufende Spiel
-     */
-    public BoardOptions(int rows, int columns, BoardCell[][] ongoingGame) {
-        this.rows = rows;
-        this.columns = columns;
-        this.ongoingGame = ongoingGame;
     }
 
     /**
@@ -66,7 +40,12 @@ public class BoardOptions {
         this.board = board;
     }
 
-
+    /**
+     * Die Methode klont das Spielfeld.
+     * Wird hauptsächlich beim Laden verwendet, um gegen Fehlermeldungen vorzubeugen.
+     * @param originalBoard das originale Spielfeld
+     * @return              das geklonte Spielfeld.
+     */
     public Board cloneBoard (Board originalBoard) {
         int rows = originalBoard.getRows();
         int cols = originalBoard.getColumns();

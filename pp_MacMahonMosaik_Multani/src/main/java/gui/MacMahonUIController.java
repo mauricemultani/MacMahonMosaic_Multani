@@ -73,13 +73,6 @@ public class MacMahonUIController {
         // +2 stehen für die Ränder
         Board board = new Board(rows + 2, columns + 2, true);
 
-        // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
-        this.gridBottomController = new GridBottomController(gridBottom, board);
-
-        // Initialisiert das Spielfeld
-        boardController.initializeBoard();
-
         // Erstellung von Optionen
         options = new BoardOptions(board);
 
@@ -90,7 +83,7 @@ public class MacMahonUIController {
         solve = new Solvability(board, editor, options);
 
         // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
+        this.boardController = new BoardController(gameField, board, gameFieldPane, gui, solve);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld

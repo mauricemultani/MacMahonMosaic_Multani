@@ -384,7 +384,7 @@ public class Board {
      * @param pos   die Position wo das Mosaikteil platziert werden soll.
      * @return      True, wenn das Mosaikteil an der Position passt, ansonsten false.
      */
-    public boolean isPositionValid(Position pos) {
+    private boolean isPositionValid(Position pos) {
         int row = pos.row();
         int column = pos.column();
 
@@ -541,9 +541,10 @@ public class Board {
 
                 if (isPositionValid(pos)) {
                     for (Rotation rotation : Rotation.values()) {
-                        if (fitsNeighbours(tile, rotation, pos)) {
+                        if (fitsNeighbours(tile, rotation, pos)
+                                && fitsBorderNeighbours(tile, rotation, pos)) {
                             placeTileAt(tile, rotation, pos);
-                            System.out.println("Placing tile at: " + pos);
+                            System.out.println("Placing" + tile + "at: " + pos);
                             return true;
                         }
                     }

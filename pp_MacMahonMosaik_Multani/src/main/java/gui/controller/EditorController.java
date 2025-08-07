@@ -167,7 +167,7 @@ public class EditorController {
     /**
      * Die Methode soll den Spieler die Möglichkeit geben die Farben der Ränder anzupassen.
      */
-    public void adjustBorderColors() {
+    private void adjustBorderColors() {
         adjustColumnBorderColors();
         adjustRowBorderColors();
     }
@@ -327,7 +327,7 @@ public class EditorController {
      * Spieler bestimmt Positionen der Löcher, wenn dass Spielfeld nach seiner Erstellung
      * mehr als 24 Zellen hat.
      */
-    public void choosePositionsOfHoles(){
+    private void choosePositionsOfHoles(){
         int numHoles = editor.calculateIfHolesNeeded(board.getRows(), board.getColumns());
 
         if (numHoles == 1) {
@@ -450,6 +450,7 @@ public class EditorController {
                 return false;
             } else {
                 board.restartGame();
+                System.out.println("Mögliche Lösung vorhanden.");
             }
         } else {
             gui.showSkipSolvabilityCheck();

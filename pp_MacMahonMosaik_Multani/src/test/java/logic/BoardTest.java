@@ -198,7 +198,7 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        boolean result = board.doesTileFitAnywhere(MosaicTile.RRRR);
+        boolean result = board.doesTileFitAnywhere(MosaicTile.GYRG);
 
         assertTrue(result);
     }

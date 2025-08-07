@@ -199,6 +199,11 @@ public class TileActions {
         });
     }
 
+    /**
+     * Mit der Methode können keine Mosaikteile auf dem Spielfeld platziert werden.
+     * Ist für den Editormodus gedacht.
+     * @param gridPane  die GridPane auf dem das Spielfeld dargestellt wird.
+     */
     public static void noDroppingTilesAllowed(GridPane gridPane) {
         gridPane.setOnDragOver(dragEvent -> {
             if (dragEvent.getDragboard().hasString()) {

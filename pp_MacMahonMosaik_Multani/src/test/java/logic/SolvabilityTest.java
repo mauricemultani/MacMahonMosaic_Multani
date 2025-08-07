@@ -271,7 +271,7 @@ public class SolvabilityTest {
     }
 
     @Test
-    void possibleSolvation_2x2_field() {
+    void possibleSolvation_2X2_field() {
         String[][] field = {
                 {"NNNN", "NNYN", "NNGN", "NNNN"},
                 {"NYNN", "NNNN", "NNNN", "NNNG"},
@@ -294,7 +294,7 @@ public class SolvabilityTest {
     }
 
     @Test
-    void possibleSolvation_3x3_field() {
+    void possibleSolvation_3X3_field() {
         String[][] field = {
                 {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
                 {"NRNN", "NNNN", "NNNN", "NNNN", "NNNR"},
@@ -318,7 +318,7 @@ public class SolvabilityTest {
     }
 
     @Test
-    void possibleSolvation_4x4_field() {
+    void possibleSolvation_4X4_field() {
         String[][] field = {
                 {"NNNN", "NNRN", "NNYN", "NNGN", "NNRN", "NNNN"},
                 {"NRNN", "NNNN", "NNNN", "NNNN", "NNNN", "NNNR"},
@@ -466,7 +466,7 @@ public class SolvabilityTest {
     }
 
     @Test
-    void possibleSolvation_4x4_field_wrongTilePlaced() {
+    void possibleSolvation_4X4_field_wrongTilePlaced() {
         String[][] field = {
                 {"NNNN", "NNGN", "NNRN", "NNYN", "NNYN", "NNNN"},
                 {"NGNN", "GYRG", "RGYR", "NNNN", "NNNN", "NNNG"},
@@ -495,7 +495,7 @@ public class SolvabilityTest {
     }
 
     @Test
-    void possibleSolvation_4x4_field_wrongTilePlaced_withHole() {
+    void possibleSolvation_4X4_field_wrongTilePlaced_withHole() {
         String[][] field = {
                 {"NNNN", "NNGN", "NNRN", "NNYN", "NNYN", "NNNN"},
                 {"NGNN", "GYRG", "RGYR", "NNNN", "NNNN", "NNNG"},
