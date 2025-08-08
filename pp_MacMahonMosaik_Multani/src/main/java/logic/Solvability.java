@@ -144,24 +144,4 @@ public class Solvability {
 
         return emptyCells > MAXIMUM_AMOUNT_OF_EMPTY_CELLS;
     }
-
-    /**
-     * Die Methode soll die Anzahl gesamter Spielfeldzellen (exkl. Löcher) aufzählen.
-     */
-    public boolean overEighteenGameCells(Board board) {
-        int gameCells = 0;
-        final int MAXIMUM_AMOUNT_OF_GAME_CELLS = 18;
-
-        for (int row = 1; row < board.getRows() - 1; row++) {
-            for (int col = 1; col < board.getColumns() - 1; col++) {
-                BoardCell cell = board.getCell(row, col);
-
-                if (!cell.isHole()) {
-                    gameCells++;
-                }
-            }
-        }
-
-        return gameCells > MAXIMUM_AMOUNT_OF_GAME_CELLS;
-    }
 }

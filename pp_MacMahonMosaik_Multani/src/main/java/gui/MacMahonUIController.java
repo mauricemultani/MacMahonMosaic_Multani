@@ -372,7 +372,7 @@ public class MacMahonUIController {
     private void checkLoadedBoard(Board loadedBoard, Board clonedBoard) {
         Board checkingLoadedBoard = options.cloneBoard(loadedBoard, true);
         // Überprüfung, ob das geladene Spiel lösbar ist
-        if (!solve.overEighteenGameCells(checkingLoadedBoard)) {
+        if (!solve.overEighteenEmptyCells(checkingLoadedBoard)) {
             // wenn nicht, soll es das vorherige Spiel wieder laden
             if (!solve.possibleSolvation(checkingLoadedBoard)) {
                 gui.showNoPossibleSolvation();

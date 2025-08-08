@@ -23,7 +23,7 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="Game">
                      <items>
-                      <MenuItem mnemonicParsing="false" onAction="#handleGameSubmit" text="Check Game" />
+                      <MenuItem mnemonicParsing="false" onAction="#handleGameSubmit" text="Check Board" />
                       <MenuItem mnemonicParsing="false" onAction="#handleGameRestart" text="Restart Game" />
                         <MenuItem mnemonicParsing="false" onAction="#handleGameHint" text="Help Me! - Place a Tile" />
                      </items>

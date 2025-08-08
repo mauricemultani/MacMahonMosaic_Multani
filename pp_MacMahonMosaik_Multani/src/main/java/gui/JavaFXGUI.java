@@ -247,8 +247,7 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Something seems to not add up...");
         alert.setHeaderText(" It seems like there are still empty cells to fill");
-        alert.setContentText(" Fill every cell with a tile first \n " +
-                "submit and check the answer afterward.");
+        alert.setContentText(" Fill every cell with a tile first.");
         alert.showAndWait();
     }
 
