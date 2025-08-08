@@ -439,18 +439,18 @@ public class EditorController {
      * 3. Puzzle muss lösbar sein.
      */
     public boolean canSwitchBackToGameMode() {
-        if (editor.needsHoles(board.getRows(), board.getColumns())) {
+        Board checkingBoard = options.cloneBoard(editor.getBoard(), false);
+
+        if (editor.needsHoles(checkingBoard.getRows(), checkingBoard.getColumns())) {
             gui.showHolesNotPlaced_Editor();
             return false;
         }
 
-        if (!solve.overEighteenEmptyCells()) {
-            if (!solve.possibleSolvation()) {
+
+        if (!solve.overEighteenEmptyCells(checkingBoard)) {
+            if (!solve.possibleSolvation(checkingBoard)) {
                 gui.showNoPossibleSolvation();
                 return false;
-            } else {
-                board.restartGame();
-                System.out.println("Mögliche Lösung vorhanden.");
             }
         } else {
             gui.showSkipSolvabilityCheck();

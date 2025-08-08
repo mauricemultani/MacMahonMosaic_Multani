@@ -80,7 +80,7 @@ public class MacMahonUIController {
         editor = new Editor(board);
 
         //Initialisieren des Konstruktors für Solvability
-        solve = new Solvability(board, editor, options);
+        solve = new Solvability();
 
         // Initialisierung der Controller für Spielfeld und gridBottom
         this.boardController = new BoardController(gameField, board, gameFieldPane, gui, solve);
@@ -136,7 +136,7 @@ public class MacMahonUIController {
         File file = fileChooser.showOpenDialog(null);
 
         if (menuEditorMode.isSelected() && file != null && file.getName().endsWith(".json")) {
-            Board clonedBoard = options.cloneBoard(editor.getBoard());
+            Board clonedBoard = options.cloneBoard(editor.getBoard(), false);
 
             try {
                 editor.loadGame(file);
@@ -152,15 +152,15 @@ public class MacMahonUIController {
                 gui.showSuccessLoad();
                 editorController.initializeEditorMode();
 
-                checkLoadedBoard(clonedBoard);
-
                 options.setBoard(options.getBoard());
+
+                checkLoadedBoard(editorLoadedBoard, clonedBoard);
 
             } catch (Exception e) {
                 gui.showFailLoad();
             }
         } else if (file != null && file.getName().endsWith(".json")) {
-            Board clonedBoard = options.cloneBoard(options.getBoard());
+            Board clonedBoard = options.cloneBoard(options.getBoard(), false);
 
             try {
                 options.loadGame(file);
@@ -176,9 +176,9 @@ public class MacMahonUIController {
                 success = true;
                 gui.showSuccessLoad();
 
-                checkLoadedBoard(clonedBoard);
-
                 options.setBoard(loadedBoard);
+
+                checkLoadedBoard(loadedBoard, clonedBoard);
 
             } catch (Exception e) {
                 gui.showFailLoad();
@@ -274,13 +274,12 @@ public class MacMahonUIController {
     @FXML
     private void handleGameSubmit() {
         Board currBoard = options.getBoard();
-        Solvability solve = new Solvability(currBoard, editor, options);
 
         if (!menuEditorMode.isSelected()) {
             if (!solve.allCellsPlaced(currBoard)) {
                 gui.showPlaceAllTilesFirst();
             } else {
-                success = solve.solveGame();
+                success = solve.solveGame(currBoard);
 
                 if (success) {
                     gui.showGameWon();
@@ -300,7 +299,7 @@ public class MacMahonUIController {
     private void handleGameRestart() {
         boardController.restartGame();
 
-        Board newBoard = this.options.getBoard();
+        Board newBoard = options.getBoard();
 
         options.setBoard(newBoard);
 
@@ -317,11 +316,12 @@ public class MacMahonUIController {
      */
     @FXML
     private void handleGameHint() {
+        Board currBoard = options.getBoard();
         if (!menuEditorMode.isSelected()) {
-            if (!solve.overEighteenEmptyCells()) {
+            if (!solve.overEighteenEmptyCells(currBoard)) {
                 boardController.placingTileForPlayer();
 
-                gridBottomController.setBoard(options.getBoard());
+                gridBottomController.setBoard(currBoard);
                 gridBottomController.checkExistentMosaikTiles();
             } else {
                 gui.showSkipHelp();
@@ -369,11 +369,12 @@ public class MacMahonUIController {
      *
      * @param clonedBoard das geklonte Spielfeld, was wiederhergestellt werden soll, wenn das geladene Spielfeld nicht lösbar ist.
      */
-    private void checkLoadedBoard(Board clonedBoard) {
+    private void checkLoadedBoard(Board loadedBoard, Board clonedBoard) {
+        Board checkingLoadedBoard = options.cloneBoard(loadedBoard, true);
         // Überprüfung, ob das geladene Spiel lösbar ist
-        if (!solve.overEighteenEmptyCells()) {
+        if (!solve.overEighteenGameCells(checkingLoadedBoard)) {
             // wenn nicht, soll es das vorherige Spiel wieder laden
-            if (!solve.possibleSolvation()) {
+            if (!solve.possibleSolvation(checkingLoadedBoard)) {
                 gui.showNoPossibleSolvation();
 
                 boardController.setBoardAndUpdate(clonedBoard);

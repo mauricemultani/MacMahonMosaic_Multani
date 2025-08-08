@@ -22,9 +22,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertFalse(result);
     }
@@ -43,9 +43,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertFalse(result);
     }
@@ -64,9 +64,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
 
-        boolean result = solve.solveGame();
+        Solvability solve = new Solvability();
+        boolean result = solve.solveGame(board);
 
         assertFalse(result);
     }
@@ -85,7 +85,7 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
         board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG
         board.getCell(2, 1).setRotation(Rotation.DEGREE_270); // RYGR
@@ -93,7 +93,7 @@ public class SolvabilityTest {
         board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY
         board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -111,9 +111,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertFalse(result);
     }
@@ -131,9 +131,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertFalse(result);
     }
@@ -151,9 +151,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -171,9 +171,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -191,9 +191,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -211,12 +211,12 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
         board.getCell(1, 1).setRotation(Rotation.DEGREE_180); // RYYY
         board.getCell(1, 2).setRotation(Rotation.DEGREE_270); // YGGG
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -235,7 +235,7 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
         board.getCell(1, 1).setRotation(Rotation.DEGREE_90);  // GGRR
         board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YRGY
@@ -244,7 +244,7 @@ public class SolvabilityTest {
         board.getCell(2, 2).setRotation(Rotation.DEGREE_270); // RGYG
 
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -263,9 +263,9 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Solvability solve = new Solvability(board, null, null);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.solveGame();
+        boolean result = solve.solveGame(board);
 
         assertTrue(result);
     }
@@ -283,12 +283,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -307,12 +305,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -332,12 +328,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -358,12 +352,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.overEighteenEmptyCells();
+        boolean result = solve.overEighteenEmptyCells(board);
         // über 18 Zellen = Lösbarkeitsprüfung wird geskippt.
 
         assertTrue(result);
@@ -383,12 +375,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -407,12 +397,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -431,12 +419,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -455,12 +441,10 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertTrue(result);
     }
@@ -480,16 +464,14 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
         board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertFalse(result);
     }
@@ -509,16 +491,14 @@ public class SolvabilityTest {
         int cols = field[0].length;
 
         Board board = new Board(rows, cols, field, false);
-        Editor editor = new Editor(board);
-        BoardOptions options = new BoardOptions(board);
 
         board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
         board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
 
-        Solvability solve = new Solvability(board, editor, options);
+        Solvability solve = new Solvability();
 
-        boolean result = solve.possibleSolvation();
+        boolean result = solve.possibleSolvation(board);
 
         assertFalse(result);
     }

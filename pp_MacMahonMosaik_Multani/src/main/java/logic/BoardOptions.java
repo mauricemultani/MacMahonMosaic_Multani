@@ -46,27 +46,44 @@ public class BoardOptions {
      * @param originalBoard das originale Spielfeld
      * @return              das geklonte Spielfeld.
      */
-    public Board cloneBoard (Board originalBoard) {
+    public Board cloneBoard (Board originalBoard, boolean forEditor) {
         int rows = originalBoard.getRows();
         int cols = originalBoard.getColumns();
         String[][] field = convertBoardToString();
-        Board clonedBoard = new Board(rows, cols, field,  false);
 
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                BoardCell cell = originalBoard.getCell(row, col);
-                BoardCell clonedCell = clonedBoard.getCell(row, col);
+        if (!forEditor) {
+            Board clonedBoard = new Board(rows, cols, field, false);
 
-                if (cell.isHole()) {
-                    clonedCell.setHole();
-                }
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    BoardCell cell = originalBoard.getCell(row, col);
+                    BoardCell clonedCell = clonedBoard.getCell(row, col);
 
-                if (cell.isPlaced() && cell.getTile() != null) {
-                    clonedCell.placeTile(cell.getTile(), cell.getRotation());
+                    if (cell.isHole()) {
+                        clonedCell.setHole();
+                    }
+
+                    if (cell.isPlaced() && cell.getTile() != null) {
+                        clonedCell.placeTile(cell.getTile(), cell.getRotation());
+                    }
                 }
             }
+            return clonedBoard;
+        } else {
+            Board clonedBoard = new Board(rows, cols, field, true);
+
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    BoardCell cell = originalBoard.getCell(row, col);
+                    BoardCell clonedCell = clonedBoard.getCell(row, col);
+
+                    if (cell.isHole()) {
+                        clonedCell.setHole();
+                    }
+                }
+            }
+            return clonedBoard;
         }
-        return clonedBoard;
     }
 
     /**
@@ -74,7 +91,7 @@ public class BoardOptions {
      *
      * @return  Spielfeld als String-Array
      */
-    private String[][] convertBoardToString() {
+    public String[][] convertBoardToString() {
         int rows = board.getRows();
         int columns = board.getColumns();
         String[][] converted = new String[rows][columns];
