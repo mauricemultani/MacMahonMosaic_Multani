@@ -87,11 +87,11 @@ public class SolvabilityTest {
         Board board = new Board(rows, cols, field, false);
         Solvability solve = new Solvability();
 
-        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG
-        board.getCell(2, 1).setRotation(Rotation.DEGREE_270); // RYGR
-        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR
-        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY
-        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY
+        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG rotiert zu -> GGYR
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_270); // RYGR rotiert zu -> YGRR
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR rotiert zu -> YRRG
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY rotiert zu -> RYYG
+        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY rotiert zu -> RGYY
 
         boolean result = solve.solveGame(board);
 
@@ -213,8 +213,8 @@ public class SolvabilityTest {
         Board board = new Board(rows, cols, field, false);
         Solvability solve = new Solvability();
 
-        board.getCell(1, 1).setRotation(Rotation.DEGREE_180); // RYYY
-        board.getCell(1, 2).setRotation(Rotation.DEGREE_270); // YGGG
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_180); // RYYY rotiert zu -> YYRY
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_270); // YGGG rotiert zu -> GGGY
 
         boolean result = solve.solveGame(board);
 
@@ -237,11 +237,11 @@ public class SolvabilityTest {
         Board board = new Board(rows, cols, field, false);
         Solvability solve = new Solvability();
 
-        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);  // GGRR
-        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YRGY
-        board.getCell(1, 2).setRotation(Rotation.DEGREE_270); // GYRG
-        board.getCell(3,2).setRotation(Rotation.DEGREE_90);   // GRYG
-        board.getCell(2, 2).setRotation(Rotation.DEGREE_270); // RGYG
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);  // GGRR rotiert zu -> RGGR
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YRGY rotiert zu -> GYYR
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_270); // GYRG rotiert zu -> YRGG
+        board.getCell(3,2).setRotation(Rotation.DEGREE_90);   // GRYG rotiert zu -> GGRY
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_270); // RGYG rotiert zu -> GYGR
 
 
         boolean result = solve.solveGame(board);
@@ -465,9 +465,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
-        board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
-        board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_90);  // RGYR rotiert zu -> RRGY
+        board.getCell(4, 1).setRotation(Rotation.DEGREE_90);  // RYGY rotiert zu -> YRYG
+        board.getCell(4, 2).setRotation(Rotation.DEGREE_180); // RRYY rotiert zu -> YYRR
 
         Solvability solve = new Solvability();
 
@@ -492,9 +492,9 @@ public class SolvabilityTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(1, 2).setRotation(Rotation.DEGREE_90);
-        board.getCell(4, 1).setRotation(Rotation.DEGREE_90);
-        board.getCell(4, 2).setRotation(Rotation.DEGREE_180);
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_90);  // RGYR rotiert zu -> RRGY
+        board.getCell(4, 1).setRotation(Rotation.DEGREE_90);  // RYGY rotiert zu -> YRYG
+        board.getCell(4, 2).setRotation(Rotation.DEGREE_180); // RRYY rotiert zu -> YYRR
 
         Solvability solve = new Solvability();
 

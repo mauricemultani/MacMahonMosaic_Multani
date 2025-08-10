@@ -10,6 +10,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import logic.Board;
+import logic.BoardOptions;
 import logic.GUIConnector;
 import logic.Solvability;
 import logic.utils.BoardCell;
@@ -50,7 +51,6 @@ public class BoardController {
 
     private final GUIConnector gui;
 
-    private final Solvability solve;
 
     /**
      * Konstruktor, welches ein GameFieldController mit einem GridPane initialisiert.
@@ -58,12 +58,11 @@ public class BoardController {
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
      */
-    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui, Solvability solve){
+    public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui){
         this.gridPane = gridPane;
         this.board = board;
         this.gameFieldPane = gameFieldPane;
         this.gui = gui;
-        this.solve = solve;
     }
 
     /**
@@ -428,27 +427,38 @@ public class BoardController {
                 BoardCell cell = board.getCell(row, col);
 
                 if (!cell.isPlaced() && !cell.isHole()) {
-                    for (MosaicTile tile : usableTiles) {
+                    for (MosaicTile tile : new ArrayList<>(usableTiles)) {
                         for (Rotation rotation : Rotation.values()) {
                             if (!foundTile && board.fitsNeighbours(tile, rotation, pos)
                                     && board.fitsBorderNeighbours(tile, rotation, pos)
                                     && board.doesTileFitAnywhere(tile)) {
-                                board.placeTileAt(tile, rotation, pos) ;
 
-                                Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
-                                ImageView imageView = new ImageView(img);
+                                board.placeTileAt(tile, rotation, pos);
 
-                                Label tileLabel = new Label();
-                                tileLabel.setGraphic(imageView);
-                                tileLabel.setUserData(rotation);
+                                BoardOptions options = new BoardOptions(board);
 
-                                imageView.setRotate(getDegrees(rotation));
+                                Board clonedBoard = options.cloneBoard(board, false);
+                                Solvability solve = new Solvability();
 
-                                gridPane.add(tileLabel, col, row);
+                                if (solve.possibleSolvation(clonedBoard)) {
+                                    Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
+                                    ImageView imageView = new ImageView(img);
 
-                                TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
+                                    Label tileLabel = new Label();
+                                    tileLabel.setGraphic(imageView);
+                                    tileLabel.setUserData(rotation);
 
-                                foundTile = true;
+                                    imageView.setRotate(getDegrees(rotation));
+
+                                    gridPane.add(tileLabel, col, row);
+
+                                    TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
+
+                                    foundTile = true;
+                                } else {
+                                    board.removeTileAt(pos);
+                                    usableTiles.add(tile);
+                                }
                             }
                         }
                     }

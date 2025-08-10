@@ -38,7 +38,8 @@ public class MacMahonUIController {
 
     private EditorController editorController;
 
-    private Solvability solve;
+    //Initialisieren des Konstruktors für Solvability
+    private final Solvability solve = new Solvability();
 
     private boolean success;
 
@@ -61,29 +62,32 @@ public class MacMahonUIController {
      */
     public void initialize() {
         Random random = new Random();
+        Board board;
 
-        // Anzahl an Reihen kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
-        int rows = random.nextInt(5) + 2;
+        do {
+            // Anzahl an Reihen kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
+            int rows = random.nextInt(5) + 2;
 
-        // Anzahl an Spalten kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
-        int columns = random.nextInt(5) + 2;
+            // Anzahl an Spalten kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
+            int columns = random.nextInt(5) + 2;
 
-        // Konstruktor, welches die Zeilen und Spalten aufnimmt
-        // erstellt auch Löcher und initialisiert Randfarben.
-        // +2 stehen für die Ränder
-        Board board = new Board(rows + 2, columns + 2, true);
+            // Konstruktor, welches die Zeilen und Spalten aufnimmt
+            // erstellt auch Löcher und initialisiert Randfarben.
+            // +2 stehen für die Ränder
+            board = new Board(rows + 2, columns + 2, true);
 
-        // Erstellung von Optionen
-        options = new BoardOptions(board);
+            // Erstellung von Optionen
+            options = new BoardOptions(board);
 
-        // Initialisiert die Logik für den Editor
-        editor = new Editor(board);
+            // Initialisiert die Logik für den Editor
+            editor = new Editor(board);
 
-        //Initialisieren des Konstruktors für Solvability
-        solve = new Solvability();
+            // Es soll so lange ein neues Spielfeld generiert werden, sofern das Spielfeld nicht lösbar ist
+            // oder das Spielfeld unter 18 Spielzellen hat.
+        } while ((!solve.possibleSolvation(options.cloneBoard(board, false))) || (!solve.overEighteenEmptyCells(board)));
 
         // Initialisierung der Controller für Spielfeld und gridBottom
-        this.boardController = new BoardController(gameField, board, gameFieldPane, gui, solve);
+        this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
         // Initialisiert das Spielfeld

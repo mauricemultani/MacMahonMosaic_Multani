@@ -43,7 +43,7 @@ public class JavaFXGUI implements GUIConnector {
     public void showGamesNotFinished() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Game is unfinished");
-        alert.setHeaderText("This may come in unhandy, but the Game's not correctly solved...");
+        alert.setHeaderText("This may come in unhandy, but the Board is not correctly solved...");
         alert.setContentText("Check the placed Tiles, there may be some wrong placements.");
         alert.showAndWait();
     }
@@ -195,10 +195,9 @@ public class JavaFXGUI implements GUIConnector {
          Alert alert = new Alert(Alert.AlertType.INFORMATION);
          alert.setTitle("Information!");
          alert.setHeaderText("The Editor is not set active!");
-         alert.setContentText("Activate the Editor Mode to use the functions!");
+         alert.setContentText("Activate the Editor Mode to use its functions!");
          alert.showAndWait();
     }
-
 
     /**
      * Mitteilung, wenn Löcher zu platzieren sind.
@@ -284,7 +283,7 @@ public class JavaFXGUI implements GUIConnector {
     public void showPlacingHoleNotAllowed() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Placing a hole on an already set hole?!");
-        alert.setHeaderText(" You cannot place a hole in an already placed hole.");
+        alert.setHeaderText(" You cannot place a hole on an already placed hole.");
         alert.setContentText(" Pointing out the obvious...");
         alert.showAndWait();
     }

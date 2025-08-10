@@ -25,11 +25,11 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG
-        board.getCell(2, 1).setRotation(Rotation.DEGREE_270); // RYGR
-        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR
-        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY
-        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY
+        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG rotiert zu -> GGYR
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_270); // RYGR rotiert zu -> YGRR
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR rotiert zu -> YRRG
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY rotiert zu -> RYYG
+        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY rotiert zu -> RGYY
 
         boolean result = board.fitsNeighbours(MosaicTile.RGYG, Rotation.DEGREE_180, new Position(2, 2));
 
@@ -51,10 +51,10 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG
-        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR
-        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY
-        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY
+        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG rotiert zu -> GGYR
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_180); // RGYR rotiert zu -> YRRG
+        board.getCell(3, 1).setRotation(Rotation.DEGREE_180); // YGRY rotiert zu -> RYYG
+        board.getCell(3, 3).setRotation(Rotation.DEGREE_270); // YRGY rotiert zu -> RGYY
 
         boolean result = board.fitsNeighbours(MosaicTile.RGYG, Rotation.DEGREE_180, new Position(2, 2));
 
@@ -76,16 +76,16 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);  // RYGR
-        board.getCell(1, 2).setRotation(Rotation.DEGREE_180); // GRYR
-        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG
+        board.getCell(1, 1).setRotation(Rotation.DEGREE_90);  // RYGR rotiert zu -> RRYG
+        board.getCell(1, 2).setRotation(Rotation.DEGREE_180); // GRYR rotiert zu -> YRGR
+        board.getCell(1, 3).setRotation(Rotation.DEGREE_90);  // GYRG rotiert zu -> GGYR
 
-        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG
-        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG
-        board.getCell(2, 3).setRotation(Rotation.DEGREE_90);  // RYYY
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG rotiert zu -> YGGR
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG rotiert zu -> GYGG
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_90);  // RYYY rotiert zu -> YRYY
 
-        board.getCell(3, 2).setRotation(Rotation.DEGREE_90);  // YGYG
-        board.getCell(3, 3).setRotation(Rotation.DEGREE_90);  // GYYY
+        board.getCell(3, 2).setRotation(Rotation.DEGREE_90);  // YGYG rotiert zu -> GYGY
+        board.getCell(3, 3).setRotation(Rotation.DEGREE_90);  // GYYY rotiert zu -> YGYY
 
         boolean result = board.fitsNeighbours(MosaicTile.YYGG, Rotation.DEGREE_90, new Position(3, 1));
 
@@ -107,8 +107,8 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG
-        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG rotiert zu -> YGGR
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG rotiert zu -> GYGG
 
         boolean result = board.fitsNeighbours(MosaicTile.YYGG, Rotation.DEGREE_90, new Position(3, 1));
 
@@ -121,7 +121,7 @@ public class BoardTest {
                 {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
                 {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
                 {"NRNN", "GRYG", "YGGG", "NNNN", "NNNR"},
-                {"NGNN", "NNNN", "YGYG", "NNNN", "NNNG"}, // in dieser Zeile bei NNNN wird das Mosaikteil platziert
+                {"NGNN", "NNNN", "YGYG", "NNNN", "NNNG"}, // in dieser Zeile beim ersten NNNN wird das Mosaikteil platziert
                 {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
         };
 
@@ -130,10 +130,10 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG
-        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG
+        board.getCell(2, 1).setRotation(Rotation.DEGREE_180); // GRYG -> YGGR
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG -> GYGG
 
-        board.getCell(3, 2).setRotation(Rotation.DEGREE_90);  // YGYG
+        board.getCell(3, 2).setRotation(Rotation.DEGREE_90);  // YGYG rotiert zu -> GYGY
 
         boolean result = board.fitsNeighbours(MosaicTile.GGRR, Rotation.DEGREE_0, new Position(3, 1));
 
@@ -144,7 +144,7 @@ public class BoardTest {
     void fitsNeighbours_allNeighbouringTilesPlaced_placingWrongTileAtCorner_withHole() {
         String[][] field = {
                 {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
-                {"NGNN", "NNNN", "HHHH", "NNNN", "NNNG"}, // in dieser Zeile bei NNNN wird das Mosaikteil platziert
+                {"NGNN", "NNNN", "HHHH", "NNNN", "NNNG"}, // in dieser Zeile beim zweiten NNNN wird das Mosaikteil platziert
                 {"NRNN", "NNNN", "YGGG", "RYYY", "NNNR"},
                 {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
                 {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}
@@ -155,8 +155,8 @@ public class BoardTest {
 
         Board board = new Board(rows, cols, field, false);
 
-        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG
-        board.getCell(2, 3).setRotation(Rotation.DEGREE_90);  // RYYY
+        board.getCell(2, 2).setRotation(Rotation.DEGREE_90);  // YGGG rotiert zu -> GYGG
+        board.getCell(2, 3).setRotation(Rotation.DEGREE_90);  // RYYY rotiert zu -> YRYY
 
         boolean result = board.fitsNeighbours(MosaicTile.GGRR, Rotation.DEGREE_0, new Position(1, 3));
 
@@ -167,7 +167,7 @@ public class BoardTest {
     void fitsNeighbours_atCorner_emptyField() {
         String[][] field = {
                 {"NNNN", "NNRN", "NNYN", "NNGN", "NNNN"},
-                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"}, // in dieser Zeile bei NNNN wird das Mosaikteil platziert
+                {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"}, // in dieser Zeile beim ersten NNNN wird das Mosaikteil platziert
                 {"NRNN", "NNNN", "NNNN", "NNNN", "NNNR"},
                 {"NGNN", "NNNN", "NNNN", "NNNN", "NNNG"},
                 {"NNNN", "YNNN", "GNNN", "YNNN", "NNNN"}

@@ -7,7 +7,6 @@ import logic.utils.Rotation;
 
 import java.awt.*;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Stellt das Spielfeld dar, auf dem die Mosaikteile platziert werden können.
@@ -130,21 +129,6 @@ public class Board {
             this.rightBorderColors = initSavedColors(extractRightBorderTiles(field));
         }
     }
-
-    /**
-     * Ein Set aus den platzierbaren Mosaikteilen in der Class Mosaictile.
-     */
-    private static final Set<MosaicTile> USABLE_TILES = Set.of(
-            MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
-            MosaicTile.GRYG, MosaicTile.GRYR, MosaicTile.GYRG, MosaicTile.GYYY,
-
-            MosaicTile.RGGG, MosaicTile.RGYG, MosaicTile.RGYR, MosaicTile.RRRR,
-            MosaicTile.RRYY, MosaicTile.RYGR, MosaicTile.RYGY, MosaicTile.RYYY,
-
-            MosaicTile.YGGG, MosaicTile.YGRY, MosaicTile.YGYG, MosaicTile.YRGY,
-            MosaicTile.YRRR, MosaicTile.YRYR, MosaicTile.YYGG, MosaicTile.YYYY
-
-    );
 
     /**
      * Gibt die Zelle an der angegebenen Position wieder zurück.
@@ -528,7 +512,6 @@ public class Board {
                         if (fitsNeighbours(tile, rotation, pos)
                                 && fitsBorderNeighbours(tile, rotation, pos)) {
                             placeTileAt(tile, rotation, pos);
-                            System.out.println("Placing" + tile + "at: " + pos);
                             return true;
                         }
                     }
