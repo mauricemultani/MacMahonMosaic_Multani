@@ -411,8 +411,8 @@ public class BoardController {
 
         boolean foundTile = false;
 
-        for (int row = 1; row < board.getRows(); row++) {
-            for (int col = 1; col < board.getColumns(); col++) {
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
                 BoardCell cell = board.getCell(row, col);
 
                 if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {

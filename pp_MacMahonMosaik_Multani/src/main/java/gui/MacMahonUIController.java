@@ -84,7 +84,8 @@ public class MacMahonUIController {
 
             // Es soll so lange ein neues Spielfeld generiert werden, sofern das Spielfeld nicht lösbar ist
             // oder das Spielfeld unter 18 Spielzellen hat.
-        } while ((!solve.possibleSolvation(options.cloneBoard(board, false))) || (!solve.overEighteenEmptyCells(board)));
+        } while ((!solve.possibleSolvation(options.cloneBoard(board, false)))
+                && (!solve.overEighteenEmptyCells(board)));
 
         // Initialisierung der Controller für Spielfeld und gridBottom
         this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
