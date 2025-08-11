@@ -324,9 +324,10 @@ public class JavaFXGUI implements GUIConnector {
         alert.setTitle("Information");
         alert.setHeaderText("The Solvability check is being skipped. \n" +
                 "You might play an unsolvable Board.");
-        alert.setContentText("Else the programm would take too long to run. \n" +
-                "Thank you for your understanding. \n" +
-                "You will return to your Game now.");
+        alert.setContentText("""
+                Else the programm would take too long to run.\s
+                The Solvability check will work once \s
+                there are 18 empty Cells left.""");
         alert.showAndWait();
     }
 
