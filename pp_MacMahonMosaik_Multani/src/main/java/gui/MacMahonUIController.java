@@ -96,10 +96,6 @@ public class MacMahonUIController {
         gridBottomController.initImages();
 
         closeGameViaStage();
-
-        if (solve.overEighteenEmptyCells(board)) {
-            gui.showSkipSolvabilityCheck();
-        }
     }
 
     /**
@@ -331,7 +327,6 @@ public class MacMahonUIController {
                     gridBottomController.checkExistentMosaikTiles();
                 } else {
                     gui.showNoPossibleSolvation();
-                    System.out.println("Board wird nicht lösbar sein.");
                 }
             } else {
                 gui.showSkipHelp();
