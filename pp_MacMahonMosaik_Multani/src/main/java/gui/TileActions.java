@@ -9,9 +9,10 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import logic.Board;
+import logic.GUIConnector;
+import logic.Solvability;
 import logic.utils.MosaicTile;
 import logic.utils.Position;
 import logic.utils.Rotation;
@@ -34,12 +35,12 @@ public class TileActions {
      * @param tile          Das Mosaikteil
      * @param rotation      Die Rotation
      */
-    public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile, Rotation rotation) {
+    public static void boardActions(GridPane gridPane, Board board, Label label, ImageView imageView, Position pos, MosaicTile tile, Rotation rotation, GUIConnector gui) {
         dragTiles(label, imageView, tile);
 
         boardOnDragDone(gridPane, board, label, pos);
 
-        rotateTile(gridPane, label, imageView, pos, board, tile);
+        rotateTile(gridPane, label, imageView, pos, board, tile, gui);
 
         differentColorsOnEdge(board, tile, rotation, pos, imageView);
 
@@ -219,7 +220,7 @@ public class TileActions {
      * @param label     Das Label, das rotiert werden soll.
      * @param imageView Das ImageView, dessen Bild übertragt werden soll.
      */
-    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView, Position pos, Board board, MosaicTile tile) {
+    private static void rotateTile(GridPane gridPane, Label label, ImageView imageView, Position pos, Board board, MosaicTile tile, GUIConnector gui) {
         label.setOnMouseClicked(mouseEvent -> {
             // rotiert nur bei Rechtsklick
             if (mouseEvent.getButton() == MouseButton.SECONDARY) {
@@ -241,6 +242,7 @@ public class TileActions {
 
                 board.placeTileAt(tile, next, pos);
                 differentColorsOnEdge(board, tile, next, pos, imageView);
+                checkIfGameWon(board, gui);
             }
         });
     }
@@ -321,40 +323,15 @@ public class TileActions {
     }
 
     /**
-     * Erstellt ein ImageView für ein darzustellendes Bild und fügt
-     * es der GridPane zu. Um einen JavaFX-Bug bei der Rotation zu kompensieren,
-     * wird das ImageView einer StackPane zugefügt, die das Bild zentriert, und die
-     * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
-     * Rotation überschreibt.
-     *
-     * @param imageViewWidth - initiale Breite des ImageViews
-     * @param imageViewHeight - initiale Höhe des ImageViews
-     * @param x - Spalte, in die das Bild eingefügt wird
-     * @param y - Reihe, in die das Bild eingefügt wird
-     * @param grdPn - GridPane, der das Bild zugefügt wird
-     * @return das eingebettete ImageView
+     * Die Methode soll zurückgeben, ob das Spiel gewonnen ist, oder nicht.
+     * @param board das Spielfeld
+     * @param gui   die GUI-Nachricht
      */
-    private ImageView createRotatableImageView(int imageViewWidth, int imageViewHeight, int x, int y, GridPane grdPn){
-        // neues ImageView
-        ImageView imageView = new ImageView();
+    private static void checkIfGameWon(Board board, GUIConnector gui) {
+        Solvability solve = new Solvability();
 
-        // Bild soll an die Zelle angepasst sein und Ratio nicht behalten
-        imageView.setFitWidth(imageViewWidth);
-        imageView.setFitHeight(imageViewHeight);
-        imageView.setPreserveRatio(false);
-        imageView.setSmooth(true);
-
-        // Neues StackPane, um das Bild zu zentrieren
-        StackPane stackpane = new StackPane(imageView);
-
-        // ImageView Maße werden an StackPane Maße gebunden
-        imageView.fitWidthProperty().bind(stackpane.widthProperty());
-        imageView.fitHeightProperty().bind(stackpane.heightProperty());
-
-        RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackpane);
-
-        grdPn.add(rotatableContainer, x, y);
-
-        return imageView;
+        if (solve.allCellsPlaced(board) && solve.solveGame(board)) {
+            gui.showGameWon();
+        }
     }
 }

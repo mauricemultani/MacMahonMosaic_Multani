@@ -1,6 +1,5 @@
 package gui.controller;
 
-import gui.RotatablePaneLayouter;
 import gui.TileActions;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -8,7 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import logic.Board;
 import logic.BoardOptions;
 import logic.GUIConnector;
@@ -49,6 +51,9 @@ public class BoardController {
     @FXML
     private Pane gameFieldPane;
 
+    /**
+     * Die GUI. Für Benachrichtigungen auf dem Spielfeld.
+     */
     private final GUIConnector gui;
 
 
@@ -57,6 +62,7 @@ public class BoardController {
      * @param gridPane das GridPane, was mit dem GameFieldController initialisiert wird.
      * @param board             das Spielfeld
      * @param gameFieldPane     die Pane, die das Spielfeld enthält.
+     * @param gui               die GUI
      */
     public BoardController(GridPane gridPane, Board board, Pane gameFieldPane, GUIConnector gui){
         this.gridPane = gridPane;
@@ -283,7 +289,7 @@ public class BoardController {
 
                     gridPane.add(label, col, row);
 
-                    TileActions.boardActions(gridPane, board, label, imageView, pos, tile, rotation);
+                    TileActions.boardActions(gridPane, board, label, imageView, pos, tile, rotation, gui);
 
                     imageView.setEffect(null);
                 }
@@ -391,7 +397,7 @@ public class BoardController {
                     board.placeTileAt(tile, rotation, position);
 
                     gridPane.add(droppedLabel, column + 1, row + 1);
-                    TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile, rotation);
+                    TileActions.boardActions(gridPane, board, droppedLabel, imageView, position, tile, rotation, gui);
 
                     TileActions.differentColorsOnEdge(board, tile, rotation, position, imageView);
                 }
@@ -399,6 +405,9 @@ public class BoardController {
             // Bestätigen des Drops
             dragEvent.setDropCompleted(true);
             dragEvent.consume();
+
+            // Nach jedem Zug überprüfen, ob Spiel gelöst ist.
+            checkIfGameWon();
         });
     }
 
@@ -411,6 +420,7 @@ public class BoardController {
 
         boolean foundTile = false;
 
+        // Überprüft, ob es schon platzierte Teile auf dem Spielfeld gibt.
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
                 BoardCell cell = board.getCell(row, col);
@@ -427,12 +437,16 @@ public class BoardController {
                 BoardCell cell = board.getCell(row, col);
 
                 if (!cell.isPlaced() && !cell.isHole()) {
+                    // Guckt sich alle Mosaikteil, durch die ArrayList durch.
                     for (MosaicTile tile : new ArrayList<>(usableTiles)) {
+                        // Guckt sich auf die Rotationen der Mosaikteile an.
                         for (Rotation rotation : Rotation.values()) {
+                            // Wenn das Mosaikteil mit den Überprüfungen passt.
                             if (!foundTile && board.fitsNeighbours(tile, rotation, pos)
                                     && board.fitsBorderNeighbours(tile, rotation, pos)
                                     && board.doesTileFitAnywhere(tile)) {
 
+                                // Mosaikteil wird platziert.
                                 board.placeTileAt(tile, rotation, pos);
 
                                 BoardOptions options = new BoardOptions(board);
@@ -440,6 +454,8 @@ public class BoardController {
                                 Board clonedBoard = options.cloneBoard(board, false);
                                 Solvability solve = new Solvability();
 
+                                // Es wird eine Überprüfung gemacht, ob das Spiel mit dem gesetzten Mosaikteil lösbar ist.
+                                // Wenn ja dann soll es das Mosaikteil erfolgreich setzen.
                                 if (solve.possibleSolvation(clonedBoard)) {
                                     Image img = new Image(Objects.requireNonNull(getClass().getResourceAsStream(tile.getImagePath())));
                                     ImageView imageView = new ImageView(img);
@@ -452,10 +468,11 @@ public class BoardController {
 
                                     gridPane.add(tileLabel, col, row);
 
-                                    TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation);
+                                    TileActions.boardActions(gridPane, board, tileLabel, imageView, pos, tile, rotation, gui);
 
                                     foundTile = true;
                                 } else {
+                                    // Ansonsten soll es das Mosaikteil entfernen und es erneut versuchen.
                                     board.removeTileAt(pos);
                                     usableTiles.add(tile);
                                 }
@@ -468,6 +485,8 @@ public class BoardController {
         if (!foundTile) {
             gui.showNoPlaceableTileFound();
         }
+
+        checkIfGameWon();
     }
 
     /**
@@ -506,7 +525,6 @@ public class BoardController {
     /**
      * Initialisierung der Bilder an der linken und rechten Grenze vom Spielfeld.
      * Wird in initImagesBorderBoard verwendet.
-     *
      */
     private void setImagesColumnBorder() {
         String[] leftBorderColors = board.getLeftBorderColors();
@@ -563,44 +581,6 @@ public class BoardController {
     }
 
     /**
-     * Erstellt ein ImageView für ein darzustellendes Bild und fügt
-     * es der GridPane zu. Um einen JavaFX-Bug bei der Rotation zu kompensieren,
-     * wird das ImageView einer StackPane zugefügt, die das Bild zentriert, und die
-     * StackPane wiederum einem RotatablePaneLayouter, der die fehlerhafte
-     * Rotation überschreibt.
-     *
-     * @param imageViewWidth - initiale Breite des ImageViews
-     * @param imageViewHeight - initiale Höhe des ImageViews
-     * @param x - Spalte, in die das Bild eingefügt wird
-     * @param y - Reihe, in die das Bild eingefügt wird
-     * @param grdPn - GridPane, der das Bild zugefügt wird
-     * @return das eingebettete ImageView
-     */
-    private ImageView createRotatableImageView(int imageViewWidth, int imageViewHeight, int x, int y, GridPane grdPn){
-        // neues ImageView
-        ImageView imageView = new ImageView();
-
-        // Bild soll an die Zelle angepasst sein und Ratio nicht behalten
-        imageView.setFitWidth(imageViewWidth);
-        imageView.setFitHeight(imageViewHeight);
-        imageView.setPreserveRatio(false);
-        imageView.setSmooth(true);
-
-        // Neues StackPane, um das Bild zu zentrieren
-        StackPane stackpane = new StackPane(imageView);
-
-        // ImageView Maße werden an StackPane Maße gebunden
-        imageView.fitWidthProperty().bind(stackpane.widthProperty());
-        imageView.fitHeightProperty().bind(stackpane.heightProperty());
-
-        RotatablePaneLayouter rotatableContainer = new RotatablePaneLayouter(stackpane);
-
-        grdPn.add(rotatableContainer, x, y);
-
-        return imageView;
-    }
-
-    /**
      * Hilfsmethode um die Bilder automatisch an der Breite und Höhe des GridPanes anzupassen.
      * Die Hilfsmethode soll redundanten Code in den Methoden reduzieren.
      * <p>
@@ -629,6 +609,17 @@ public class BoardController {
                     multiply(middleColWidthPercentage / 100));
             imageView.fitHeightProperty().bind(gridPane.heightProperty().
                     multiply(borderRowHeightPercentage / 100));
+        }
+    }
+
+    /**
+     * Die Methode überprüft, ob das Spiel gewonnen ist, oder nicht.
+     */
+    public void checkIfGameWon() {
+        Solvability solve = new Solvability();
+
+        if (solve.allCellsPlaced(board) && solve.solveGame(board)) {
+            gui.showGameWon();
         }
     }
 }

@@ -17,7 +17,8 @@ import java.util.Optional;
 public class JavaFXGUI implements GUIConnector {
 
     /**
-     * Verschiedene ButtonTypes die in handleClose verwendet werden.
+     * Verschiedene ButtonTypes die in showSignWhenHandleClose
+     * und whenChangingSizeOfGameField verwendet werden.
      */
     private final ButtonType buttonSave = new ButtonType("Save");
     private final ButtonType buttonClose = new ButtonType("Close the Game");
@@ -238,19 +239,6 @@ public class JavaFXGUI implements GUIConnector {
     }
 
     /**
-     * Mitteilung, wenn der Spieler nicht alle Löcher platziert hat,
-     * aber das Spiel für eine Lösung einreichen will.
-     */
-    @Override
-    public void showPlaceAllTilesFirst() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Something seems to not add up...");
-        alert.setHeaderText(" It seems like there are still empty cells to fill");
-        alert.setContentText(" Fill every cell with a tile first.");
-        alert.showAndWait();
-    }
-
-    /**
      * Diese Mitteilung soll erscheinen, wenn der Spieler vom Editor-Modus
      * in den Spielmodus zurückkehren will, aber noch nicht die Bedingungen erfüllt hat.
      */
@@ -301,6 +289,18 @@ public class JavaFXGUI implements GUIConnector {
     }
 
     /**
+     * Mitteilung, wenn es eine mögliche Lösung beim derzeitigen Spielfeld gibt.
+     */
+    @Override
+    public void showPossibleSolvation() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information");
+        alert.setHeaderText("The current field is solvable!");
+        alert.setContentText("Have fun struggling and solving :)");
+        alert.showAndWait();
+    }
+
+    /**
      * Mitteilung, welche kommen soll, wenn beim Verlassen des Editormodus in den Spielmodus,
      * vom Programm festgestellt wird, dass mit dem dargestellten Spielfeld keine mögliche Lösung möglich ist.
      */
@@ -309,7 +309,8 @@ public class JavaFXGUI implements GUIConnector {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
         alert.setHeaderText("It seems as if the field is not solvable.");
-        alert.setContentText("Load the Game in Editor to change the colors of your borders.");
+        alert.setContentText("Load the Game in Editor to change the colors of your borders \n" +
+                "or rearrange some Tiles for a possible Solvation.");
         alert.showAndWait();
     }
 
@@ -321,7 +322,8 @@ public class JavaFXGUI implements GUIConnector {
     public void showSkipSolvabilityCheck() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
-        alert.setHeaderText("The Solvability check is being skipped.");
+        alert.setHeaderText("The Solvability check is being skipped. \n" +
+                "You might play an unsolvable Board.");
         alert.setContentText("Else the programm would take too long to run. \n" +
                 "Thank you for your understanding. \n" +
                 "You will return to your Game now.");
@@ -330,15 +332,15 @@ public class JavaFXGUI implements GUIConnector {
 
     /**
      * Mitteilung, dass die "Help Me!"-Funktion nicht funktionieren wird.
-     * Sie soll erst funktionieren, wenn 18 leere Zellen noch zur Verfügung stehen.
+     * Sie soll erst funktionieren, wenn maximal 18 leere Zellen noch zur Verfügung stehen.
      */
     @Override
     public void showSkipHelp() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Information");
         alert.setHeaderText("The Help Option will work once there are only 18 empty cells left.");
-        alert.setContentText("Else the programm would take too long to run \n" +
-                "thank you for your understanding.");
+        alert.setContentText("Else the programm would take too long to run. \n" +
+                "Thank you for your understanding.");
         alert.showAndWait();
     }
 

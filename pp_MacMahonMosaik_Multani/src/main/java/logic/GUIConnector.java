@@ -88,11 +88,6 @@ public interface GUIConnector {
     void showOnlyOneHoleToPlace();
 
     /**
-     * Mitteilung, wenn nicht alle freie Zellen belegt sind.
-     */
-    void showPlaceAllTilesFirst();
-
-    /**
      * Mitteilung, wenn Editormodus frühzeitig versucht wird zu verlassen,
      * ohne das Löcher gesetzt wurden.
      */
@@ -109,6 +104,8 @@ public interface GUIConnector {
      * Mitteilung, wenn kein platzierbares Mosaikteil gefunden wurde.
      */
     void showNoPlaceableTileFound();
+
+    void showPossibleSolvation();
 
     /**
      * Mitteilung, welche kommen soll, wenn beim Verlassen des Editormodus in den Spielmodus,

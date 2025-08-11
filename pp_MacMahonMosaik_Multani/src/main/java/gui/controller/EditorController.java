@@ -73,12 +73,6 @@ public class EditorController {
     private final Solvability solve;
 
     /**
-     * private boolescher Wert der mit der Initialisierung
-     * der Bilder in meinem gridBottom gridPane zusammenarbeitet.
-     */
-    private boolean gridBottomInitialized = false;
-
-    /**
      * Ein Set aus den Mosaikteilen, die für die jeweiligen Ränder erlaubt sind.
      * Anhand der Namen erkennt man für welchen Rand die Sets sind.
      */
@@ -143,11 +137,6 @@ public class EditorController {
         // setzt eine Mindestgröße beim Spielfeld
         gridPane.setMinSize(450, 450);
 
-        if (!gridBottomInitialized) {
-            gridBottomController.initImages();
-            gridBottomInitialized = true;
-        }
-
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
                 Label label = new Label();
@@ -172,6 +161,10 @@ public class EditorController {
         adjustRowBorderColors();
     }
 
+    /**
+     * Hilfsmethode für adjustBorderColors.
+     * Vermeidet redundanten Code für die linken und rechten Ränder
+     */
     private void adjustColumnBorderColors() {
         for (int row = 1; row < board.getRows() - 1; row++) {
             Node leftNode = getNode(gridPane, 0, row);
@@ -185,6 +178,10 @@ public class EditorController {
         }
     }
 
+    /**
+     * Hilfsmethode für adjustBorderColors.
+     * Vermeidet redundanten Code für die oberen und unteren Ränder
+     */
     private void adjustRowBorderColors() {
         for (int col = 1; col < board.getColumns(); col++) {
             Node topNode = getNode(gridPane, col, 0);
@@ -278,6 +275,7 @@ public class EditorController {
                 gridPane.getColumnConstraints().add(columnConstraints);
             }
 
+            // Erstellt ein neues Board ohne Löcher
             Board newBoard = new Board(rows, columns, false);
             this.board = newBoard;
             editor.setBoard(newBoard);
@@ -285,6 +283,7 @@ public class EditorController {
 
             boardController.setBoardAndUpdate(newBoard);
 
+            // Initialisiert die Mosaikteile in GridBottom
             gridBottomController.initImages();
 
             final int columnCount = gridPane.getColumnCount();
@@ -292,6 +291,7 @@ public class EditorController {
 
             for (int row = 1; row < rows - 1; row++) {
                 for (int col = 1; col < columns - 1; col++) {
+                    // Erstellt mehrere neue Labels für die Zellen.
                     Label label = new Label();
 
                     label.prefWidthProperty().bind(
@@ -307,6 +307,7 @@ public class EditorController {
                 }
             }
 
+            // Wenn Löcher benötigt werden
             if (editor.needsHoles(rows, columns)) {
                 choosePositionsOfHoles();
             } else {
@@ -318,6 +319,7 @@ public class EditorController {
             }
         });
 
+        // Eröffnet die Möglichkeit die Farben der Ränder zu ändern.
         adjustBorderColors();
     }
 
@@ -330,11 +332,13 @@ public class EditorController {
     private void choosePositionsOfHoles(){
         int numHoles = editor.calculateIfHolesNeeded(board.getRows(), board.getColumns());
 
+        // Wenn nur ein Loch zu platzieren ist.
         if (numHoles == 1) {
             gui.showOnlyOneHoleToPlace();
             placingHoles(numHoles);
 
         } else if (numHoles > 1) {
+            // Wenn mehr als ein Loch zu platzieren ist.
             gui.showHolesToBePlaced(numHoles);
             placingHoles(numHoles);
         }
@@ -357,10 +361,12 @@ public class EditorController {
                 int finalCol = col;
 
                 node.setOnMouseClicked(mouseEvent -> {
+                    // Wenn der Spieler versucht ein Loch an ein schon gesetztes Loch zu platzieren.
                     if (mouseEvent.getButton() == MouseButton.PRIMARY && board.isHole(finalRow, finalCol)) {
                         gui.showPlacingHoleNotAllowed();
                     }
 
+                    // Wenn der Spieler ein Loch an einer leeren Zelle platziert.
                     if (mouseEvent.getButton() == MouseButton.PRIMARY && placedHoles[0] < numHoles && !board.isHole(finalRow, finalCol)) {
                         editor.placeHoleAt(finalRow, finalCol);
 
@@ -373,8 +379,10 @@ public class EditorController {
                             label.setGraphic(imageView);
                         }
 
+                        // Die Anzahl an gesetzten Löchern erhöht sich um 1.
                         placedHoles[0]++;
 
+                        // Soll aufhören Löcher zu setzen, wenn der Spieler alle Löcher platziert hat.
                         if (placedHoles[0] == numHoles) {
                             board = editor.getBoard();
                             options.setBoard(board);

@@ -62,32 +62,25 @@ public class MacMahonUIController {
      */
     public void initialize() {
         Random random = new Random();
-        Board board;
 
-        do {
-            // Anzahl an Reihen kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
-            int rows = random.nextInt(5) + 2;
+        // Anzahl an Reihen kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
+        int rows = random.nextInt(5) + 2;
 
-            // Anzahl an Spalten kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
-            int columns = random.nextInt(5) + 2;
+        // Anzahl an Spalten kann bis zu 4 - mit Bound = 5 haben (mit +2 garantiert es min. 2)
+        int columns = random.nextInt(5) + 2;
 
-            // Konstruktor, welches die Zeilen und Spalten aufnimmt
-            // erstellt auch Löcher und initialisiert Randfarben.
-            // +2 stehen für die Ränder
-            board = new Board(rows + 2, columns + 2, true);
+        // Konstruktor fürs Spielfeld, welches die Zeilen und Spalten aufnimmt
+        // erstellt auch ggf. Löcher und initialisiert Randfarben.
+        // +2 stehen für die Ränder
+        Board board = new Board(rows + 2, columns + 2, true);
 
-            // Erstellung von Optionen
-            options = new BoardOptions(board);
+        // Erstellung von Optionen
+        options = new BoardOptions(board);
 
-            // Initialisiert die Logik für den Editor
-            editor = new Editor(board);
+        // Initialisiert die Logik für den Editor
+        editor = new Editor(board);
 
-            // Es soll so lange ein neues Spielfeld generiert werden, sofern das Spielfeld nicht lösbar ist
-            // oder das Spielfeld unter 18 Spielzellen hat.
-        } while ((!solve.possibleSolvation(options.cloneBoard(board, false)))
-                && (!solve.overEighteenEmptyCells(board)));
-
-        // Initialisierung der Controller für Spielfeld und gridBottom
+        // Initialisierung der Controller für das Spielfeld und gridBottom
         this.boardController = new BoardController(gameField, board, gameFieldPane, gui);
         this.gridBottomController = new GridBottomController(gridBottom, board);
 
@@ -100,9 +93,13 @@ public class MacMahonUIController {
 
         // Initialisiert die Bilder im gridBottom.
         // Drag-Logik ist auch drin.
-        gridBottomController.checkExistentMosaikTiles();
+        gridBottomController.initImages();
 
         closeGameViaStage();
+
+        if (solve.overEighteenEmptyCells(board)) {
+            gui.showSkipSolvabilityCheck();
+        }
     }
 
     /**
@@ -132,7 +129,8 @@ public class MacMahonUIController {
 
     /**
      * Lädt ein gespeichertes Spiel.
-     * Beachten von Fehlermeldungen, wenn kein gespeichertes Spiel geladen wird.
+     *
+     * Gibt zwei Varianten (Editormodus und Spielmodus)
      */
     @FXML
     private void handleLoad() {
@@ -195,6 +193,7 @@ public class MacMahonUIController {
 
     /**
      * Private Methode welche ein FileChooser erstellt, um ein Spiel zu speichern.
+     * Reduziert redundanten Code in handleLoad und handleSave
      *
      * @return FileChooser zum Speichern von Dateien.
      */
@@ -212,17 +211,13 @@ public class MacMahonUIController {
             throw new IllegalArgumentException(ex);
         }
 
-        File saveFile = new File(String.valueOf(currDir));
+        fileChooser.setInitialDirectory(currDir.getParentFile());
 
-        fileChooser.setInitialDirectory(saveFile);
         return fileChooser;
     }
 
     /**
      * Schließt das laufende Spiel.
-     * <p>
-     * Mögliche Dinge die zu beachten sind:
-     * - Ob das Spiel unter einen Namen gespeichert werden soll.
      */
     @FXML
     private void handleClose() {
@@ -241,13 +236,7 @@ public class MacMahonUIController {
 
     /**
      * Startet und schließt den Editor-Modus.
-     * <p>
-     * Mögliche Dinge die zu beachten sind:
-     * Wenn laufendes Spiel keinen Namen hat, ob dieser unter einem Namen gespeichert werden soll.
-     *
-     * 1. Wenn laufendes Spiel keinen Namen hat, ob dieser unter einem Namen gespeichert werden soll.
-     * 2. Editor-Modus kann nur geschlossen werden, wenn das Puzzle gespielt werden kann
-     * (siehe Editor-class, die Methode switchBackToGameMode())
+     * Schließt den Editormodus, sofern das Spielfeld lösbar ist.
      */
     @FXML
     private void handleEditorMode() {
@@ -274,26 +263,36 @@ public class MacMahonUIController {
     }
 
     /**
-     * Reicht das laufende Spiel ein.
+     * Überprüft, ob ein Spiel lösbar ist, oder nicht.
      */
     @FXML
-    private void handleGameSubmit() {
-        Board currBoard = options.getBoard();
+    private void handleGameCheckSolvability() {
+        if (menuEditorMode.isSelected()) {
+            Board currBoard = editor.getBoard();
+            Board clonedBoard = options.cloneBoard(currBoard, false);
 
-        if (!menuEditorMode.isSelected()) {
-            if (!solve.allCellsPlaced(currBoard)) {
-                gui.showPlaceAllTilesFirst();
-            } else {
-                success = solve.solveGame(currBoard);
-
-                if (success) {
-                    gui.showGameWon();
+            if (!solve.overEighteenEmptyCells(currBoard)) {
+                if (solve.possibleSolvation(clonedBoard)) {
+                    gui.showPossibleSolvation();
                 } else {
-                    gui.showGamesNotFinished();
+                    gui.showNoPossibleSolvation();
                 }
+            } else {
+                gui.showSkipSolvabilityCheck();
             }
         } else {
-            gui.showNotAvailableInEditor();
+            Board currBoard = options.getBoard();
+            Board clonedBoard = options.cloneBoard(currBoard, false);
+
+            if (!solve.overEighteenEmptyCells(currBoard)) {
+                if (solve.possibleSolvation(clonedBoard)) {
+                    gui.showPossibleSolvation();
+                } else {
+                    gui.showNoPossibleSolvation();
+                }
+            } else {
+                gui.showSkipSolvabilityCheck();
+            }
         }
     }
 
@@ -322,12 +321,18 @@ public class MacMahonUIController {
     @FXML
     private void handleGameHint() {
         Board currBoard = options.getBoard();
+        Board clonedBoard = options.cloneBoard(currBoard, false);
         if (!menuEditorMode.isSelected()) {
             if (!solve.overEighteenEmptyCells(currBoard)) {
-                boardController.placingTileForPlayer();
+                if (solve.possibleSolvation(clonedBoard)) {
+                    boardController.placingTileForPlayer();
 
-                gridBottomController.setBoard(currBoard);
-                gridBottomController.checkExistentMosaikTiles();
+                    gridBottomController.setBoard(currBoard);
+                    gridBottomController.checkExistentMosaikTiles();
+                } else {
+                    gui.showNoPossibleSolvation();
+                    System.out.println("Board wird nicht lösbar sein.");
+                }
             } else {
                 gui.showSkipHelp();
             }

@@ -88,11 +88,6 @@ public class FakeGUI implements GUIConnector{
     }
 
     @Override
-    public void showPlaceAllTilesFirst() {
-
-    }
-
-    @Override
     public void showHolesNotPlaced_Editor() {
 
     }
@@ -109,6 +104,11 @@ public class FakeGUI implements GUIConnector{
 
     @Override
     public void showNoPlaceableTileFound() {
+
+    }
+
+    @Override
+    public void showPossibleSolvation() {
 
     }
 

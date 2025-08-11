@@ -107,6 +107,12 @@ public class Editor {
         return Math.max(0, totalCells - maxTiles);
     }
 
+    /**
+     * Berechnet mit calculateIfHolesNeeded, ob Löcher benötigt werden.
+     * @param rows  die Anzahl an Reihen
+     * @param cols  die Anzahl an Spalten
+     * @return      true, wenn return > 0 ist, ansonsten false.
+     */
     public boolean needsHoles(int rows, int cols) {
         return calculateIfHolesNeeded(rows, cols) > 0;
     }

@@ -17,7 +17,7 @@ import java.util.Set;
 public class Solvability {
 
     /**
-     * Ein Set aus den platzierbaren Mosaikteilen in der Class Mosaictile.
+     * Ein Set aus den platzierbaren Mosaikteilen in der Enum-Klasse MosaicTile.
      */
     private static final Set<MosaicTile> USABLE_TILES = Set.of(
             MosaicTile.GGGG, MosaicTile.GGRR, MosaicTile.GRGR, MosaicTile.GRRR,
@@ -66,18 +66,26 @@ public class Solvability {
     /**
      * Prüft im aktuellen Spielstand, bei freien Stellen und
      * verfügbaren Mosaikteilen, ob es eine mögliche Lösung gibt.
+     *
+     * @param board     das Spielfeld, was überprüft wird.
      */
     public boolean possibleSolvation(Board board){
         List<MosaicTile> usableTiles = new ArrayList<>(USABLE_TILES);
 
         for (int row = 1; row < board.getRows() - 1; row++) {
             for (int col = 1; col < board.getColumns() - 1; col++) {
-                Position pos = new Position(row, col);
                 BoardCell cell = board.getCell(row, col);
 
                 if (cell.isPlaced() && !cell.isHole() && cell.getTile() != null) {
                     usableTiles.remove(cell.getTile());
                 }
+            }
+        }
+
+        for (int row = 1; row < board.getRows() - 1; row++) {
+            for (int col = 1; col < board.getColumns() - 1; col++) {
+                Position pos = new Position(row, col);
+                BoardCell cell = board.getCell(row, col);
 
                 if (!cell.isPlaced() && !cell.isHole()) {
                     for (MosaicTile tile : new ArrayList<>(usableTiles)) {
@@ -89,7 +97,7 @@ public class Solvability {
                                 usableTiles.remove(tile);
 
                                 if (possibleSolvation(board)) {
-                                    return solveGame(board);
+                                    return true;
                                 } else {
                                     board.removeTileAt(pos);
                                     usableTiles.add(tile);

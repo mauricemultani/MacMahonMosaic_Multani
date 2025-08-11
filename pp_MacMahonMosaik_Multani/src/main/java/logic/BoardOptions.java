@@ -44,6 +44,7 @@ public class BoardOptions {
      * Die Methode klont das Spielfeld.
      * Wird hauptsächlich beim Laden verwendet, um gegen Fehlermeldungen vorzubeugen.
      * @param originalBoard das originale Spielfeld
+     * @param forEditor     true, wenn klonen im Editormodus ist, ansonsten false (= Spielmodus)
      * @return              das geklonte Spielfeld.
      */
     public Board cloneBoard (Board originalBoard, boolean forEditor) {
@@ -51,6 +52,7 @@ public class BoardOptions {
         int cols = originalBoard.getColumns();
         String[][] field = convertBoardToString();
 
+        // Klonen des Spielfelds im Spielmodus
         if (!forEditor) {
             Board clonedBoard = new Board(rows, cols, field, false);
 
@@ -70,6 +72,7 @@ public class BoardOptions {
             }
             return clonedBoard;
         } else {
+            // Klonen des Spielfelds im Editormodus
             Board clonedBoard = new Board(rows, cols, field, true);
 
             for (int row = 0; row < rows; row++) {
@@ -130,6 +133,8 @@ public class BoardOptions {
 
     /**
      * Speichert das laufende Spiel.
+     *
+     * @param file  die Spieldatei
      */
     public void saveGame(File file) {
         String[][] field = convertBoardToString();
@@ -155,6 +160,7 @@ public class BoardOptions {
      * Bsp.: falsche Zeilen/Spalten geladen
      *       keine JSON datei
      *
+     * @param file  die Spieldatei
      */
     public void loadGame(File file) {
         try (Reader reader = new FileReader(file)) {

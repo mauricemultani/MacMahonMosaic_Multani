@@ -33,8 +33,9 @@ public class Board {
      * Initialisiert das Spielfeld mit leeren Zellen und auch mit Löchern (falls Zellen > 24).
      * Initialisiert ebenfalls auch die Randfarben.
      *
-     * @param rows    die Anzahl an Reihen im Spielfeld.
-     * @param columns die Anzahl an Spalten im Spielfeld.
+     * @param rows      die Anzahl an Reihen im Spielfeld.
+     * @param columns   die Anzahl an Spalten im Spielfeld.
+     * @param withHoles wenn true, dann wird ein Spielfeld mit Löchern erstellt (Spielmodus), ansonsten false (Editormodus).
      */
     public Board(int rows, int columns, boolean withHoles) {
         this.rows = rows;
@@ -79,6 +80,7 @@ public class Board {
      * @param rows          die Anzahl an Reihen
      * @param columns       die Anzahl an Spalten
      * @param field         das Spielfeld
+     * @param forEditor     wenn true, dann wird ein Spiel im Editormodus geladen, ansonsten wird es normal im Spielmodus geladen.
      */
     public Board(int rows, int columns, String[][] field, boolean forEditor) {
         this.rows = rows;
@@ -135,6 +137,7 @@ public class Board {
      *
      * @param row    Reihe der Zelle
      * @param column Spalte der Zelle
+     *
      * @return Zelle an der angegebenen Position
      */
     public BoardCell getCell(int row, int column) {
@@ -142,7 +145,12 @@ public class Board {
     }
 
     /**
+     * Schaut sich an der gegebenen Position an, ob dort ein Loch ist, oder nicht.
      *
+     * @param row   die Reihe von der Position
+     * @param col   die Spalte von der Position
+     *
+     * @return      true, wenn an der Position ein Loch ist, ansonsten false.
      */
     public boolean isHole(int row, int col) {
         return cells[row][col].isHole();
@@ -350,7 +358,7 @@ public class Board {
      * Schaut sich die Position einer leeren Zelle an und gibt zurück, ob dort ein Mosaikteil reinpasst.
      *
      * @param pos   die Position wo das Mosaikteil platziert werden soll.
-     * @return      True, wenn das Mosaikteil an der Position passt, ansonsten false.
+     * @return      true, wenn das Mosaikteil an der Position passt, ansonsten false.
      */
     private boolean isPositionValid(Position pos) {
         int row = pos.row();
@@ -369,7 +377,7 @@ public class Board {
      * @param tile      das Mosaikteil, das platziert wird.
      * @param rotation  die derzeitige Rotation vom Mosaikteil.
      * @param pos       die Position, wo das Mosaikteil platziert werden soll.
-     * @return          True, wenn das Mosaikteil mit seinen Nachbarn passt, ansonsten false.
+     * @return          true, wenn das Mosaikteil mit seinen Nachbarn passt, ansonsten false.
      */
     public boolean fitsNeighbours(MosaicTile tile, Rotation rotation, Position pos) {
         Color[] tileColors = tile.getColors(rotation);
@@ -524,7 +532,7 @@ public class Board {
     /**
      * Fügt ein Mosaikteil an einer Position hinzu.
      *
-     * @param mosaicTile    das Mosaik-Tile welches an einer Position hinzugefügt werden soll.
+     * @param mosaicTile    das Mosaikteil welches an einer Position hinzugefügt werden soll.
      * @param rotation      die derzeitige Rotation vom Mosaikteil
      * @param pos           die Position, wo das Mosaikteil platziert werden soll.
      */
